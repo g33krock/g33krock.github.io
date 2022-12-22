@@ -76,4 +76,11 @@ div.navStick {
 
 .nav {
   flex: 25%;
+  text-align: left;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin:auto
 }
