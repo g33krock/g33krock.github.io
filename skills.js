@@ -13,7 +13,8 @@ export const skills = {
             {name: "Enhanced Reflexes", credits: 45000, bonus: 45, description: "Neural enhancements visible as faint tracings along your limbs, improving reaction time and precision."},
             {name: "Gravity Nullifiers", credits: 85000, bonus: 85, description: "Advanced implants that nullify the effects of gravity, allowing the user to navigate in low-gravity environments effortlessly."},
             {name: "Magnetic Grapple Fingers", credits: 110000, bonus: 110, description: "Robotic fingers with embedded magnetic grapple technology that allows the user to cling to metallic surfaces, scale vertical structures, and execute precise acrobatic maneuvers. The magnetic field can be adjusted for varying degrees of grip strength."},
-        ]
+        ],
+        image: 'https://pngimg.com/uploads/muscle/muscle_PNG48.png'
     },
     "Mental Acuity": {
         traits: [
@@ -29,7 +30,8 @@ export const skills = {
             {name: "Mind-Computer Interface (MCI)", credits: 80000, bonus: 80, description: "Subtle neural connectors, allowing direct communication with computers and external device control through thought."},
             {name: "Mood Controlled Biofeedback", credits: 30000, bonus: 30, description: "Internal biometric regulators, allowing mood regulation for improved mental well-being and focus."},
             {name: "Memory Matrix Implants", credits: 95000, bonus: 95, description: "Nanotech-based implants that enhance memory capacity and recall speed, improving cognitive abilities."},
-        ]
+        ],
+        image: 'https://pngimg.com/uploads/brain/brain_PNG4.png'
     },
     "Vitality": {
         traits: [
@@ -45,7 +47,8 @@ export const skills = {
             {name: "Nano-enhancements", credits: 90000, bonus: 90, description: "Nanobots coursing through your veins, offering accelerated healing and increased immunity."},
             {name: "Synthetic Organs", credits: 65000, bonus: 65, description: "Internal synthetic organs visible through translucent skin, providing improved functionality and potential longevity."},
             {name: "Energy Absorption Cells", credits: 110000, bonus: 110, description: "Microscopic cells visible beneath the skin, allowing absorption and conversion of various energy forms."},
-        ]
+        ],
+        image: 'https://pngimg.com/uploads/heart/heart_PNG683.png'
     },
     "Social Influence": {
         traits: [
@@ -61,6 +64,7 @@ export const skills = {
             {name: "Telepathic Communication Implants", credits: 100000, bonus: 100, description: "Subtle neural nodes on the temples, facilitating communication through thoughts."},
             {name: "Charm Emitters", credits: 50000, bonus: 50, description: "Subtle devices emitting pheromones and charismatic signals, enhancing the user's ability to influence and persuade others."},
             {name: "Empathic Resonator", credits: 90000, bonus: 90, description: "Implants that heighten the user's empathic abilities, allowing them to sense and influence the emotions of those around them."},
-        ]
+        ],
+        image: 'https://pngimg.com/uploads/hands/hands_PNG98504.png'
     }
 }

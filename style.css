@@ -1,195 +1,221 @@
 body {
-    background-color: #111; /* Dark background */
-    font-family: 'Orbitron', sans-serif; /* Cyberpunk-style font */
-    color: #fff; /* Light text */
+  background-color: #111; /* Dark background */
+  font-family: "Orbitron", sans-serif; /* Cyberpunk-style font */
+  color: #fff; /* Light text */
 }
 
 .controls-container {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .hp-container,
 .credits-container {
-    background-color: #222; /* Darker elements background */
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px #0f0; /* Neon glow */
+  background-color: #222; /* Darker elements background */
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #0f0; /* Neon glow */
 }
 
 .credits-info-container,
 .credits-btn-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
 }
 
 label {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 input[type="number"] {
-    background-color: #000; /* Dark input field */
-    color: #0f0; /* Neon text */
-    border: 1px solid #0f0; /* Neon border */
-    padding: 5px;
+  background-color: #000; /* Dark input field */
+  color: #0f0; /* Neon text */
+  border: 1px solid #0f0; /* Neon border */
+  padding: 5px;
 }
 
 button {
-    background-color: #333; /* Dark button background */
-    color: #0f0; /* Neon text */
-    border: 1px solid #0f0; /* Neon border */
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  background-color: #333; /* Dark button background */
+  color: #0f0; /* Neon text */
+  border: 1px solid #0f0; /* Neon border */
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #0f0; /* Highlight on hover */
-    color: #000;
+  background-color: #0f0; /* Highlight on hover */
+  color: #000;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #222; /* Darker elements background */
-    box-shadow: 0 0 20px #0f0; /* Neon glow */
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #222; /* Darker elements background */
+  box-shadow: 0 0 20px #0f0; /* Neon glow */
 }
 
-th, td {
-    vertical-align: top;
-    border: 1px solid #333;
-    padding: 8px;
-    text-align: left;
-    color: #fff; /* Light text */
+th,
+td {
+  vertical-align: top;
+  border: 1px solid #333;
+  padding: 8px;
+  text-align: left;
+  color: #fff; /* Light text */
+  text-shadow: 2px 2px black;
+}
+
+td {
+  position: relative; /* Establishes a positioning context for pseudo-elements */
+  /* Other styles */
+}
+
+td::before {
+  content: ""; /* Required for pseudo-elements */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.5; /* 50% transparency */
+  pointer-events: none; /* Allows clicking through the pseudo-element */
+  background-image: var(--bg-image);
+}
+
+td[data-bg]::before {
+  --bg-image: url(attr(
+    data-bg
+  )); /* Set the variable based on the data attribute */
 }
 
 th {
-    background-color: #111;
+  background-color: #111;
 }
 
 tr:nth-child(even) {
-    background-color: #222;
+  background-color: #222;
 }
 
 tr:hover {
-    background-color: #333;
+  background-color: #333;
 }
 
 th.subheading {
-    text-align: center;
-    cursor: pointer;
+  text-align: center;
+  cursor: pointer;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 li {
-    padding: 5px;
-    border-bottom: 1px solid #333;
+  padding: 5px;
+  border-bottom: 1px solid #333;
 }
 
 li:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 input[type="checkbox"] {
-    accent-color: #0f0; /* Custom color for checkbox */
+  accent-color: #0f0; /* Custom color for checkbox */
 }
 
 /* Custom scrollbar for cyberpunk aesthetic */
 ::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #111;
+  background: #111;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #0f0;
+  background: #0f0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #9c0;
+  background: #9c0;
 }
 
-
 label {
-    display: block; /* Makes the label take up the full width, helping with alignment */
-    cursor: pointer; /* Changes the cursor to a pointer when hovering over the label */
+  display: block; /* Makes the label take up the full width, helping with alignment */
+  cursor: pointer; /* Changes the cursor to a pointer when hovering over the label */
 }
 
 /* Hover effects for rows */
 
 th.subheading {
-    text-align: center; /* Centers the text for subheadings */
-    cursor: pointer;
+  text-align: center; /* Centers the text for subheadings */
+  cursor: pointer;
 }
 
 #controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px; /* Or any other spacing you prefer */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Or any other spacing you prefer */
 }
 
 #hpSection {
-    text-align: left;/* Aligns HP section to the left */
+  text-align: left; /* Aligns HP section to the left */
 }
 
 #creditsSection {
-    text-align: right; /* Aligns Credits section to the right */
+  text-align: right; /* Aligns Credits section to the right */
 }
 
 #creditsBtnSection {
-    margin-top: 10px; /* Adds spacing between the input and buttons */
+  margin-top: 10px; /* Adds spacing between the input and buttons */
 }
-
 
 /* Main container for controls */
 .controls-container {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 /* Container for HP */
 .hp-container {
-    text-align: left;
+  text-align: left;
 }
 
 /* Container for the credits section */
 .credits-container {
-    text-align: right;
+  text-align: right;
 }
 
 /* Inner container for Credits label and display */
 .credits-info-container {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 /* Container for the credits input and buttons */
 .credits-btn-container {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 /* Style for buttons to make them appear side by side */
 button {
-    margin-left: 5px; /* Adds space between buttons */
+  margin-left: 5px; /* Adds space between buttons */
 }
 
 /* Additional styles for spacing and alignment */
 #creditsInput {
-    margin-right: 5px; /* Space between input and buttons */
-    margin-bottom: 5px; /* Space between input and buttons below */
+  margin-right: 5px; /* Space between input and buttons */
+  margin-bottom: 5px; /* Space between input and buttons below */
 }

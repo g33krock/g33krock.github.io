@@ -60,8 +60,8 @@ function createSkillsTable(skills) {
     creditsDisplay.textContent = credits;
   };
 
-  const removeCreditsBtn = document.createElement('button');
-  removeCreditsBtn.textContent = '-';
+  const removeCreditsBtn = document.createElement("button");
+  removeCreditsBtn.textContent = "-";
   removeCreditsBtn.onclick = () => {
     credits -= parseInt(creditsInput.value || 0);
     creditsDisplay.textContent = credits;
@@ -86,7 +86,10 @@ function createSkillsTable(skills) {
   controlsContainer.appendChild(hpContainer);
   controlsContainer.appendChild(creditsContainer);
 
-  document.body.insertBefore(controlsContainer, document.getElementById('skillsTable'));
+  document.body.insertBefore(
+    controlsContainer,
+    document.getElementById("skillsTable")
+  );
 
   const table = document.createElement("table");
   const thead = document.createElement("thead");
@@ -151,8 +154,23 @@ function createSkillsTable(skills) {
 
   const enhancementsRow = document.createElement("tr");
   enhancementsRow.style.display = "none"; // Initially hidden
-  Object.values(skills).forEach((category, columnIndex) => {
+  Object.keys(skills).forEach((skillCategory) => {
+    const category = skills[skillCategory];
     const td = document.createElement("td");
+  
+    // Use a data attribute to store the image URL
+    if (category.image) {
+      td.setAttribute('data-bg', category.image);
+    }
+
+    // Set the background image for the category cell
+    if (category.image) {
+      td.style.backgroundImage = `url(${category.image})`;
+      td.style.backgroundSize = "contain";
+      td.style.backgroundRepeat = "no-repeat";
+      td.style.backgroundPosition = "center";
+    }
+
     const enhancementsList = document.createElement("ul");
 
     category.enhancements.forEach((enhancement) => {
@@ -166,13 +184,13 @@ function createSkillsTable(skills) {
       checkbox.addEventListener("change", function () {
         if (this.checked) {
           credits -= enhancement.credits; // Subtract credits for checked enhancement
-          if (category === skills["Vitality"]) {
+          if (skillCategory === "Vitality") {
             maxHP += enhancement.bonus; // Update maxHP for Vitality enhancements
             hpInput.value = maxHP;
           }
         } else {
           credits += enhancement.credits; // Add credits back for unchecked enhancement
-          if (category === skills["Vitality"]) {
+          if (skillCategory === "Vitality") {
             maxHP -= enhancement.bonus; // Update maxHP for unchecked Vitality enhancement
             hpInput.value = maxHP;
           }
@@ -190,9 +208,8 @@ function createSkillsTable(skills) {
   });
   tbody.appendChild(enhancementsRow);
 
-  table.appendChild(tbody);
 
-  // Append the table to the div with id 'skillsTable'
+  table.appendChild(tbody);
   document.getElementById("skillsTable").appendChild(table);
 }
 
