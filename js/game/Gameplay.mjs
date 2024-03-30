@@ -96,7 +96,6 @@ export class Gameplay {
     monsterManager.resetShield();
     this.playerManager.resetStrength();
     await monsterManager.updateAllEffects();
-    this.removeMonsterContainer();
     this.endRound();
   }
 
@@ -106,21 +105,30 @@ export class Gameplay {
     await this.playerManager.updateAllPlayers();
     this.playerManager.updatePlayerInfoBoxes();
     monsterManager.updateMonsterInfoBoxes();
+    this.removeMonsterContainer();
     this.startNewRound();
   }
 
   removeMonsterContainer() {
-    monsterManager.monsters.forEach((monster) => {
-      if (!monster.alive) {
-        monster.effects = [];
-        const monsterContainer = document.querySelector(
-          `.monster[data-monster-index="${monster.index}"]`
-        );
-        monsterContainer?.remove();
-        this.checkMonstersAlive();
-      }
+    return new Promise((resolve) => {
+      this.monsters.forEach((monster, index) => {
+        if (!monster.alive) {
+          monster.effects = [];
+          const monsterContainer = document.querySelector(`.monster[data-monster-index="${monster.index}"]`);
+          if (monsterContainer) {
+            monsterContainer.remove();
+          }
+  
+          // Remove the monster from the array
+          this.monsters.splice(index, 1);
+        }
+      });
+  
+      this.checkMonstersAlive();
+      resolve(); // Resolve the promise when all operations are done
     });
   }
+  
 
   checkPlayersAlive() {
     const allPlayersDead = playerManager.players.every(
