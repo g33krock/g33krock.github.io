@@ -87,7 +87,7 @@ export class CardManager {
       cardElement.style.margin = "5px";
       cardElement.style.padding = "10px";
       cardElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
-      cardElement.style.backgroundImage = `url('./images/${playerRole.toLowerCase()}.png')`;
+      cardElement.style.backgroundImage = `url('../../images/${playerRole.toLowerCase()}.png')`;
       cardElement.style.backgroundSize = "cover";
       cardElement.style.backgroundPosition = "center";
       cardElement.style.backgroundRepeat = "no-repeat";
