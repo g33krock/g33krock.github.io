@@ -140,6 +140,7 @@ export class MonsterManager {
 
   updateMonsterInfoBoxes() {
     this.monsters.forEach((monster, index) => {
+      if (monster.alive){
       const monsterDiv = document.getElementById(`${monster.monsterType.toLowerCase().replace(/\s+/g, "-")}-${index}`);
       const statsContainer = monsterDiv.querySelector(".stats-container");
       
@@ -220,6 +221,7 @@ export class MonsterManager {
     
         effectsContainer.appendChild(effectGroup);
     });
+  }
     });
   }
      
