@@ -72,6 +72,13 @@ body {
   left: 10px;
 }
 
+label {
+  color: #fff;
+  font-size: 2em;
+  font-weight: bold; 
+  text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.5);
+}
+
 .player-container {
   display: flex;
   flex-direction: column;
@@ -223,5 +230,26 @@ body {
 
 #door-image.expanded {
     animation: expandDoor 1s forwards; 
+}
+
+.selection-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 0;
+}
+
+#role-selection-column,
+#proficiency-selection-column,
+#icon-display-column {
+    flex: 1; /* Equal width */
+    margin: 0 10px; /* Spacing between columns */
+}
+
+/* Further styles for visual improvement */
+#role-selection-column select,
+#proficiency-selection-column select {
+    width: 100%; /* Full width of the column */
+    margin-bottom: 10px; /* Spacing between dropdowns */
 }
 
