@@ -13,32 +13,24 @@ export class EntityManager {
   }
 
   addEffect(newEffect) {
-    let existingEffect = this.effects.find(
-      (effect) => effect.type === newEffect.type
-    );
-
-    if (existingEffect) {
-      existingEffect.counters += newEffect.counters;
-    } else {
       this.effects.push(newEffect);
+  }
+
+  async updateEffects() {
+    console.log(this.effects)
+    for (const effect of this.effects) {
+      this.applyEffect(effect);
+      effect.counters -= 1;
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
+    this.effects = this.effects.filter(effect => effect.counters > 0);
   }
+  
 
-  updateEffects(target) {
-    return new Promise((resolve) => {
-      this.effects.forEach((effect) => {
-        this.applyEffect(effect, target);
-        effect.counters -= 1;
-      });
-      this.effects = this.effects.filter((effect) => effect.counters > 0);
-      resolve();
-    });
-  }
-
-  applyEffect(effect, target) {
+  applyEffect(effect) {
     switch (effect.type) {
       case "hot":
-        this.modifyHealth(effect.value, target);
+        this.modifyHealth(effect.value);
         break;
       case "stot":
         this.modifyStrengthen(effect.value);
@@ -46,6 +38,12 @@ export class EntityManager {
       case "shot":
         this.modifyShield(effect.value);
         break;
+    }
+    if(this.faction === 'player'){
+      playerManager.updatePlayerInfoBoxes();
+    }
+    if (this.faction === 'monster'){
+      monsterManager.updateMonsterInfoBoxes();
     }
   }
 
