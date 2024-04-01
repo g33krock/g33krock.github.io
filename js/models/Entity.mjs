@@ -1,3 +1,5 @@
+import { monsterManager, playerManager } from "../config/GameConfig.mjs";
+
 export class Entity {
   constructor(options = {}) {
     this.health = options.health || 20;
@@ -13,13 +15,16 @@ export class Entity {
     this.effects.push(effect);
   }
 
-  updateEffects() {
-    this.effects.forEach((effect) => {
+  async updateEffects() {
+    console.log(this.effects)
+    for (const effect of this.effects) {
       this.applyEffect(effect);
       effect.counters -= 1;
-    });
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
     this.effects = this.effects.filter(effect => effect.counters > 0);
   }
+  
 
   applyEffect(effect) {
     switch (effect.type) {
@@ -32,6 +37,12 @@ export class Entity {
       case "shot":
         this.modifyShield(effect.value);
         break;
+    }
+    if(this.faction === 'player'){
+      playerManager.updatePlayerInfoBoxes;
+    }
+    if (this.faction === 'monster'){
+      monsterManager.updateMonsterInfoBoxes();
     }
   }
 
