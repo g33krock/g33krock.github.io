@@ -1,5 +1,3 @@
-import { playerManager, monsterManager } from "../config/GameConfig.mjs";
-
 export class EntityManager {
   constructor(options = {}) {
     this.health = options.health || 20;
@@ -40,12 +38,6 @@ export class EntityManager {
       case "shot":
         this.modifyShield(effect.value);
         break;
-    }
-    if(this.faction === 'player'){
-      playerManager.updatePlayerInfoBoxes();
-    }
-    if (this.faction === 'monster'){
-      monsterManager.updateMonsterInfoBoxes();
     }
   }
 
