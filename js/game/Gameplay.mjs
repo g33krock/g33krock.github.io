@@ -33,8 +33,8 @@ export class Gameplay {
     this.extraTurn.fill(false);
     this.applyGlobalProficiencyEffects();
     playerManager.players.forEach((player, index) => {
-      if (player.health > player.startingHealth){
-        player.health = player.startingHealth
+      if (player.health > player.startingHealth) {
+        player.health = player.startingHealth;
       }
       this.updatePlayerContainerPosition(index);
       player.applyRoundStartProficiencyEffects();
@@ -91,7 +91,7 @@ export class Gameplay {
     return !this.playerTurns[playerIndex];
   }
 
-  async playerTurnOver(){
+  async playerTurnOver() {
     await monsterManager.executeRandomAbilities(playerManager.players);
     monsterManager.resetShield();
     this.playerManager.resetStrength();
@@ -163,15 +163,15 @@ export class Gameplay {
   applyGlobalProficiencyEffects() {
     let shieldAllValue = 0;
     let strengthenAllValue = 0;
-  
-    this.playerManager.players.forEach(player => {
+
+    this.playerManager.players.forEach((player) => {
       if (player.proficiency) {
         shieldAllValue += player.proficiency.shieldAll || 0;
         strengthenAllValue += player.proficiency.strengthenAll || 0;
       }
     });
-  
-    this.playerManager.players.forEach(player => {
+
+    this.playerManager.players.forEach((player) => {
       player.shield += shieldAllValue;
       player.strengthen += strengthenAllValue;
     });
@@ -282,7 +282,10 @@ export function applyCardEffect(
     targetEntity = playerManager.getPlayer(targetIndex);
   }
 
-  const adjustedCard = adjustCardEffectsBasedOnProficiency(originatingPlayer, card);
+  const adjustedCard = adjustCardEffectsBasedOnProficiency(
+    originatingPlayer,
+    card
+  );
 
   let targetContainerSelector;
   if (targetType === "monster") {
@@ -342,7 +345,11 @@ export function applyCardEffect(
   }
 
   if (adjustedCard.name === "siphon life") {
-    originatingPlayer.modifyHealth(-adjustedCard.health, originatingPlayer, originatingPlayer);
+    originatingPlayer.modifyHealth(
+      -adjustedCard.health,
+      originatingPlayer,
+      originatingPlayer
+    );
   }
 
   if (adjustedCard.name === "selfless sacrifice") {
@@ -390,15 +397,17 @@ export function applyCardEffect(
       targetType !== "monster" &&
       targetEntity.effects.some((effect) => effect.type === "reflect")
     ) {
-      console.log(`reflected!`)
+      console.log(`reflected!`);
       originatingPlayer.modifyHealth(
         -(adjustedCard.health - originatingPlayer.strengthen),
-        originatingPlayer, originatingPlayer
+        originatingPlayer,
+        originatingPlayer
       );
     } else {
       targetEntity.modifyHealth(
         adjustedCard.health - originatingPlayer.strengthen,
-        targetEntity, originatingPlayer
+        targetEntity,
+        originatingPlayer
       );
     }
     displayAmountOverTarget(targetContainer, adjustedCard.health, "health");
@@ -409,13 +418,19 @@ export function applyCardEffect(
   }
   if (adjustedCard.strengthen !== 0) {
     targetEntity.modifyStrengthen(adjustedCard.strengthen);
-    displayAmountOverTarget(targetContainer, adjustedCard.strengthen, "strengthen");
+    displayAmountOverTarget(
+      targetContainer,
+      adjustedCard.strengthen,
+      "strengthen"
+    );
   }
 
   if (adjustedCard.aggro !== 0) {
-
     if (adjustedCard.health < 0 && targetType === "monster") {
-      originatingPlayer.modifyMonsterSpecificAggro(targetEntity.index, adjustedCard.aggro);
+      originatingPlayer.modifyMonsterSpecificAggro(
+        targetEntity.index,
+        adjustedCard.aggro
+      );
     } else {
       originatingPlayer.modifyAggro(adjustedCard.aggro);
     }
@@ -429,7 +444,11 @@ export function applyCardEffect(
       counters: adjustedCard.counter,
     });
   if (adjustedCard.hot !== 0)
-    effectsToAdd.push({ type: "hot", value: adjustedCard.hot, counters: adjustedCard.counter });
+    effectsToAdd.push({
+      type: "hot",
+      value: adjustedCard.hot,
+      counters: adjustedCard.counter,
+    });
   if (adjustedCard.stot !== 0)
     effectsToAdd.push({
       type: "stot",
@@ -443,25 +462,30 @@ export function applyCardEffect(
       counters: adjustedCard.counter,
     });
 
-    Promise.all(effectsToAdd.map(effect => targetEntity.addEffect(effect)))
-    .then(() => {
-      if (targetType === "monster") {
-        monsterManager.updateMonsterInfoBoxes();
-      } else {
-        playerManager.updatePlayerInfoBoxes();
-      }
-    });
+  Promise.all(
+    effectsToAdd.map((effect) => targetEntity.addEffect(effect))
+  ).then(() => {
+    if (targetType === "monster") {
+      monsterManager.updateMonsterInfoBoxes();
+    } else {
+      playerManager.updatePlayerInfoBoxes();
+    }
+  });
 
   gameplay.playerTookTurn(originatingPlayerIndex);
 }
 
 function adjustCardEffectsBasedOnProficiency(player, card) {
   let adjustedCard = { ...card };
-  if (player.proficiency.shield) {
-    adjustedCard.shield = (adjustedCard.shield || 0) + player.proficiency.shield;
+  if (player.proficiency.shield > 0 && adjustedCard.shield > 0) {
+    adjustedCard.shield += player.proficiency.shield;
+  } else if (player.proficiency.shield < 0 && adjustedCard.shield < 0) {
+    adjustedCard.shield += player.proficiency.shield;
   }
-  if (player.proficiency.strengthen) {
-    adjustedCard.strengthen = (adjustedCard.strengthen || 0) + player.proficiency.strengthen;
+  if (player.proficiency.strengthen > 0 && adjustedCard.strengthen > 0) {
+    adjustedCard.strengthen += player.proficiency.strengthen;
+  } else if (player.proficiency.strengthen < 0 && adjustedCard.strengthen < 0) {
+    adjustedCard.strengthen += player.proficiency.strengthen;
   }
   if (player.proficiency.additionalCounters) {
     adjustedCard.counter += player.proficiency.additionalCounters;
@@ -472,16 +496,18 @@ function adjustCardEffectsBasedOnProficiency(player, card) {
   if (player.proficiency.healModifier && adjustedCard.health > 0) {
     adjustedCard.health += player.proficiency.healModifier;
   }
-  
+
   if (player.proficiency.isShadow) {
-    ['health', 'shield', 'strengthen'].forEach(key => {
+    ["health", "shield", "strengthen"].forEach((key) => {
       if (adjustedCard.hasOwnProperty(key)) {
-        adjustedCard[key] = adjustedCard[key] > 0 ? -adjustedCard[key] : adjustedCard[key];
+        adjustedCard[key] =
+          adjustedCard[key] > 0 ? -adjustedCard[key] : adjustedCard[key];
       }
     });
-    ['hot', 'shot', 'stot'].forEach(key => {
+    ["hot", "shot", "stot"].forEach((key) => {
       if (adjustedCard.hasOwnProperty(key)) {
-        adjustedCard[key] = adjustedCard[key] > 0 ? -adjustedCard[key] : adjustedCard[key];
+        adjustedCard[key] =
+          adjustedCard[key] > 0 ? -adjustedCard[key] : adjustedCard[key];
       }
     });
   }
@@ -496,7 +522,7 @@ export function displayAmountOverTarget(targetContainer, amount, type) {
   amountText.style.zIndex = "200";
   amountText.style.fontWeight = "bold";
   amountText.style.fontSize = "50px";
-  amountText.style.transition = "bottom 2s ease-out"; 
+  amountText.style.transition = "bottom 2s ease-out";
 
   const colors = {
     health: amount > 0 ? "green" : "red",
@@ -506,18 +532,17 @@ export function displayAmountOverTarget(targetContainer, amount, type) {
   amountText.style.color = colors[type];
 
   targetContainer.style.position = "relative";
-  amountText.style.bottom = "75%"; 
+  amountText.style.bottom = "75%";
   amountText.style.left = "75%";
   amountText.style.transform = "translateX(-50%)";
 
   targetContainer.appendChild(amountText);
 
   setTimeout(() => {
-    amountText.style.bottom = "100px"; 
+    amountText.style.bottom = "100px";
   }, 0);
 
   setTimeout(() => {
     targetContainer.removeChild(amountText);
-  }, 2000); 
+  }, 2000);
 }
-
