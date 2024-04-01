@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Party Selection</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/selectStyles.css">
 </head>
 <body>
     <form id="party-selection-form">
         <div>
-            <h2>Select Your Party Size</h2>
-            <select id="party-size" name="party-size">
+            <label class="fire">Select Your Party Size</label>
+            <select id="party-size" name="party-size" class="select-style fire">
+                <option value="0"></option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -32,7 +33,7 @@
                 <!-- Icons for selected roles and proficiencies will be displayed here -->
             </div>
         </div>
-        <button type="submit">Start Game</button>
+        <button type="submit" class="stone-button">Start Game</button>
     </form>
 
     <script src="./js/playerSelection/PlayerSelection.mjs" type="module"></script>
