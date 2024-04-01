@@ -443,6 +443,12 @@ export function applyCardEffect(
       value: adjustedCard.reflect,
       counters: adjustedCard.counter,
     });
+  if (adjustedCard.interrupt !== 0)
+    effectsToAdd.push({
+      type: "interrupt",
+      value: adjustedCard.reflect,
+      counters: adjustedCard.counter,
+    });
   if (adjustedCard.hot !== 0)
     effectsToAdd.push({
       type: "hot",
