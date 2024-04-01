@@ -5,10 +5,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const roleSelectionColumn = document.getElementById("role-selection-column");
   const proficiencySelectionColumn = document.getElementById("proficiency-selection-column");
   const form = document.getElementById("party-selection-form");
+  const startGameButton = document.querySelector("button[type='submit']");
+
+  startGameButton.disabled = true; // Disable the start game button by default
 
   const playerRoles = [
     "Warrior", "Cleric", "Rogue", "Mage", "Paladin", "Druid", "DeathKnight",
   ];
+
+  function updateStartButtonState() {
+      let allSelected = true;
+      document.querySelectorAll('select[name^="player-role-"]').forEach((select) => {
+          if(select.value === "") allSelected = false;
+      });
+      document.querySelectorAll('select[name^="player-proficiency-"]').forEach((select) => {
+          if(select.value === "") allSelected = false;
+      });
+      startGameButton.disabled = !allSelected;
+  }
+
+
 
   function generateRoleAndProficiencySelections(partySize) {
     roleSelectionColumn.innerHTML = "";
@@ -16,14 +32,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let i = 1; i <= partySize; i++) {
       const roleLabel = document.createElement("label");
+      roleLabel.classList.add('fire');
       roleLabel.textContent = `Player ${i} Role: `;
       const roleSelect = document.createElement("select");
+      roleSelect.classList.add("select-style");
+      roleSelect.classList.add("fire-option");
       roleSelect.name = `player-role-${i}`;
+      roleSelect.onchange = updateStartButtonState;
 
       roleSelect.addEventListener("change", (e) => {
         const selectedRole = e.target.value;
         const proficiencies = roleProficiencies[selectedRole];
         const profSelect = document.querySelector(`#player-${i}-proficiencies`);
+        profSelect.classList.add("select-style");
+        profSelect.classList.add("fire-option");
         profSelect.innerHTML = "";
         proficiencies.forEach((prof) => {
           const option = document.createElement("option");
@@ -33,6 +55,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         profSelect.disabled = false;
       });
+
+      const defaultRoleOption = document.createElement("option");
+      defaultRoleOption.textContent = "Select a Role";
+      defaultRoleOption.disabled = true;
+      defaultRoleOption.selected = true;
+      roleSelect.appendChild(defaultRoleOption);
+
+      const defaultProfOption = document.createElement("option");
+      defaultProfOption.textContent = "Select a Proficiency";
+      defaultProfOption.disabled = true;
+      defaultProfOption.selected = true;
 
       playerRoles.forEach((role) => {
         const option = document.createElement("option");
@@ -45,16 +78,21 @@ document.addEventListener("DOMContentLoaded", () => {
       roleSelectionColumn.appendChild(roleLabel);
 
       const profLabel = document.createElement("label");
+      profLabel.classList.add('fire');
       profLabel.textContent = `Player ${i} Proficiency: `;
 
       const profSelect = document.createElement("select");
       profSelect.id = `player-${i}-proficiencies`;
       profSelect.name = `player-proficiency-${i}`;
       profSelect.disabled = true;
-      proficiencySelectionColumn.appendChild(profSelect);
+      profSelect.appendChild(defaultProfOption);
 
       profLabel.appendChild(profSelect);
       proficiencySelectionColumn.appendChild(profLabel);
+      proficiencySelectionColumn.appendChild(profSelect);
+
+      
+      profSelect.onchange = updateStartButtonState;
     }
   }
 
