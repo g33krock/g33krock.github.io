@@ -19,8 +19,9 @@ export class Monster extends EntityManager {
     const selectedAbility = this.abilities[abilityIndex];
 
     console.log(selectedAbility);
-
-    if (selectedAbility.target === 0) {
+    if (monster.effects.some((effect) => effect.type === "interrupt")) {
+      return;
+    } else if (selectedAbility.target === 0) {
       const monsterContainer = document.querySelector(
         `.monster[data-monster-index="${monster.index}"]`
       );
@@ -29,7 +30,6 @@ export class Monster extends EntityManager {
       }
       return;
     }
-
     let highestAggro = 0,
       targetPlayerIndex = -1;
     players.forEach((player, index) => {
@@ -88,7 +88,7 @@ export class Monster extends EntityManager {
     const abilityIcon = document.createElement("img");
     abilityIcon.src = `../../images/${abilityName}.png`;
     abilityIcon.style.position = "absolute";
-    abilityIcon.style.width = "50px"; 
+    abilityIcon.style.width = "50px";
     abilityIcon.style.transition = "all 2s";
     abilityIcon.style.zIndex = "1000";
     playerContainer.appendChild(abilityIcon);
