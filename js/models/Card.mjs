@@ -142,6 +142,13 @@ addCard("fireball", {
   aggro: 2,
   player: ['Mage'],
 });
+addCard("spell block", { 
+  target: 1, 
+  aggro: 1,
+  interrupt: 1,
+  counter: 1,
+  player: ['Mage'] 
+});
 addCard("freeze", {
   health: -3,
   shield: 2,
