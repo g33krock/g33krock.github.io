@@ -1,3 +1,5 @@
+import { playerManager, monsterManager } from "../config/GameConfig.mjs";
+
 export class EntityManager {
   constructor(options = {}) {
     this.health = options.health || 20;
