@@ -34,7 +34,7 @@ export const roleProficiencies = {
   ],
   DeathKnight: [
     { name: "Frozen", isFrostShield: true },
-    { name: "Torment", aggroLife: true },
+    { name: "Torment", isAggroLife: true },
     { name: "Plague", additionalCounters: 2 },
   ],
 };
@@ -44,6 +44,10 @@ export class Player extends EntityManager {
     super(options);
     this.role = options.role.role || "Onion Knight";
     this.proficiency = this.assignProficiency(this.role, options.role.proficiency);
+    this.flameShield = false;
+    this.frostShield = false;
+    this.arcaneShield = false;
+    this.aggroLife = false;
   }
 
   assignProficiency(role, proficiencyName) {
@@ -62,6 +66,18 @@ export class Player extends EntityManager {
   
       if (this.proficiency.strengthenSelf) {
           this.strengthen += this.proficiency.strengthenSelf; 
+      }
+      if (this.proficiency.isFlameShield){
+        this.flameShield = true;
+      }
+      if (this.proficiency.isFrostShield){
+        this.frostShield = true;
+      }
+      if (this.proficiency.isArcaneShield){
+        this.arcaneShield = true;
+      }
+      if (this.proficiency.isAggroLife){
+        this.aggroLife= true;
       }
     }
   }
