@@ -129,6 +129,20 @@ addCard("flurry", {
   aggro: 1,
   player: ['Rogue'] 
 });
+addCard("explosive poison trap", { 
+  target: 0, 
+  explosivePoisonTrap: 1,
+  counter: 1,
+  aggro: 3,
+  player: ['Rogue'] 
+});
+addCard("paralyzing trap", { 
+  target: 0, 
+  aggro: 3,
+  paralyzingTrap: 1,
+  counter: 1,
+  player: ['Rogue'] 
+});
 addCard("disengage", { 
   target: 0, 
   aggro: -2, 
