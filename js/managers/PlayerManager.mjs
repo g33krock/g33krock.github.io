@@ -56,7 +56,11 @@ export class PlayerManager {
                 } else if (effect.type === "shot") {
                   colorClass = effect.value > 0 ? "purple" : "orange";
                 } else if (effect.type === "reflect") {
-                  colorClass = effect.value > 0 ? "grey" : "brown";
+                  colorClass = "grey";
+                } else if (effect.type === "explosivePoisonTrap") {
+                  colorClass = "pink";
+                } else if (effect.type === "paralyzingTrap") {
+                  colorClass = "brown";
                 }
                 acc[effect.type].colorClass = colorClass;
       
