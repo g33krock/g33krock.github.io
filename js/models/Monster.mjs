@@ -17,17 +17,16 @@ export class Monster extends EntityManager {
   executeRandomAbility(players, monster) {
     const abilityIndex = Math.floor(Math.random() * this.abilities.length);
     const selectedAbility = this.abilities[abilityIndex];
+    const monsterContainer = document.querySelector(
+      `.monster[data-monster-index="${monster.index}"]`
+    );
 
     console.log(selectedAbility);
+
     if (monster.effects.some((effect) => effect.type === "interrupt")) {
       return;
-    } else if (selectedAbility.target === 0) {
-      const monsterContainer = document.querySelector(
-        `.monster[data-monster-index="${monster.index}"]`
-      );
-      if (monster.alive) {
-        this.applyAbilityEffects(monster, selectedAbility, monsterContainer);
-      }
+    } else if (selectedAbility.target === 0 && monster.alive) {
+      this.applyAbilityEffects(monster, selectedAbility, monsterContainer);
       return;
     }
     let highestAggro = 0,
@@ -59,22 +58,74 @@ export class Monster extends EntityManager {
         const playerContainer = document.querySelector(
           `.player-container[data-playerindex="${targetPlayer.index}"]`
         );
-        if (playerContainer) {
-          playerContainer.classList.add("shake-animation");
 
-          setTimeout(() => {
-            if (playerContainer) {
-              playerContainer.classList.remove("shake-animation");
-            }
-          }, 500);
+        console.log(targetPlayer);
+
+        if (targetPlayer.flameShield) {
+          console.log("Hit Flame Shield");
+          this.applyAbilityEffects(
+            this,
+            { health: -3, hot: -2, counter: 1 },
+            monsterContainer
+          );
+        } else if (targetPlayer.frostShield) {
+          console.log("Hit Frost Shield");
+          this.applyAbilityEffects(
+            this,
+            { strength: -3, stot: -3, counter: 1 },
+            monsterContainer
+          );
+        } else if (targetPlayer.arcaneShield) {
+          console.log("Hit Arcane Shield");
+          this.applyAbilityEffects(
+            this,
+            { shield: -2, stot: -2, counter: 1 },
+            monsterContainer
+          );
         }
-        this.displayAbilityIcon(targetPlayer.index, selectedAbility.name);
 
-        this.applyAbilityEffects(
-          targetPlayer,
-          selectedAbility,
-          playerContainer
-        );
+        if (
+          targetPlayer.effects.some(
+            (effect) => effect.type === "explosive poison trap"
+          )
+        ) {
+          console.log("Hit Explosive Poison Trap");
+          this.applyAbilityEffects(
+            this,
+            { health: -5, hot: -2, counter: 2 },
+            monsterContainer
+          );
+        }
+        if (
+          targetPlayer.effects.some(
+            (effect) => effect.type === "paralyzing trap"
+          )
+        ) {
+          console.log("Hit Paralyzing Trap");
+          this.applyAbilityEffects(
+            this,
+            { interrupt: 1, counter: 1 },
+            monsterContainer
+          );
+        } else {
+          console.log("Player Punching Time!");
+          if (playerContainer) {
+            playerContainer.classList.add("shake-animation");
+
+            setTimeout(() => {
+              if (playerContainer) {
+                playerContainer.classList.remove("shake-animation");
+              }
+            }, 500);
+          }
+          this.displayAbilityIcon(targetPlayer.index, selectedAbility.name);
+
+          this.applyAbilityEffects(
+            targetPlayer,
+            selectedAbility,
+            playerContainer
+          );
+        }
       }
     }
   }
