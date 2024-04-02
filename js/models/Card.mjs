@@ -14,6 +14,9 @@ class Card {
     this.stot = properties.stot || 0;
     this.reflect = properties.reflect || 0;
     this.counter = properties.counter || 0;
+    this.interrupt = properties.interrupt || 0;
+    this.explosivePoisonTrap = properties.explosivePoisonTrap || 0;
+    this.paralyzingTrap = properties.paralyzingTrap || 0;
   }
 }
 

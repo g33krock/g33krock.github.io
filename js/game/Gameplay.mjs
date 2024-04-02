@@ -436,17 +436,19 @@ export function applyCardEffect(
     }
   }
 
+  console.log(adjustedCard)
+
   const effectsToAdd = [];
-  if (adjustedCard.reflect !== 0)
+  if (adjustedCard.reflect !== 0 && adjustedCard.reflect !== undefined)
     effectsToAdd.push({
       type: "reflect",
       value: adjustedCard.reflect,
       counters: adjustedCard.counter,
     });
-  if (adjustedCard.interrupt !== 0)
+  if (adjustedCard.interrupt !== 0 && adjustedCard.interrupt !== undefined)
     effectsToAdd.push({
       type: "interrupt",
-      value: adjustedCard.reflect,
+      value: adjustedCard.interrupt,
       counters: adjustedCard.counter,
     });
   if (adjustedCard.hot !== 0)
@@ -466,6 +468,18 @@ export function applyCardEffect(
       type: "shot",
       value: adjustedCard.shot,
       counters: adjustedCard.counter,
+    });
+  if (adjustedCard.explosivePoisonTrap !== 0 && adjustedCard.explosivePoisonTrap !== undefined)
+    effectsToAdd.push({
+      type: "explosivePoisonTrap",
+      value: card.explosivePoisonTrap,
+      counters: card.counter,
+    });
+  if (adjustedCard.paralyzingTrap !== 0 && adjustedCard.paralyzingTrap !== undefined)
+    effectsToAdd.push({
+      type: "paralyzingTrap",
+      value: card.paralyzingTrap,
+      counters: card.counter,
     });
 
   Promise.all(

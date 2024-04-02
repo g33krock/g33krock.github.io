@@ -14,6 +14,7 @@ export class MonsterManager {
     while (totalPower > 0 && this.monsterPool.length > 0) {
       let randomIndex = Math.floor(Math.random() * this.monsterPool.length);
       let selectedMonster = this.monsterPool[randomIndex];
+      selectedMonster.faction = 'monster';
 
       if (selectedMonster.power <= totalPower) {
         this.monsters.push(new Monster(selectedMonster));
@@ -206,6 +207,12 @@ export class MonsterManager {
               break;
             case "interrupt":
               colorClass = "brown";
+              break;
+            case "explosivePoisonTrap":
+              colorClass = "pink";
+              break;
+            case "paralyzingTrap":
+              colorClass = "pink";
               break;
           }
           acc[effect.type].colorClass = colorClass;

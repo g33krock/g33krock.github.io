@@ -13,6 +13,7 @@ export class EntityManager {
   }
 
   addEffect(newEffect) {
+    console.log(newEffect)
       this.effects.push(newEffect);
   }
 
@@ -65,11 +66,12 @@ export class EntityManager {
     if (this.health <= 0) {
       this.health = 0;
       this.alive = false;
-      this.markAsDead(entity);
+      this.markAsDead(this);
     }
   }
 
   markAsDead(entity) {
+    console.log(entity)
     let container;
     if (entity.faction === "player") {
       container = document.querySelector(

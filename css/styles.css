@@ -143,6 +143,9 @@ label {
 .yellow { background-color: #FFEB3B; background-image: url("../images/ExposeToken.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
 .purple { background-color: #9C27B0; background-image: url("../images/StrengthenToken.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
 .orange { background-color: #FF9800; background-image: url("../images/WeakenToken.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+.grey { background-color: #FF9800; background-image: url("../images/ReflectToken.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+.brown { background-color: #FF9800; background-image: url("../images/InterruptToken.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
+.pink { background-color: #FF9800; background-image: url("../images/TrapToken.png"); background-size: cover; background-position: center; background-repeat: no-repeat; }
 
 
 .raised-player-container {

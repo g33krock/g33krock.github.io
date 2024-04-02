@@ -86,7 +86,7 @@ export class Monster extends EntityManager {
 
         if (
           targetPlayer.effects.some(
-            (effect) => effect.type === "explosive poison trap"
+            (effect) => effect.type === "explosivePoisonTrap"
           )
         ) {
           console.log("Hit Explosive Poison Trap");
@@ -98,7 +98,7 @@ export class Monster extends EntityManager {
         }
         if (
           targetPlayer.effects.some(
-            (effect) => effect.type === "paralyzing trap"
+            (effect) => effect.type === "paralyzingTrap"
           )
         ) {
           console.log("Hit Paralyzing Trap");
