@@ -153,7 +153,7 @@ export class Gameplay {
       } else {
         playerContainer.classList.add("raised-player-container");
       }
-      if (this.playerManager.players[playerIndex].health <= 0) {
+      if (this.playerManager.players[playerIndex].health <= 0 || this.playerManager.players[playerIndex].isAlive === false) {
         playerContainer.remove();
         this.checkPlayersAlive();
       }
