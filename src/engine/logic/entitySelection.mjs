@@ -18,6 +18,3 @@ export const monsters = selectedMonsters.map(monster => {
     console.log(entity)
     return buildInitialDeck(entity, cards)
 })
-
-
-console.log(heroes, monsters);
