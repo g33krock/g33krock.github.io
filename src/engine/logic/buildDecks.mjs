@@ -1,5 +1,3 @@
-//buildDeck.mjs
-
 import { shuffleArray } from "./shuffleDeck.mjs";
 
 
@@ -21,5 +19,3 @@ export function buildInitialDeck(entity, cards) {
   entity.deck = shuffleArray(entity.deck);
   return entity;
 }
-
-// buildInitialDecks(entities, cards);
