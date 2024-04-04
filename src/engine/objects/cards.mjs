@@ -2,7 +2,7 @@ export const cards = [
   {
     name: "strike",
     properties: {
-      target: 1,
+      target: 3,
       aggro: 2,
       health: -2,
     },
@@ -18,7 +18,7 @@ export const cards = [
   {
     name: "heal",
     properties: {
-      target: 1,
+      target: 2,
       aggro: 2,
       health: 2,
     },
@@ -34,7 +34,7 @@ export const cards = [
   {
     name: "grapple",
     properties: {
-      target: 1,
+      target: 3,
       aggro: 3,
       health: 3,
     },
@@ -64,7 +64,7 @@ export const cards = [
     properties: {
       counter: 3,
       hot: 2,
-      target: 1,
+      target: 2,
       aggro: 2,
     },
   },
@@ -73,7 +73,7 @@ export const cards = [
     properties: {
       shield: 1,
       strengthen: 1,
-      target: 1,
+      target: 2,
       aggro: 2,
     },
   },
@@ -82,7 +82,7 @@ export const cards = [
     properties: {
       shield: -1,
       strengthen: -1,
-      target: 1,
+      target: 3,
       aggro: 2,
     },
   },
@@ -92,7 +92,7 @@ export const cards = [
       counter: 3,
       hot: -1,
       stot: -1,
-      target: 1,
+      target: 3,
       aggro: 2,
     },
   },
@@ -103,7 +103,7 @@ export const cards = [
       counter: 2,
       hot: -1,
       stot: -1,
-      target: 1,
+      target: 3,
       aggro: 3,
     },
   },
@@ -124,7 +124,7 @@ export const cards = [
   {
     name: "flurry",
     properties: {
-      target: 1,
+      target: 3,
       aggro: 1,
     },
   },
@@ -159,14 +159,14 @@ export const cards = [
       health: -5,
       counter: 1,
       hot: -1,
-      target: 1,
+      target: 3,
       aggro: 2,
     },
   },
   {
     name: "spell block",
     properties: {
-      target: 1,
+      target: 3,
       aggro: 1,
       interrupt: 1,
       counter: 1,
@@ -194,7 +194,7 @@ export const cards = [
     name: "selfless sacrifice",
     properties: {
       health: 5,
-      target: 1,
+      target: 2,
       aggro: 2,
     },
   },
@@ -202,7 +202,7 @@ export const cards = [
     name: "siphon life",
     properties: {
       health: -3,
-      target: 1,
+      target: 3,
       aggro: 3,
     },
   },
@@ -216,7 +216,7 @@ export const cards = [
   {
     name: "slash",
     properties: {
-      target: 1,
+      target: 3,
       health: -3,
       aggro: 2,
     },
@@ -232,7 +232,7 @@ export const cards = [
   {
     name: "quick attack",
     properties: {
-      target: 1,
+      target: 3,
       shield: -2,
       health: -1,
       aggro: 3,
@@ -258,7 +258,7 @@ export const cards = [
   {
     name: "rend armor",
     properties: {
-      target: 1,
+      target: 3,
       shield: -5,
       aggro: 3,
     },
@@ -266,7 +266,7 @@ export const cards = [
   {
     name: "scratch",
     properties: {
-      target: 1,
+      target: 3,
       health: -3,
       shot: -1,
       counter: 2,
@@ -276,7 +276,7 @@ export const cards = [
   {
     name: "bite",
     properties: {
-      target: 1,
+      target: 3,
       health: -8,
       aggro: 3,
     },
@@ -284,7 +284,7 @@ export const cards = [
   {
     name: "swipe",
     properties: {
-      target: 2,
+      target: 5,
       health: -3,
       shot: -1,
       stot: -1,
@@ -303,7 +303,7 @@ export const cards = [
   {
     name: "crush",
     properties: {
-      target: 1,
+      target: 3,
       health: -5,
       shot: -2,
       counter: 2,
@@ -313,7 +313,7 @@ export const cards = [
   {
     name: "throw rock",
     properties: {
-      target: 1,
+      target: 3,
       health: -10,
       aggro: 4,
     },
@@ -321,7 +321,7 @@ export const cards = [
   {
     name: "stomp",
     properties: {
-      target: 2,
+      target: 5,
       health: -3,
       shot: -2,
       stot: -2,
@@ -332,7 +332,7 @@ export const cards = [
   {
     name: "mind blast",
     properties: {
-      target: 1,
+      target: 3,
       health: -5,
       counter: 1,
       hot: -3,
@@ -342,7 +342,7 @@ export const cards = [
   {
     name: "psychic scream",
     properties: {
-      target: 2,
+      target: 5,
       health: -5,
       shot: -1,
       stot: -1,
@@ -353,7 +353,7 @@ export const cards = [
   {
     name: "debilitate",
     properties: {
-      target: 2,
+      target: 5,
       shot: -1,
       stot: -2,
       counter: 3,
@@ -372,7 +372,7 @@ export const cards = [
   {
     name: "fire breath",
     properties: {
-      target: 1,
+      target: 3,
       health: -10,
       counter: 1,
       hot: -5,
@@ -382,7 +382,7 @@ export const cards = [
   {
     name: "tail swipe",
     properties: {
-      target: 2,
+      target: 5,
       health: -8,
       shot: -2,
       stot: -2,
@@ -393,7 +393,7 @@ export const cards = [
   {
     name: "wing gust",
     properties: {
-      target: 2,
+      target: 5,
       shot: -3,
       stot: -3,
       counter: 3,
