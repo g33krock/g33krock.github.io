@@ -1,6 +1,4 @@
-//CardModel.mjs
-
-export class Card {
+export class CardModel {
     constructor(name, properties) {
       this.name = name;
       this.entity = properties.entity ? [...properties.entity] : [0];
