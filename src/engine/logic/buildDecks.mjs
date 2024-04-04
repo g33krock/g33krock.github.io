@@ -1,4 +1,6 @@
-import { shuffleArray } from "../../../shuffleDeck.mjs";
+//buildDeck.mjs
+
+import { shuffleArray } from "./shuffleDeck.mjs";
 
 
 export function buildInitialDeck(entity, cards) {

@@ -1,3 +1,5 @@
+//entitySelection.js
+
 import { buildInitialDeck } from "./buildDecks.mjs";
 import { entities } from "../objects/entities.mjs";
 import { cards } from "../objects/cards.mjs";
