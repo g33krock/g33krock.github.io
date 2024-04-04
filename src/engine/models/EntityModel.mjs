@@ -2,6 +2,7 @@ export class EntityModel {
     constructor(options = {}) {
       this.health = options.health || 0;
       this.aggro = options.aggro || 0;
+      this.monsterSpecificAggro = {};
       this.shield = options.shield || 0;
       this.strengthen = options.strengthen || 0;
       this.effects = [];
@@ -14,6 +15,6 @@ export class EntityModel {
       this.arcaneShield = false;
       this.aggroLife = false;
       this.power = options.power;
-      this.defaultDeck = options.defaultDeck || []; // New property for default deck
+      this.deck = options.deck || [];
     }
 }
