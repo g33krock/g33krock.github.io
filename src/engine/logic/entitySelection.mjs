@@ -4,8 +4,8 @@ import { buildInitialDeck } from "./buildDecks.mjs";
 import { entities } from "../objects/entities.mjs";
 import { cards } from "../objects/cards.mjs";
 
-export const selectedHeroes = ['paladin', 'mage', 'death knight'];
-export const selectedMonsters = ['mind flayer', 'dragon', 'skeleton'];
+export const selectedHeroes = ['paladin', 'mage', 'rogue', 'cleric', 'warrior'];
+export const selectedMonsters = ['goblin', 'werewolf', 'skeleton'];
 
 export const heroes = selectedHeroes.map(hero => {
     const entity = entities.find(e => e.role === hero)
