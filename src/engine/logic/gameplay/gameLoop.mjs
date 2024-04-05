@@ -11,7 +11,11 @@ function gameplayLoop() {
     console.log(`Round ${roundCounter + 1} Start`);
 
     playFactionTurn(heroes, monsters);
+    resetShield(monsters);
+    resetStrengthen(heroes);
     playFactionTurn(monsters, heroes);
+    resetShield(heroes);
+    resetStrengthen(monsters);
 
     processEndOfTurnEffects(heroes);
     processEndOfTurnEffects(monsters);
@@ -33,17 +37,19 @@ function gameplayLoop() {
 function playFactionTurn(activeFaction, opposingFaction) {
   activeFaction.forEach((entity) => {
     if (!entity.alive) return;
-    const interruptEffectIndex = entity.effects.findIndex(effect => effect.type === 'interrupt' && effect.counter > 0);
-        if (interruptEffectIndex >= 0) {
-            console.log(`${entity.role} is interrupted and cannot act this turn.`);
-            entity.effects[interruptEffectIndex].counter--;
+    const interruptEffectIndex = entity.effects.findIndex(
+      (effect) => effect.type === "interrupt" && effect.counter > 0
+    );
+    if (interruptEffectIndex >= 0) {
+      console.log(`${entity.role} is interrupted and cannot act this turn.`);
+      entity.effects[interruptEffectIndex].counter--;
 
-            if (entity.effects[interruptEffectIndex].counter === 0) {
-                entity.effects.splice(interruptEffectIndex, 1);
-            }
+      if (entity.effects[interruptEffectIndex].counter === 0) {
+        entity.effects.splice(interruptEffectIndex, 1);
+      }
 
-            return;
-        }
+      return;
+    }
 
     console.log(`Entity Before Role: ${entity.role}`);
     console.log(`Entity Before Health: ${entity.health}`);
@@ -70,7 +76,7 @@ function playFactionTurn(activeFaction, opposingFaction) {
     adjustAggro(entity, selectedCard, target);
 
     // Direct Effect Phase
-    applyDirectEffects(selectedCard, target);
+    applyDirectEffects(selectedCard, target, entity);
 
     // Update Entity Status
     if (Array.isArray(target)) {
@@ -110,23 +116,23 @@ function selectCard(drawnCards) {
 function selectTarget(entity, card, activeFaction, opposingFaction) {
   switch (card.properties.target) {
     case 0:
-      return entity; 
+      return entity;
     case 1:
       return [...activeFaction, ...opposingFaction][
         Math.floor(
           Math.random() * (activeFaction.length + opposingFaction.length)
         )
-      ]; 
+      ];
     case 2:
-      return activeFaction[Math.floor(Math.random() * activeFaction.length)]; 
+      return activeFaction[Math.floor(Math.random() * activeFaction.length)];
     case 3:
       return opposingFaction[
         Math.floor(Math.random() * opposingFaction.length)
-      ]; 
+      ];
     case 4:
-      return activeFaction; 
+      return activeFaction;
     case 5:
-      return opposingFaction; 
+      return opposingFaction;
     case 6:
       return [...activeFaction, ...opposingFaction];
     default:
@@ -144,7 +150,7 @@ function adjustAggro(entity, selectedCard, target) {
   }
 }
 
-function applyDirectEffects(selectedCard, target) {
+function applyDirectEffects(selectedCard, target, entity) {
   const applyEffects = (targetEntity) => {
     console.log(
       `Applying effects from ${selectedCard.name} to ${
@@ -154,11 +160,52 @@ function applyDirectEffects(selectedCard, target) {
         health: targetEntity.health,
         shield: targetEntity.shield,
         strengthen: targetEntity.strengthen,
+        effects: targetEntity.effects,
       }
     );
 
     if (selectedCard.properties.health) {
-      targetEntity.health += selectedCard.properties.health;
+        // Handling for damage
+        if (selectedCard.properties.health < 0) {
+            let damageAmount = selectedCard.properties.health;
+            console.log(`Vanilla Damage: ${damageAmount}`)
+
+            // If entity has strengthen effect, modify the damage
+            if (entity.strengthen) {
+                damageAmount -= entity.strengthen; // Subtract because strengthen reduces the negative impact, or increases damage
+                console.log(`Strengthened Damage: ${damageAmount}`)
+            }
+
+            // Ensure damage does not become healing if strengthen is too high
+            if (damageAmount > 0) {
+                damageAmount = 0;
+                console.log(`Weaker Than Damage: ${damageAmount}`)
+            }
+
+            // Apply shield calculations if any, before applying the final damage to health
+            if (targetEntity.shield > 0) {
+                const shieldAfterDamage = targetEntity.shield + damageAmount;
+                if (shieldAfterDamage < 0) {
+                    // Shield is completely broken, apply remaining damage to health
+                    targetEntity.health += shieldAfterDamage;
+                    console.log(`Damage After Shield: ${shieldAfterDamage}`)
+                    targetEntity.shield = 0; // Shield is now depleted
+                } else {
+                    // Shield absorbs all the damage
+                    targetEntity.shield = shieldAfterDamage;
+                    console.log(`Remaining Shield: ${shieldAfterDamage}`)
+                }
+            } else {
+                // No shield, apply damage directly to health
+                targetEntity.health += damageAmount;
+                console.log(`Unshielded Damage: ${damageAmount}`)
+            }
+        }
+        // Handling for healing
+        else if (selectedCard.properties.health > 0) {
+            // Directly apply healing; strengthen does not affect healing
+            targetEntity.health += selectedCard.properties.health;
+        }
     }
     if (selectedCard.properties.shield) {
       targetEntity.shield += selectedCard.properties.shield;
@@ -166,6 +213,17 @@ function applyDirectEffects(selectedCard, target) {
     if (selectedCard.properties.strengthen) {
       targetEntity.strengthen += selectedCard.properties.strengthen;
     }
+    console.log(
+      `Applied effects from ${selectedCard.name} to ${
+        targetEntity.role || "entity"
+      }. Post state:`,
+      {
+        health: targetEntity.health,
+        shield: targetEntity.shield,
+        strengthen: targetEntity.strengthen,
+        effects: targetEntity.effects,
+      }
+    );
   };
 
   if (Array.isArray(target)) {
@@ -178,60 +236,93 @@ function applyDirectEffects(selectedCard, target) {
 }
 
 function applyEffectOverTimeTokens(card, target) {
-    const targets = Array.isArray(target) ? target : [target];
+  const targets = Array.isArray(target) ? target : [target];
 
-    targets.forEach(targetEntity => {
-        if (!targetEntity.effects) {
-            targetEntity.effects = [];
-        }
+  targets.forEach((targetEntity) => {
+    if (!targetEntity.effects) {
+      targetEntity.effects = [];
+    }
 
-        const { properties } = card; 
-        const effects = ['hot', 'shot', 'stot', 'reflect', 'interrupt', 'explosivePoisonTrap', 'paralyzingTrap'];
+    const { properties } = card;
+    const effects = [
+      "hot",
+      "shot",
+      "stot",
+      "reflect",
+      "interrupt",
+      "explosivePoisonTrap",
+      "paralyzingTrap",
+    ];
 
-        effects.forEach(effect => {
-            if (properties[effect]) {
-                console.log(`Applying ${effect}: ${properties[effect]} for ${properties.counter} turns to ${targetEntity.role}.`);
-                targetEntity.effects.push({ type: effect, value: properties[effect], counter: properties.counter });
-            }
+    effects.forEach((effect) => {
+      if (properties[effect]) {
+        console.log(
+          `Applying ${effect}: ${properties[effect]} for ${properties.counter} turns to ${targetEntity.role}.`
+        );
+        targetEntity.effects.push({
+          type: effect,
+          value: properties[effect],
+          counter: properties.counter,
         });
-
-        targetEntity.effects = targetEntity.effects.filter(effect => effect.counter > 0);
+      }
     });
-}
 
+    targetEntity.effects = targetEntity.effects.filter(
+      (effect) => effect.counter > 0
+    );
+  });
+}
 
 function discardCards(entity, drawnCards) {
   entity.deck.push(...drawnCards);
 }
 
 function processReactions(target, activeEntity) {
-    const targets = Array.isArray(target) ? target : [target];
+  const targets = Array.isArray(target) ? target : [target];
 
-    targets.forEach(targetEntity => {
-        targetEntity.effects.forEach(effect => {
-            if (effect.type === 'explosivePoisonTrap' && effect.counter > 0) {
-                console.log(`${activeEntity.role} triggers an Explosive Poison Trap on ${targetEntity.role}`);
-                activeEntity.health -= 10; 
-                applyEffectOverTimeTokens({properties: {hot: -2, counter: 3}}, activeEntity);
-                effect.counter = 0;
-            } else if (effect.type === 'paralyzingTrap' && effect.counter > 0) {
-                console.log(`${activeEntity.role} triggers a Paralyzing Trap on ${targetEntity.role}`);
-                applyEffectOverTimeTokens({properties: {interrupt: 1, counter: 2}}, activeEntity);
-                effect.counter = 0;
-            }
-        });
-        targetEntity.effects = targetEntity.effects.filter(effect => effect.counter > 0);
+  targets.forEach((targetEntity) => {
+    targetEntity.effects.forEach((effect) => {
+      if (effect.type === "explosivePoisonTrap" && effect.counter > 0) {
+        console.log(
+          `${activeEntity.role} triggers an Explosive Poison Trap on ${targetEntity.role}`
+        );
+        activeEntity.health -= 10;
+        applyEffectOverTimeTokens(
+          { properties: { hot: -2, counter: 3 } },
+          activeEntity
+        );
+        effect.counter = 0;
+      } else if (effect.type === "paralyzingTrap" && effect.counter > 0) {
+        console.log(
+          `${activeEntity.role} triggers a Paralyzing Trap on ${targetEntity.role}`
+        );
+        applyEffectOverTimeTokens(
+          { properties: { interrupt: 1, counter: 2 } },
+          activeEntity
+        );
+        effect.counter = 0;
+      }
     });
-
-    
+    targetEntity.effects = targetEntity.effects.filter(
+      (effect) => effect.counter > 0
+    );
+  });
 }
 
-function processEndOfTurnEffects(faction) {
+function resetShield(entities) {
+  entities.forEach((entity) => (entity.shield = 0));
+}
+
+function resetStrengthen(entities) {
+  entities.forEach((entity) => (entity.strengthen = 0));
+}
+
+export function processEndOfTurnEffects(faction) {
   faction.forEach((entity) => {
     entity.effects.forEach((effect) => {
-      if (effect.health) entity.health += effect.health;
-      if (effect.shield) entity.shield += effect.shield;
-      if (effect.strengthen) entity.strengthen += effect.strengthen;
+      if (effect.type === 'hot') {entity.health += effect.value; console.log(`${effect.type}: ${effect.value}`)}
+      if (effect.type === 'shot') {entity.shield += effect.value; console.log(`${effect.type}: ${effect.value}`)}
+      if (effect.type === 'stot') {entity.strengthen += effect.value; console.log(`${effect.type}: ${effect.value}`)}
 
       effect.counter -= 1;
     });
