@@ -116,39 +116,45 @@ function selectCard(drawnCards) {
 }
 
 function selectTarget(entity, card, activeFaction, opposingFaction) {
-  switch (card.properties.target) {
-    case 0:
-      return entity;
-    case 1:
-      return [...activeFaction, ...opposingFaction][
-        Math.floor(
-          Math.random() * (activeFaction.length + opposingFaction.length)
-        )
-      ];
-    case 2:
-      return activeFaction[Math.floor(Math.random() * activeFaction.length)];
-    case 3:
-      return opposingFaction[
-        Math.floor(Math.random() * opposingFaction.length)
-      ];
-    case 4:
-      return activeFaction;
-    case 5:
-      return opposingFaction;
-    case 6:
-      return [...activeFaction, ...opposingFaction];
-    default:
-      console.error("Invalid target type:", card.target);
-      return null;
+    switch (card.properties.target) {
+      case 0:
+        return entity;
+      case 1:
+        return [...activeFaction, ...opposingFaction][
+          Math.floor(
+            Math.random() * (activeFaction.length + opposingFaction.length)
+          )
+        ];
+      case 2:
+        return activeFaction[Math.floor(Math.random() * activeFaction.length)];
+      case 3:
+        // Sort opposing faction by aggro + monsterSpecificAggro + random factor, then select the first (highest)
+        const sortedOpposing = [...opposingFaction].sort((a, b) => {
+          const aggroA = a.aggro + (a.monsterSpecificAggro || 0) + Math.floor(Math.random() * 20 + 1);
+          const aggroB = b.aggro + (b.monsterSpecificAggro || 0) + Math.floor(Math.random() * 20 + 1);
+          return aggroB - aggroA; // Sort in descending order
+          
+        });
+        return sortedOpposing[0];
+      case 4:
+        return activeFaction;
+      case 5:
+        return opposingFaction;
+      case 6:
+        return [...activeFaction, ...opposingFaction];
+      default:
+        console.error("Invalid target type:", card.target);
+        return null;
+    }
   }
-}
+  
 
 function adjustAggro(entity, selectedCard, target) {
-  if (selectedCard.target === 1 && target.faction === "monster") {
+  if (selectedCard.properties.target === 3) {
     target.monsterSpecificAggro =
-      (target.monsterSpecificAggro || 0) + selectedCard.aggro;
+      (target.monsterSpecificAggro || 0) + selectedCard.properties.aggro;
   } else {
-    entity.aggro += selectedCard.aggro;
+    entity.aggro += selectedCard.properties.aggro;
   }
 }
 
@@ -202,6 +208,13 @@ function applyDirectEffects(selectedCard, target, entity) {
           targetEntity.health += damageAmount;
           console.log(`Unshielded Damage: ${damageAmount}`);
         }
+        if (selectedCard.name === 'siphon life') {
+            entity.health -= damageAmount; // Heal the entity
+            // Ensure entity's health does not exceed its initial health
+            if (entity.health > entity.initialHealth) {
+              entity.health = entity.initialHealth;
+            }
+          }
       }
       // Handling for healing
       else if (selectedCard.properties.health > 0) {
