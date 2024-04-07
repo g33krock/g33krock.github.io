@@ -10,6 +10,15 @@ export function assignProficiencies(entities) {
             // Assign the selected proficiency to the entity
             entity.proficiency = selectedProficiency;
         }
+        if (entity.proficiency.isFlameShield){
+            entity.flameShield = true
+        }
+        if (entity.proficiency.isFrostShield){
+            entity.frostShield = true
+        }
+        if (entity.proficiency.isArcaneShield){
+            entity.arcaneShield = true
+        }
         console.log(entity)
         return entity;
     });

@@ -101,17 +101,21 @@ function playFactionTurn(activeFaction, opposingFaction) {
 
     // If the selected card is "mastermind", draw 2 more cards and choose again
     if (selectedCard.name === "mastermind") {
-        console.log("Mastermind effect activated. Drawing 2 more cards.");
-        const additionalCards = drawCards(entity.deck, 2);
-        console.log(`Additional Cards Drawn: ${additionalCards.map((card) => card.name)}`);
-        
-        // Since selectedCard is declared with let, it can be reassigned
-        selectedCard = selectCard(additionalCards); // Choose between the newly drawn cards
-        console.log(`New Selected Card: ${selectedCard.name}`);
-        
-        // Add back the unused cards to the deck, if applicable
-        const unusedCards = additionalCards.filter(card => card !== selectedCard);
-        entity.deck.push(...unusedCards); // Assuming you want to return the unused cards back to the deck
+      console.log("Mastermind effect activated. Drawing 2 more cards.");
+      const additionalCards = drawCards(entity.deck, 2);
+      console.log(
+        `Additional Cards Drawn: ${additionalCards.map((card) => card.name)}`
+      );
+
+      // Since selectedCard is declared with let, it can be reassigned
+      selectedCard = selectCard(additionalCards); // Choose between the newly drawn cards
+      console.log(`New Selected Card: ${selectedCard.name}`);
+
+      // Add back the unused cards to the deck, if applicable
+      const unusedCards = additionalCards.filter(
+        (card) => card !== selectedCard
+      );
+      entity.deck.push(...unusedCards); // Assuming you want to return the unused cards back to the deck
     }
 
     // Targeting Phase
@@ -229,8 +233,8 @@ function adjustCardEffectsBasedOnProficiency(entity, card) {
       adjustedCard.properties.counter += entity.proficiency.additionalCounters;
     }
   }
-  console.log(adjustedCard)
-  console.log(entity.proficiency)
+  console.log(adjustedCard);
+  console.log(entity.proficiency);
   return adjustedCard;
 }
 
@@ -413,6 +417,7 @@ function processReactions(selectedCard, target, activeEntity) {
 
   targets.forEach((targetEntity) => {
     targetEntity.effects = targetEntity.effects.filter((effect) => {
+      // Existing traps and reflect reactions
       if (effect.type === "explosivePoisonTrap" && effect.counter > 0) {
         console.log(
           `${activeEntity.role} triggers an Explosive Poison Trap on ${targetEntity.role}`
@@ -436,13 +441,38 @@ function processReactions(selectedCard, target, activeEntity) {
         console.log(
           `${targetEntity.role} reflects damage back on ${activeEntity.role}`
         );
-        applyDirectEffects(selectedCard, activeEntity, target);
+        applyDirectEffects(selectedCard, activeEntity, targetEntity);
         return false;
       }
-      return true;
+      return true; // Return true to keep the effect in the list if it's not processed here
     });
+    handleShieldReactions(targetEntity, activeEntity);
   });
 }
+
+function handleShieldReactions(targetEntity, activeEntity) {
+    // Check if the target and active entities are from different factions
+    if (targetEntity.faction !== activeEntity.faction) {
+      if (targetEntity.flameShield) {
+        console.log(`${targetEntity.role} activates Flame Shield against ${activeEntity.role}`);
+        activeEntity.health -= 5;
+        applyEffectOverTimeTokens({ properties: { hot: -2, counter: 1 } }, activeEntity);
+      }
+      if (targetEntity.frostShield) {
+        console.log(`${targetEntity.role} activates Frost Shield against ${activeEntity.role}`);
+        activeEntity.health -= 2;
+        applyEffectOverTimeTokens({ properties: { shot: 1, stot: -3, counter: 2 } }, activeEntity); // Adjust property names if needed
+      }
+      if (targetEntity.arcaneShield) {
+        console.log(`${targetEntity.role} activates Arcane Shield against ${activeEntity.role}`);
+        activeEntity.health -= 2;
+        applyEffectOverTimeTokens({ properties: { shot: -1, counter: 2 } }, activeEntity);
+      }
+    } else {
+      // Optionally, log a message if the shield does not activate due to being on the same team
+      console.log(`${targetEntity.role}'s shield does not activate against teammate ${activeEntity.role}.`);
+    }
+  }
 
 function resetShield(entities) {
   entities.forEach((entity) => (entity.shield = 0));

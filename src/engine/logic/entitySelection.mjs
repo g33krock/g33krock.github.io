@@ -5,8 +5,8 @@ import { entities } from "../objects/entities.mjs";
 import { cards } from "../objects/cards.mjs";
 import { assignProficiencies } from "./assignProficiencies.mjs";
 
-export const selectedHeroes = ['rogue', 'warrior', 'cleric', 'mage', 'paladin'];
-export const selectedMonsters = ['dragon'];
+export const selectedHeroes = ['mage', 'rogue', 'druid', 'paladin'];
+export const selectedMonsters = ['ogre', 'werewolf', 'werewolf'];
 
 const heroesWithDecks = selectedHeroes.map(hero => {
     const entity = entities.find(e => e.role === hero)

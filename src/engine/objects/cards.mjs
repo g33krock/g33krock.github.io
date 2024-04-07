@@ -179,7 +179,7 @@ export const cards = [
       shield: 2,
       counter: 2,
       stot: -2,
-      target: 1,
+      target: 3,
       aggro: 3,
     },
   },
