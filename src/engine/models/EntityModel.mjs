@@ -13,6 +13,7 @@ export class EntityModel {
       this.flameShield = false;
       this.frostShield = false;
       this.arcaneShield = false;
+      this.shadow = false;
       this.aggroLife = false;
       this.power = options.power;
       this.deck = options.deck || [];

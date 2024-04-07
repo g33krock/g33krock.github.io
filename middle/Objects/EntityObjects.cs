@@ -1,51 +1,51 @@
-var entities = new List<Entity>
+using System;
+using System.Collections.Generic;
+using PaperDungeon; // Make sure this is the correct namespace
+
+public static class EntityDatabase
 {
-    new Entity
+    public static List<EntityModel> GetEntities()
     {
-        Role = "onion knight",
-        Health = 20,
-        Shield = 0,
-        Strengthen = 0,
-        Aggro = 0,
-        Faction = "player",
-        Alive = true,
-        Proficiency = new Dictionary<string, object>(),
-        FlameShield = false,
-        FrostShield = false,
-        ArcaneShield = false,
-        AggroLife = false,
-        Power = 1,
-        DefaultDeck = new List<CardAssignment>
+        var entities = new List<EntityModel>
         {
-            new CardAssignment { CardName = "strike", Frequency = 5 },
-            new CardAssignment { CardName = "bandage", Frequency = 5 },
-            new CardAssignment { CardName = "shield", Frequency = 5 },
-            new CardAssignment { CardName = "disengage", Frequency = 5 }
-        }
-    },
-    new Entity
+            new EntityModel
+            {
+                Role = "onion knight",
+                Health = 20,
+                Aggro = 0,
+                Shield = 0,
+                Strengthen = 0,
+                Faction = "hero",
+                Alive = true,
+                Power = 1,
+                Deck = GetDefaultDeck(new Dictionary<string, int>
+                {
+                    { "strike", 5 },
+                    { "bandage", 5 },
+                    { "shield", 5 },
+                    { "disengage", 5 }
+                })
+            },
+            // Repeat for other entities...
+        };
+
+        return entities;
+    }
+
+    private static List<CardModel> GetDefaultDeck(Dictionary<string, int> cardFrequencies)
     {
-        Role = "warrior",
-        Health = 30,
-        Shield = 0,
-        Strengthen = 0,
-        Aggro = 0,
-        Faction = "player",
-        Alive = true,
-        Proficiency = new Dictionary<string, object>(),
-        FlameShield = false,
-        FrostShield = false,
-        ArcaneShield = false,
-        AggroLife = false,
-        Power = 3,
-        DefaultDeck = new List<CardAssignment>
+        var deck = new List<CardModel>();
+        foreach (var entry in cardFrequencies)
         {
-            new CardAssignment { CardName = "strike", Frequency = 4 },
-            new CardAssignment { CardName = "bandage", Frequency = 2 },
-            new CardAssignment { CardName = "shield", Frequency = 3 },
-            new CardAssignment { CardName = "disengage", Frequency = 2 },
-            // Additional cards for the warrior...
+            // Assuming you have a method to create a CardModel based on cardName.
+            // This part depends on how you're defining cards and might need adjustment.
+            var cardModel = new CardModel(entry.Key, new { /* properties based on cardName */ });
+            for (int i = 0; i < entry.Value; i++)
+            {
+                deck.Add(cardModel);
+            }
         }
-    },
-    // Additional entities (players and monsters)...
-};
+
+        return deck;
+    }
+}
