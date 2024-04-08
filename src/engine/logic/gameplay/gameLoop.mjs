@@ -70,23 +70,8 @@ function playFactionTurn(activeFaction, opposingFaction) {
       if (entity.proficiency.aggroModifier) {
         entity.aggro += entity.proficiency.aggroModifier;
         if (entity.aggro < 0) {
-          entity.aggro = 0
+          entity.aggro = 0;
         }
-      }
-      if (entity.proficiency.flameShield) {
-        entity.flameShield = true;
-      }
-      if (entity.proficiency.frostShield) {
-        entity.frostShield = true;
-      }
-      if (entity.proficiency.arcaneShield) {
-        entity.arcaneShield = true;
-      }
-      if (entity.proficiency.aggroLife) {
-        entity.aggroLife = true;
-      }
-      if (entity.proficiency.shadow) {
-        entity.shadow = true;
       }
     }
     if (!entity.alive) return;
@@ -317,7 +302,7 @@ function applyDirectEffects(selectedCard, target, entity) {
           : potentialHealth;
     }
     if (targetEntity.health > targetEntity.initialHealth) {
-      targetEntity.health = targetEntity.initialHealth
+      targetEntity.health = targetEntity.initialHealth;
     }
 
     // Apply shield and strengthen effects
