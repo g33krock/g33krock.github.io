@@ -1,4 +1,10 @@
 import { shuffledHeroes, shuffledMonsters } from "./shuffleEntities.mjs";
+import {
+  applyLycanthropyEffect,
+  revertLycanthropyEffect,
+  applyVampirismEffect,
+  revertVampirismEffect,
+} from "./formShifting.mjs";
 
 let heroes = shuffledHeroes;
 let monsters = shuffledMonsters;
@@ -28,12 +34,19 @@ function gameplayLoop() {
   }
   if (heroes.some((h) => h.alive)) {
     winner = "heroes";
+    heroes.map((hero) =>
+      console.log(`Role: ${hero.role}, Health: ${hero.health}`)
+    );
   } else if (monsters.some((m) => m.alive)) {
     winner = "monsters";
+    monsters.map((monster) =>
+      console.log(`Role: ${monster.role}, Health: ${monster.health}`)
+    );
   } else {
     winner = "none";
   }
   console.log(`${winner} wins!`);
+
   console.log("Gameplay Loop ended after", roundCounter, "rounds.");
 }
 
@@ -56,6 +69,9 @@ function playFactionTurn(activeFaction, opposingFaction) {
       }
       if (entity.proficiency.aggroModifier) {
         entity.aggro += entity.proficiency.aggroModifier;
+        if (entity.aggro < 0) {
+          entity.aggro = 0
+        }
       }
       if (entity.proficiency.flameShield) {
         entity.flameShield = true;
@@ -152,10 +168,6 @@ function playFactionTurn(activeFaction, opposingFaction) {
 
     // Discard Cards
     discardCards(entity, drawnCards);
-    console.log(`Entity After Role: ${entity.role}`);
-    console.log(`Entity After Health: ${entity.health}`);
-    console.log(`Target After Role: ${target.role}`);
-    console.log(`Target After Health: ${target.health}`);
   });
 }
 
@@ -210,8 +222,17 @@ function adjustAggro(entity, selectedCard, target) {
   if (selectedCard.properties.target === 3) {
     target.monsterSpecificAggro =
       (target.monsterSpecificAggro || 0) + selectedCard.properties.aggro;
+    if (target.monsterSpecificAggro > 20) {
+      target.monsterSpecificAggro = 20;
+    }
+    if (target.monsterSpecificAggro < 0) {
+      target.monsterSpecificAggro = 0;
+    }
   } else {
     entity.aggro += selectedCard.properties.aggro;
+    if (entity.aggro > 20) {
+      entity.aggro = 20;
+    }
   }
 }
 
@@ -233,8 +254,8 @@ function adjustCardEffectsBasedOnProficiency(entity, card) {
       adjustedCard.properties.counter += entity.proficiency.additionalCounters;
     }
   }
-  console.log(adjustedCard);
-  console.log(entity.proficiency);
+  console.log(adjustedCard.name);
+  console.log(entity.proficiency.name);
   return adjustedCard;
 }
 
@@ -246,18 +267,6 @@ function applyDirectEffects(selectedCard, target, entity) {
   );
 
   const applyEffects = (adjustedCard, targetEntity, actingEntity) => {
-    console.log(
-      `Applying effects from ${adjustedCard.name} to ${
-        targetEntity.role || "entity"
-      }. Initial state:`,
-      {
-        health: targetEntity.health,
-        shield: targetEntity.shield,
-        strengthen: targetEntity.strengthen,
-        effects: targetEntity.effects,
-      }
-    );
-
     // Handling for damage
     if (adjustedCard.properties.health < 0) {
       let damageAmount = adjustedCard.properties.health;
@@ -289,7 +298,10 @@ function applyDirectEffects(selectedCard, target, entity) {
       }
 
       // Special case for "siphon life"
-      if (adjustedCard.name === "siphon life") {
+      if (
+        adjustedCard.name === "siphon life" ||
+        adjustedCard.name === "vampiric bite"
+      ) {
         actingEntity.health -= damageAmount; // Heal the acting entity
         if (actingEntity.health > actingEntity.initialHealth) {
           actingEntity.health = actingEntity.initialHealth; // Cap at initial health
@@ -304,13 +316,28 @@ function applyDirectEffects(selectedCard, target, entity) {
           ? targetEntity.initialHealth
           : potentialHealth;
     }
+    if (targetEntity.health > targetEntity.initialHealth) {
+      targetEntity.health = targetEntity.initialHealth
+    }
 
     // Apply shield and strengthen effects
     if (adjustedCard.properties.shield) {
       targetEntity.shield += adjustedCard.properties.shield;
     }
+    if (targetEntity.shield > 10) {
+      targetEntity.shield = 10;
+    }
+    if (targetEntity.shield < -10) {
+      targetEntity.shield = -10;
+    }
     if (adjustedCard.properties.strengthen) {
       targetEntity.strengthen += adjustedCard.properties.strengthen;
+    }
+    if (targetEntity.strengthen > 10) {
+      targetEntity.strengthen = 10;
+    }
+    if (targetEntity.strengthen < -10) {
+      targetEntity.strengthen = -10;
     }
 
     console.log(
@@ -321,7 +348,7 @@ function applyDirectEffects(selectedCard, target, entity) {
         health: targetEntity.health,
         shield: targetEntity.shield,
         strengthen: targetEntity.strengthen,
-        effects: targetEntity.effects,
+        effects: targetEntity.effects.map((effect) => effect.type),
       }
     );
   };
@@ -386,6 +413,8 @@ function applyEffectOverTimeTokens(card, target) {
       "interrupt",
       "explosivePoisonTrap",
       "paralyzingTrap",
+      "lycanthropy",
+      "vampirism",
     ];
 
     effects.forEach((effect) => {
@@ -451,28 +480,43 @@ function processReactions(selectedCard, target, activeEntity) {
 }
 
 function handleShieldReactions(targetEntity, activeEntity) {
-    // Check if the target and active entities are from different factions
-    if (targetEntity.faction !== activeEntity.faction) {
-      if (targetEntity.flameShield) {
-        console.log(`${targetEntity.role} activates Flame Shield against ${activeEntity.role}`);
-        activeEntity.health -= 5;
-        applyEffectOverTimeTokens({ properties: { hot: -2, counter: 1 } }, activeEntity);
-      }
-      if (targetEntity.frostShield) {
-        console.log(`${targetEntity.role} activates Frost Shield against ${activeEntity.role}`);
-        activeEntity.health -= 2;
-        applyEffectOverTimeTokens({ properties: { shot: 1, stot: -3, counter: 2 } }, activeEntity); // Adjust property names if needed
-      }
-      if (targetEntity.arcaneShield) {
-        console.log(`${targetEntity.role} activates Arcane Shield against ${activeEntity.role}`);
-        activeEntity.health -= 2;
-        applyEffectOverTimeTokens({ properties: { shot: -1, counter: 2 } }, activeEntity);
-      }
-    } else {
-      // Optionally, log a message if the shield does not activate due to being on the same team
-      console.log(`${targetEntity.role}'s shield does not activate against teammate ${activeEntity.role}.`);
+  if (targetEntity.faction !== activeEntity.faction) {
+    if (targetEntity.flameShield) {
+      console.log(
+        `${targetEntity.role} activates Flame Shield against ${activeEntity.role}`
+      );
+      activeEntity.health -= 5;
+      applyEffectOverTimeTokens(
+        { properties: { hot: -2, counter: 1 } },
+        activeEntity
+      );
     }
+    if (targetEntity.frostShield) {
+      console.log(
+        `${targetEntity.role} activates Frost Shield against ${activeEntity.role}`
+      );
+      activeEntity.health -= 2;
+      applyEffectOverTimeTokens(
+        { properties: { shot: 1, stot: -3, counter: 2 } },
+        activeEntity
+      );
+    }
+    if (targetEntity.arcaneShield) {
+      console.log(
+        `${targetEntity.role} activates Arcane Shield against ${activeEntity.role}`
+      );
+      activeEntity.health -= 2;
+      applyEffectOverTimeTokens(
+        { properties: { shot: -1, counter: 2 } },
+        activeEntity
+      );
+    }
+  } else {
+    console.log(
+      `${targetEntity.role}'s shield does not activate against teammate ${activeEntity.role}.`
+    );
   }
+}
 
 function resetShield(entities) {
   entities.forEach((entity) => (entity.shield = 0));
@@ -484,24 +528,80 @@ function resetStrengthen(entities) {
 
 export function processEndOfTurnEffects(faction) {
   faction.forEach((entity) => {
+    let lycanthropyActive = false;
+    let vampirismActive = false;
+
     entity.effects.forEach((effect) => {
       if (effect.type === "hot") {
         entity.health += effect.value;
-        console.log(`${effect.type}: ${effect.value}`);
+        if (entity.health > entity.initialHealth) {
+          entity.shield = entity.initialHealth;
+        }
       }
       if (effect.type === "shot") {
         entity.shield += effect.value;
-        console.log(`${effect.type}: ${effect.value}`);
+        if (entity.shield > 10) {
+          entity.shield = 10;
+        }
+        if (entity.shield < -10) {
+          entity.shield = -10;
+        }
       }
       if (effect.type === "stot") {
         entity.strengthen += effect.value;
-        console.log(`${effect.type}: ${effect.value}`);
+        if (entity.strengthen > 10) {
+          entity.strengthen = 10;
+        }
+        if (entity.strengthen < -10) {
+          entity.strengthen = -10;
+        }
       }
-
-      effect.counter -= 1;
+      if (
+        effect.type === "lycanthropy" &&
+        !vampirismActive &&
+        !lycanthropyActive
+      ) {
+        entity.effects.forEach((e) => {
+          if (e.type === "vampirism") {
+            e.counter = 0;
+          }
+        });
+        applyLycanthropyEffect(entity);
+        lycanthropyActive = true;
+        effect.counter -= 1;
+        if (effect.counter <= 0) {
+          revertLycanthropyEffect(entity);
+          lycanthropyActive = false;
+        }
+      }
+      if (
+        effect.type === "vampirism" &&
+        !vampirismActive &&
+        !lycanthropyActive
+      ) {
+        entity.effects.forEach((e) => {
+          if (e.type === "lycanthropy") {
+            e.counter = 0;
+          }
+        });
+        applyVampirismEffect(entity);
+        vampirismActive = true;
+        effect.counter -= 1;
+        if (effect.counter <= 0) {
+          revertVampirismEffect(entity);
+          vampirismActive = false;
+        }
+      }
     });
 
     entity.effects = entity.effects.filter((effect) => effect.counter > 0);
+
+    if (entity.isLycanthropic && !lycanthropyActive) {
+      revertLycanthropyEffect(entity);
+    }
+    if (entity.isVampiric && !vampirismActive) {
+      revertVampirismEffect(entity);
+    }
   });
 }
 
