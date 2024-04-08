@@ -9,10 +9,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 5 },
@@ -31,10 +28,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 3,
     defaultDeck: [
       { cardName: "strike", frequency: 4 },
@@ -57,10 +51,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 3,
     defaultDeck: [
       { cardName: "rejuvinate", frequency: 3 },
@@ -81,10 +72,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 3,
     defaultDeck: [
       { cardName: "poison", frequency: 4 },
@@ -107,10 +95,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 3,
     defaultDeck: [
       { cardName: "strike", frequency: 3 },
@@ -132,10 +117,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 3,
     defaultDeck: [
       { cardName: "strike", frequency: 6 },
@@ -156,10 +138,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 3,
     defaultDeck: [
       { cardName: "strike", frequency: 3 },
@@ -180,10 +159,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 3,
     defaultDeck: [
       { cardName: "strike", frequency: 4 },
@@ -206,10 +182,7 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 1,
     defaultDeck: [
       { cardName: "slash", frequency: 8 },
@@ -228,10 +201,7 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 2,
     defaultDeck: [
       { cardName: "slash", frequency: 8 },
@@ -250,10 +220,7 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 1,
     defaultDeck: [
       { cardName: "scratch", frequency: 4 },
@@ -272,10 +239,7 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 3 },
@@ -295,10 +259,7 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 6,
     defaultDeck: [
       { cardName: "crush", frequency: 8 },
@@ -317,10 +278,7 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 9,
     defaultDeck: [
       { cardName: "mind blast", frequency: 8 },
@@ -339,10 +297,7 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    flameShield: false,
-    frostShield: false,
-    arcaneShield: false,
-    aggroLife: false,
+    
     power: 12,
     defaultDeck: [
       { cardName: "fire breath", frequency: 8 },
