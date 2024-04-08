@@ -19,6 +19,12 @@ export function assignProficiencies(entities) {
         if (entity.proficiency.isArcaneShield){
             entity.arcaneShield = true
         }
+        if (entity.proficiency.isShadow){
+            entity.shadowForm = true
+        }
+        if (entity.proficiency.isAggroLife){
+            entity.aggroLife = true
+        }
         console.log(entity)
         return entity;
     });
