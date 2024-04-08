@@ -19,3 +19,13 @@ export function buildInitialDeck(entity, cards) {
   entity.deck = shuffleArray(entity.deck);
   return entity;
 }
+
+export function buildDeck(cards) {
+  let deck = [];
+  cards.forEach((card) => {
+    for (let i = 0; i < card.frequency; i++) {
+      deck.push({ ...card });
+    }
+  });
+  return shuffleArray(deck); 
+}
