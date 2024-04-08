@@ -409,4 +409,33 @@ export const cards = [
       aggro: 5,
     },
   },
+  {
+    name: "lycanthropy",
+    properties: {
+      target: 0,
+      counter: 3,
+      lycanthropy: 1,
+      aggro: 0,
+    },
+  },
+  {
+    name: "lycanthropic bite",
+    properties: {
+      target: 1,
+      health: -8,
+      aggro: 3,
+      counter: 3,
+      lycanthropy: 1,
+    },
+  },
+  {
+    name: "vampiric bite",
+    properties: {
+      target: 3,
+      health: -8,
+      aggro: 3,
+      counter: 3,
+      vampirism: 1,
+    },
+  },
 ];
