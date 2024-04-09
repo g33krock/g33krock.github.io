@@ -532,8 +532,9 @@ export function processEndOfTurnEffects(faction) {
       if (effect.type === "hot") {
         entity.health += effect.value;
         if (entity.health > entity.initialHealth) {
-          entity.shield = entity.initialHealth;
+          entity.health = entity.initialHealth;
         }
+        effect.counter -= 1;
       }
       if (effect.type === "shot") {
         entity.shield += effect.value;
@@ -543,6 +544,7 @@ export function processEndOfTurnEffects(faction) {
         if (entity.shield < -10) {
           entity.shield = -10;
         }
+        effect.counter -= 1;
       }
       if (effect.type === "stot") {
         entity.strengthen += effect.value;
@@ -552,6 +554,7 @@ export function processEndOfTurnEffects(faction) {
         if (entity.strengthen < -10) {
           entity.strengthen = -10;
         }
+        effect.counter -= 1;
       }
       if (
         effect.type === "lycanthropy" &&
