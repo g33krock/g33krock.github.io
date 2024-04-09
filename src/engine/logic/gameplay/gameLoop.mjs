@@ -167,7 +167,10 @@ function selectCard(drawnCards) {
 
 function selectTarget(entity, card, activeFaction, opposingFaction) {
   // Adjust targeting if shadowForm is active to prevent damaging own team
-  if (entity.shadowForm && (card.properties.health > 0 || card.properties.hot > 0)) {
+  if (
+    entity.shadowForm &&
+    (card.properties.health > 0 || card.properties.hot > 0)
+  ) {
     switch (card.properties.target) {
       case 2: // Originally targeting own faction for positive effect, now target opposing faction
         card.properties.target = 3;
@@ -183,13 +186,23 @@ function selectTarget(entity, card, activeFaction, opposingFaction) {
     case 0:
       return entity;
     case 1:
-      return [...activeFaction, ...opposingFaction][Math.floor(Math.random() * (activeFaction.length + opposingFaction.length))];
+      return [...activeFaction, ...opposingFaction][
+        Math.floor(
+          Math.random() * (activeFaction.length + opposingFaction.length)
+        )
+      ];
     case 2:
       return activeFaction[Math.floor(Math.random() * activeFaction.length)];
     case 3:
       const sortedOpposing = [...opposingFaction].sort((a, b) => {
-        const aggroA = a.aggro + (a.monsterSpecificAggro || 0) + Math.floor(Math.random() * 20 + 1);
-        const aggroB = b.aggro + (b.monsterSpecificAggro || 0) + Math.floor(Math.random() * 20 + 1);
+        const aggroA =
+          a.aggro +
+          (a.monsterSpecificAggro || 0) +
+          Math.floor(Math.random() * 20 + 1);
+        const aggroB =
+          b.aggro +
+          (b.monsterSpecificAggro || 0) +
+          Math.floor(Math.random() * 20 + 1);
         return aggroB - aggroA;
       });
       return sortedOpposing[0];
@@ -204,7 +217,6 @@ function selectTarget(entity, card, activeFaction, opposingFaction) {
       return null;
   }
 }
-
 
 function adjustAggro(entity, selectedCard, target) {
   if (selectedCard.properties.target === 3) {
@@ -255,7 +267,9 @@ function applyDirectEffects(selectedCard, target, entity) {
   );
 
   if (entity.shadowForm && adjustedCard.properties.health > 0) {
-    console.log(`Shadow Form active, converting healing to damage for ${entity.role}`);
+    console.log(
+      `Shadow Form active, converting healing to damage for ${entity.role}`
+    );
     adjustedCard.properties.health *= -1;
   }
 
@@ -275,6 +289,20 @@ function applyDirectEffects(selectedCard, target, entity) {
       if (damageAmount > 0) {
         damageAmount = 0;
         console.log(`Weaker Than Damage: ${damageAmount}`);
+      }
+
+      // Check if targetEntity has aggroLife proficiency before applying damage to health
+      if (targetEntity.proficiency && targetEntity.aggroLife) {
+        console.log(
+          `${targetEntity.role} uses aggro to absorb damage due to Aggro Life proficiency.`
+        );
+        targetEntity.aggro += damageAmount;
+        if (targetEntity.aggro < 0) {
+          damageAmount = targetEntity.aggro; // Any remaining damage after aggro is depleted
+          targetEntity.aggro = 0; // Reset aggro to 0 if it goes negative
+        } else {
+          damageAmount = 0; // No further damage if aggro absorbs it all
+        }
       }
 
       // Apply shield calculations if any, before applying the final damage to health
@@ -341,6 +369,7 @@ function applyDirectEffects(selectedCard, target, entity) {
         health: targetEntity.health,
         shield: targetEntity.shield,
         strengthen: targetEntity.strengthen,
+        aggro: targetEntity.aggro,
         effects: targetEntity.effects,
       }
     );
@@ -411,9 +440,15 @@ function applyEffectOverTimeTokens(card, target) {
 
     effects.forEach((effect) => {
       if (properties[effect] !== undefined) {
-        if (effect === "hot" && targetEntity.shadowForm && properties[effect] > 0) {
-          console.log(`Converting hot effect to damage due to shadowForm for ${targetEntity.role}.`);
-          console.log(effect)
+        if (
+          effect === "hot" &&
+          targetEntity.shadowForm &&
+          properties[effect] > 0
+        ) {
+          console.log(
+            `Converting hot effect to damage due to shadowForm for ${targetEntity.role}.`
+          );
+          console.log(effect);
           effect *= -1;
         }
         console.log(
@@ -448,7 +483,12 @@ function processReactions(selectedCard, target, activeEntity) {
         console.log(
           `${activeEntity.role} triggers an Explosive Poison Trap on ${targetEntity.role}`
         );
-        activeEntity.health -= 10;
+        if (activeEntity.aggroLife) {
+          activeEntity.aggro -= 10;
+        } else {
+          activeEntity.health -= 10;
+        }
+
         applyEffectOverTimeTokens(
           { properties: { hot: -2, counter: 3 } },
           activeEntity
@@ -482,7 +522,12 @@ function handleShieldReactions(targetEntity, activeEntity) {
       console.log(
         `${targetEntity.role} activates Flame Shield against ${activeEntity.role}`
       );
-      activeEntity.health -= 5;
+      if (activeEntity.aggroLife) {
+        activeEntity.aggro -= 5;
+      } else {
+        activeEntity.health -= 5;
+      }
+
       applyEffectOverTimeTokens(
         { properties: { hot: -2, counter: 1 } },
         activeEntity
@@ -492,7 +537,12 @@ function handleShieldReactions(targetEntity, activeEntity) {
       console.log(
         `${targetEntity.role} activates Frost Shield against ${activeEntity.role}`
       );
-      activeEntity.health -= 2;
+      if (activeEntity.aggroLife) {
+        activeEntity.aggro -= 2;
+      } else {
+        activeEntity.health -= 2;
+      }
+
       applyEffectOverTimeTokens(
         { properties: { shot: 1, stot: -3, counter: 2 } },
         activeEntity
@@ -502,7 +552,12 @@ function handleShieldReactions(targetEntity, activeEntity) {
       console.log(
         `${targetEntity.role} activates Arcane Shield against ${activeEntity.role}`
       );
-      activeEntity.health -= 2;
+      if (activeEntity.aggroLife) {
+        activeEntity.aggro -= 2;
+      } else {
+        activeEntity.health -= 2;
+      }
+
       applyEffectOverTimeTokens(
         { properties: { shot: -1, counter: 2 } },
         activeEntity
@@ -529,7 +584,14 @@ export function processEndOfTurnEffects(faction) {
     let vampirismActive = false;
 
     entity.effects.forEach((effect) => {
-      if (effect.type === "hot") {
+      if (entity.aggroLife && effect.type === "hot") {
+        entity.aggro += effect.value;
+        if (entity.aggro > 20) {
+          entity.aggro = 20;
+        }
+        effect.counter -= 1;
+      }
+      if (!entity.aggroLife && effect.type === "hot") {
         entity.health += effect.value;
         if (entity.health > entity.initialHealth) {
           entity.health = entity.initialHealth;
@@ -606,7 +668,11 @@ export function processEndOfTurnEffects(faction) {
 }
 
 function updateEntityStatus(entity) {
-  if (entity.health <= 0 && entity.alive) {
+  if (
+    ((entity.aggroLife && entity.aggro <= 0) ||
+      (!entity.aggroLife && entity.health <= 0)) &&
+    entity.alive
+  ) {
     entity.alive = false;
     console.log(`${entity.role} has been defeated.`);
   }
