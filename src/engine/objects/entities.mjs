@@ -165,11 +165,10 @@ export const entities = [
       { cardName: "strike", frequency: 4 },
       { cardName: "siphon life", frequency: 2 },
       { cardName: "shield", frequency: 2 },
-      { cardName: "disengage", frequency: 2 },
       { cardName: "grapple", frequency: 2 },
       { cardName: "plate armor", frequency: 2 },
       { cardName: "freeze", frequency: 3 },
-      { cardName: "taunt", frequency: 3 },
+      { cardName: "taunt", frequency: 5 },
     ],
   },
   {
@@ -186,7 +185,7 @@ export const entities = [
     power: 1,
     defaultDeck: [
       { cardName: "slash", frequency: 8 },
-      { cardName: "evade", frequency: 6 },
+      // { cardName: "evade", frequency: 6 },
       { cardName: "quick attack", frequency: 5 },
       { cardName: "regenerate", frequency: 1 },
     ],
@@ -247,6 +246,25 @@ export const entities = [
       { cardName: "shield", frequency: 3},
       { cardName: "disengage", frequency: 2},
       { cardName: "lycanthropy", frequency: 10 },
+    ],
+  },
+  {
+    role: "orc",
+    health: 25,
+    shield: 0,
+    strengthen: 0,
+    aggro: 0,
+    effects: [],
+    faction: "monster",
+    alive: true,
+    proficiency: {},
+    
+    power: 1,
+    defaultDeck: [
+      { cardName: "scratch", frequency: 3 },
+      { cardName: "bite", frequency: 2 },
+      { cardName: "swipe", frequency: 3},
+      { cardName: "monster heal", frequency: 2},
     ],
   },
   {
