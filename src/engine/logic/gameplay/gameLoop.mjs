@@ -126,8 +126,8 @@ function playFactionTurn(activeFaction, opposingFaction) {
       activeFaction,
       opposingFaction
     );
-    console.log(`Target Before Role: ${target.role}`);
-    console.log(`Target Before Health: ${target.health}`);
+    console.log(`Target Before Role: ${target?.role}`);
+    console.log(`Target Before Health: ${target?.health}`);
 
     // Aggro Phase
     adjustAggro(entity, selectedCard, target);
@@ -166,28 +166,30 @@ function selectCard(drawnCards) {
 }
 
 function selectTarget(entity, card, activeFaction, opposingFaction) {
+  // Adjust targeting if shadowForm is active to prevent damaging own team
+  if (entity.shadowForm && (card.properties.health > 0 || card.properties.hot > 0)) {
+    switch (card.properties.target) {
+      case 2: // Originally targeting own faction for positive effect, now target opposing faction
+        card.properties.target = 3;
+        break;
+      case 4: // Originally targeting all allies, now target all enemies
+        card.properties.target = 5;
+        break;
+    }
+  }
+
+  // Original switch logic for target selection
   switch (card.properties.target) {
     case 0:
       return entity;
     case 1:
-      return [...activeFaction, ...opposingFaction][
-        Math.floor(
-          Math.random() * (activeFaction.length + opposingFaction.length)
-        )
-      ];
+      return [...activeFaction, ...opposingFaction][Math.floor(Math.random() * (activeFaction.length + opposingFaction.length))];
     case 2:
       return activeFaction[Math.floor(Math.random() * activeFaction.length)];
     case 3:
-      // Sort opposing faction by aggro + monsterSpecificAggro + random factor, then select the first (highest)
       const sortedOpposing = [...opposingFaction].sort((a, b) => {
-        const aggroA =
-          a.aggro +
-          (a.monsterSpecificAggro || 0) +
-          Math.floor(Math.random() * 20 + 1);
-        const aggroB =
-          b.aggro +
-          (b.monsterSpecificAggro || 0) +
-          Math.floor(Math.random() * 20 + 1);
+        const aggroA = a.aggro + (a.monsterSpecificAggro || 0) + Math.floor(Math.random() * 20 + 1);
+        const aggroB = b.aggro + (b.monsterSpecificAggro || 0) + Math.floor(Math.random() * 20 + 1);
         return aggroB - aggroA;
       });
       return sortedOpposing[0];
@@ -198,10 +200,11 @@ function selectTarget(entity, card, activeFaction, opposingFaction) {
     case 6:
       return [...activeFaction, ...opposingFaction];
     default:
-      console.error("Invalid target type:", card.target);
+      console.error("Invalid target type:", card.properties.target);
       return null;
   }
 }
+
 
 function adjustAggro(entity, selectedCard, target) {
   if (selectedCard.properties.target === 3) {
@@ -250,6 +253,11 @@ function applyDirectEffects(selectedCard, target, entity) {
     entity,
     selectedCard
   );
+
+  if (entity.shadowForm && adjustedCard.properties.health > 0) {
+    console.log(`Shadow Form active, converting healing to damage for ${entity.role}`);
+    adjustedCard.properties.health *= -1;
+  }
 
   const applyEffects = (adjustedCard, targetEntity, actingEntity) => {
     // Handling for damage
@@ -333,7 +341,7 @@ function applyDirectEffects(selectedCard, target, entity) {
         health: targetEntity.health,
         shield: targetEntity.shield,
         strengthen: targetEntity.strengthen,
-        effects: targetEntity.effects.map((effect) => effect.type),
+        effects: targetEntity.effects,
       }
     );
   };
@@ -384,7 +392,6 @@ function applyEffectOverTimeTokens(card, target) {
   const targets = Array.isArray(target) ? target : [target];
 
   targets.forEach((targetEntity) => {
-    // Ensure the target entity has an effects array to push to
     if (!targetEntity.effects) {
       targetEntity.effects = [];
     }
@@ -404,6 +411,11 @@ function applyEffectOverTimeTokens(card, target) {
 
     effects.forEach((effect) => {
       if (properties[effect] !== undefined) {
+        if (effect === "hot" && targetEntity.shadowForm && properties[effect] > 0) {
+          console.log(`Converting hot effect to damage due to shadowForm for ${targetEntity.role}.`);
+          console.log(effect)
+          effect *= -1;
+        }
         console.log(
           `Applying ${effect}: ${properties[effect]} for ${properties.counter} turns to ${targetEntity.role}.`
         );
