@@ -9,46 +9,117 @@ import {
 let heroes = shuffledHeroes;
 let monsters = shuffledMonsters;
 
+let roundCounter = 0;
+let winner = "";
+
+export let actions = [];
+
 heroes.forEach((hero) => (hero.initialHealth = hero.health));
 monsters.forEach((monster) => (monster.initialHealth = monster.health));
 
-function gameplayLoop() {
-  let roundCounter = 0;
-  let winner = "";
-
-  while (heroes.some((h) => h.alive) && monsters.some((m) => m.alive)) {
-    console.log(`Round ${roundCounter + 1} Start`);
-
-    playFactionTurn(heroes, monsters);
-    resetShield(monsters);
-    resetStrengthen(heroes);
-    playFactionTurn(monsters, heroes);
-    resetShield(heroes);
-    resetStrengthen(monsters);
-
-    processEndOfTurnEffects(heroes);
-    processEndOfTurnEffects(monsters);
-
-    roundCounter++;
-    console.log(`Round ${roundCounter} End`);
-  }
-  if (heroes.some((h) => h.alive)) {
-    winner = "heroes";
-    heroes.map((hero) =>
-      console.log(`Role: ${hero.role}, Health: ${hero.health}`)
-    );
-  } else if (monsters.some((m) => m.alive)) {
-    winner = "monsters";
-    monsters.map((monster) =>
-      console.log(`Role: ${monster.role}, Health: ${monster.health}`)
-    );
-  } else {
-    winner = "none";
-  }
-  console.log(`${winner} wins!`);
-
-  console.log("Gameplay Loop ended after", roundCounter, "rounds.");
+export function startGame() {
+  // Initialization code
+  heroes.forEach((hero) => {
+    hero.drawnCards = [];
+  });
+  monsters.forEach((monster) => {
+    monster.drawnCards = [];
+  });
 }
+
+export function getGameState() {
+  // Return current state of the game
+  return {
+    roundCounter,
+    winner,
+    heroes,
+    monsters,
+    actions,
+  };
+}
+
+// Function to execute a single round
+function executeRound() {
+  console.log(`Round ${roundCounter + 1} Start`);
+
+  actions = [];
+
+  playFactionTurn(heroes, monsters);
+  resetShield(monsters);
+  resetStrengthen(heroes);
+  playFactionTurn(monsters, heroes);
+  resetShield(heroes);
+  resetStrengthen(monsters);
+
+  processEndOfTurnEffects(heroes);
+  processEndOfTurnEffects(monsters);
+
+  roundCounter++;
+  console.log(`Round ${roundCounter} End`);
+}
+
+// Function to start or continue the game
+export function startNextRound() {
+  heroes.forEach((hero) => {
+    hero.drawnCards = [];
+  });
+  monsters.forEach((monster) => {
+    monster.drawnCards = [];
+  });
+
+  if (heroes.some((h) => h.alive) && monsters.some((m) => m.alive)) {
+    executeRound();
+
+    // Check for a winner after the round
+    if (!heroes.some((h) => h.alive)) {
+      winner = "monsters";
+    } else if (!monsters.some((m) => m.alive)) {
+      winner = "heroes";
+    }
+
+    // Update the UI here or after function call
+  }
+
+  if (winner) {
+    console.log(`${winner} wins!`);
+    // Further UI update to show the winner
+  }
+}
+
+// function gameplayLoop() {
+//   while (heroes.some((h) => h.alive) && monsters.some((m) => m.alive)) {
+//     console.log(`Round ${roundCounter + 1} Start`);
+
+//     playFactionTurn(heroes, monsters);
+//     resetShield(monsters);
+//     resetStrengthen(heroes);
+//     playFactionTurn(monsters, heroes);
+//     resetShield(heroes);
+//     resetStrengthen(monsters);
+
+//     processEndOfTurnEffects(heroes);
+//     processEndOfTurnEffects(monsters);
+
+//     roundCounter++;
+//     console.log(`Round ${roundCounter} End`);
+//   }
+//   if (heroes.some((h) => h.alive)) {
+//     winner = "heroes";
+//     heroes.map((hero) =>
+//       console.log(`Role: ${hero.role}, Health: ${hero.health}`)
+//     );
+//   } else if (monsters.some((m) => m.alive)) {
+//     winner = "monsters";
+//     monsters.map((monster) =>
+//       console.log(`Role: ${monster.role}, Health: ${monster.health}`)
+//     );
+//   } else {
+//     winner = "none";
+//   }
+//   console.log(`${winner} wins!`);
+
+//   console.log("Gameplay Loop ended after", roundCounter, "rounds.");
+// }
 
 function playFactionTurn(activeFaction, opposingFaction) {
   activeFaction.forEach((entity) => {
@@ -171,6 +242,9 @@ function selectTarget(entity, card, activeFaction, opposingFaction) {
     entity.shadowForm &&
     (card.properties.health > 0 || card.properties.hot > 0)
   ) {
+    actions.push(
+      `${entity.role} in shadowform corrupts ${card.name} to deal shadow damage instead of healing`
+    );
     switch (card.properties.target) {
       case 2: // Originally targeting own faction for positive effect, now target opposing faction
         card.properties.target = 3;
@@ -245,12 +319,21 @@ function adjustCardEffectsBasedOnProficiency(entity, card) {
       entity.proficiency.damageModifier &&
       adjustedCard.properties.health < 0
     ) {
+      actions.push(
+        `${entity.role} increases damage on ${adjustedCard.name} with their ${entity.proficiency.name} skill`
+      );
       adjustedCard.properties.health -= entity.proficiency.damageModifier;
     }
     if (entity.proficiency.healModifier && adjustedCard.properties.health > 0) {
+      actions.push(
+        `${entity.role} increases healing on ${adjustedCard.name} with their ${entity.proficiency.name} skill`
+      );
       adjustedCard.properties.health += entity.proficiency.healModifier;
     }
     if (entity.proficiency && entity.proficiency.additionalCounters) {
+      actions.push(
+        `${entity.role} increases counters on ${adjustedCard.name} with their ${entity.proficiency.name} skill`
+      );
       adjustedCard.properties.counter += entity.proficiency.additionalCounters;
     }
   }
@@ -267,8 +350,8 @@ function applyDirectEffects(selectedCard, target, entity) {
   );
 
   if (entity.shadowForm && adjustedCard.properties.health > 0) {
-    console.log(
-      `Shadow Form active, converting healing to damage for ${entity.role}`
+    actions.push(
+      `${entity.role} in shadowform corrupts ${adjustedCard.name} to deal shadow damage instead of healing`
     );
     adjustedCard.properties.health *= -1;
   }
@@ -328,6 +411,9 @@ function applyDirectEffects(selectedCard, target, entity) {
           actingEntity.health = actingEntity.initialHealth; // Cap at initial health
         }
       }
+      actions.push(
+        `${actingEntity.role} deals ${damageAmount} damage to ${targetEntity.role}`
+      );
     } else if (adjustedCard.properties.health > 0) {
       // Handling for healing
       const potentialHealth =
@@ -336,6 +422,9 @@ function applyDirectEffects(selectedCard, target, entity) {
         potentialHealth > targetEntity.initialHealth
           ? targetEntity.initialHealth
           : potentialHealth;
+      actions.push(
+        `${actingEntity.role} deals ${adjustedCard.properties.health} healing to ${targetEntity.role}`
+      );
     }
     if (targetEntity.health > targetEntity.initialHealth) {
       targetEntity.health = targetEntity.initialHealth;
@@ -344,6 +433,9 @@ function applyDirectEffects(selectedCard, target, entity) {
     // Apply shield and strengthen effects
     if (adjustedCard.properties.shield) {
       targetEntity.shield += adjustedCard.properties.shield;
+      actions.push(
+        `${actingEntity.role} deals ${adjustedCard.properties.shield} shield to ${targetEntity.role}`
+      );
     }
     if (targetEntity.shield > 10) {
       targetEntity.shield = 10;
@@ -352,6 +444,9 @@ function applyDirectEffects(selectedCard, target, entity) {
       targetEntity.shield = -10;
     }
     if (adjustedCard.properties.strengthen) {
+      actions.push(
+        `${actingEntity.role} deals ${adjustedCard.properties.strengthen} strengthen to ${targetEntity.role}`
+      );
       targetEntity.strengthen += adjustedCard.properties.strengthen;
     }
     if (targetEntity.strengthen > 10) {
@@ -386,6 +481,9 @@ function applyDirectEffects(selectedCard, target, entity) {
   }
 
   if (selectedCard.name === "flurry") {
+    actions.push(
+      `${entity.role} activates flurry and plays their next to cards on ${target.role}`
+    );
     const nextTwoCards = drawCards(entity.deck, 2); // Draw the next two cards for flurry
 
     nextTwoCards.forEach((nextCard) => {
@@ -451,7 +549,7 @@ function applyEffectOverTimeTokens(card, target) {
           console.log(effect);
           effect *= -1;
         }
-        console.log(
+        actions.push(
           `Applying ${effect}: ${properties[effect]} for ${properties.counter} turns to ${targetEntity.role}.`
         );
         targetEntity.effects.push({
@@ -480,8 +578,8 @@ function processReactions(selectedCard, target, activeEntity) {
     targetEntity.effects = targetEntity.effects.filter((effect) => {
       // Existing traps and reflect reactions
       if (effect.type === "explosivePoisonTrap" && effect.counter > 0) {
-        console.log(
-          `${activeEntity.role} triggers an Explosive Poison Trap on ${targetEntity.role}`
+        actions.push(
+          `${activeEntity.role} triggers an Explosive Poison Trap and is filled with regret...`
         );
         if (activeEntity.aggroLife) {
           activeEntity.aggro -= 10;
@@ -682,4 +780,4 @@ function removeDefeatedEntities(faction) {
   return faction.filter((entity) => entity.alive);
 }
 
-gameplayLoop();
+startGame();

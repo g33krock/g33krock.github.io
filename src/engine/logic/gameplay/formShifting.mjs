@@ -1,6 +1,8 @@
 import { buildDeck } from "../buildDecks.mjs";
+import { actions } from "./gameLoop.mjs";
 
 export function applyLycanthropyEffect(entity) {
+  actions.push(`${entity.role} is now feral and furry`);
     let lycanthropyDeck = [
       {
         name: "scratch",
@@ -44,6 +46,7 @@ export function applyLycanthropyEffect(entity) {
   }
   
   export function revertLycanthropyEffect(entity) {
+    actions.push(`${entity.role} is no longer feral and furry`);
     if (entity.isLycanthropic) {
       entity.deck = [...entity.originalDeck];
       entity.originalDeck = [];
@@ -52,6 +55,7 @@ export function applyLycanthropyEffect(entity) {
   }
 
   export function applyVampirismEffect(entity) {
+    actions.push(`${entity.role} is now pale and sparkly`);
     let vampiricDeck = [
       {
         name: "siphon life",
@@ -99,6 +103,7 @@ export function applyLycanthropyEffect(entity) {
   }
   
   export function revertVampirismEffect(entity) {
+    actions.push(`${entity.role} is no longer pale and sparkly`);
     if (entity.isVampiric) {
       entity.deck = [...entity.originalDeck];
       entity.originalDeck = [];

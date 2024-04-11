@@ -1,0 +1,132 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+#entities div, #actions div {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#gameContent {
+    display: flex;
+    justify-content: space-between;
+}
+
+#entitiesSection {
+    flex-grow: 1;
+}
+
+#gameContainer {
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* entities take 75%, actions take 25% */
+    grid-template-rows: auto auto; /* auto-sized rows for content */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#entitiesContainer {
+    grid-column: 1 / span 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#heroes, #monsters {
+    display: flex; /* Align heroes and monsters in a row */
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+#drawSelectCard {
+    /* Styles for your draw and select card area */
+    background-color: #ffff99; /* example color */
+}
+
+#actions {
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 2; /* Actions will stretch across both rows */
+    overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Add some styles to ensure readability */
+#actions div {
+    margin-bottom: 10px;
+    background-color: #f0f0f0;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.entities-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .entity-row {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .entity {
+    flex: 1;
+    border: 1px solid gray;
+    padding: 10px;
+    margin: 5px;
+    background: rgba(255, 255, 255, 0.8);
+  }
+  
+  
+
+.deck, .drawn-cards, .effects {
+    margin-top: 10px;
+}
+
+.card {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px;
+    background-color: #000000;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.deck-visual {
+    position: relative;
+    width: 70px;
+    height: 100px;
+    margin: 5px auto;
+  }
+  
+  .card-visual {
+    background-size: cover;
+    background-position: center;
+    width: 70px;
+    height: 100px;
+    position: absolute;
+  }
+
+
+.effect-token {
+    display: inline-block;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 50%;
+    text-align: center;
+    width: 50px;
+    height: 50px;
+    line-height: 40px;
+    color: white;
+}
+
+.effect-token.hot { background-color: red; }
+.effect-token.shot { background-color: blue; }
+.effect-token.stot { background-color: green; }
+/* Add more styles for different types of tokens */
+

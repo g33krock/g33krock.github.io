@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Interface</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="gameInfo">
+        <h2>Game Rounds: <span id="roundCounter">0</span></h2>
+        <div id="winner"></div>
+    </div>
+    <button id="nextRound">Next Round</button>
+    
+    <div id="gameContainer">
+        <div id="entitiesContainer">
+            <div id="heroes"></div>
+            <div id="drawSelectCard"></div>
+            <div id="monsters"></div>
+        </div>
+        <div id="actions"></div>
+    </div>
+
+    <script src="ui/gameUI.mjs" type="module"></script>
+</body>
+</html>
