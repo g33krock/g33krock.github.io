@@ -96,14 +96,34 @@ function createDrawnCardsVisual(entity) {
 function createEffectsVisual(entity) {
     const effectsDiv = document.createElement("div");
     effectsDiv.classList.add("effects");
+
     entity.effects.forEach((effect) => {
-        const effectTokenDiv = document.createElement("div");
-        effectTokenDiv.classList.add("effect-token", effect.type);
-        effectTokenDiv.textContent = `${effect.type}: ${effect.value}, Counters:${effect.counter}`;
-        effectsDiv.appendChild(effectTokenDiv);
+        // Create a container for each effect type
+        const effectTypeDiv = document.createElement("div");
+        effectTypeDiv.classList.add("effect-type");
+        effectsDiv.appendChild(effectTypeDiv);
+
+        // Create tokens based on the number of counters
+        for (let i = 0; i < effect.counter; i++) {
+            const effectTokenDiv = document.createElement("span");
+            effectTokenDiv.classList.add("effect-token");
+
+            // Assign color classes based on the effect type and value
+            if(effect.value > 0){
+                effectTokenDiv.classList.add("effect-token", effect.type, "positive");
+            } else if(effect.value < 0){
+                effectTokenDiv.classList.add("effect-token", effect.type, "negative");
+            }
+
+            // You might want to show the value inside the token
+            effectTokenDiv.textContent = effect.value;
+            effectTypeDiv.appendChild(effectTokenDiv);
+        }
     });
+
     return effectsDiv;
 }
+
 
 
 function displayActions(actions) {
