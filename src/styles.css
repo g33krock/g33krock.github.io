@@ -42,8 +42,11 @@ body {
 }
 
 #drawSelectCard {
-  /* Styles for your draw and select card area */
-  background-color: #ffff99; /* example color */
+  display: flex; /* Enables flexbox layout */
+  align-items: center; /* Vertically centers the content */
+  justify-content: center; /* Horizontally centers the content */
+  background-color: #ffff99; /* Example color */
+  flex-wrap: wrap; /* Allows items to wrap as needed */
 }
 
 #actions {
@@ -78,14 +81,42 @@ body {
 
 .entity {
   flex: 1;
-  border: 1px solid gray;
   padding: 10px;
   margin: 5px;
+  min-height: 250px;
   background: rgba(255, 255, 255, 0.8);
-  background-image: url("../images/cardboard.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+/* Ensure the icons and text are aligned properly */
+.entity div {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Spacing between icon and text */
+  .entity img.icon {
+    margin-right: 8px;
+  }
+
+.entity[data-faction="hero"] {
+    background-image: url("../images/paper2.jpg");
+}
+
+.entity[data-faction="monster"] {
+    background-image: url("../images/cardboard.png");
+}
+
+.turn-taken {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Enable interactions for targeting */
+.turn-taken.targetable {
+    pointer-events: auto;
 }
 
 .deck,
@@ -104,6 +135,7 @@ body {
 }
 
 .deck-visual {
+    order: -1;
   position: relative;
   width: 70px;
   height: 100px;
@@ -149,6 +181,16 @@ body {
   flex: 1 1 auto;
   justify-content: center;
   gap: 5px;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+  }
+
+.highlight-target {
+    box-shadow: 0 0 8px 3px green; /* Horizontal offset, vertical offset, blur radius, spread radius, and color */
 }
 
 .effect-token.hot.positive {
@@ -215,12 +257,12 @@ body {
   background-repeat: no-repeat;
 }
 .effect-token.explosivePoisonTrap {
-    background-color: #ff9800;
-    background-image: url("../images/TrapToken.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
+  background-color: #ff9800;
+  background-image: url("../images/TrapToken.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 .effect-token.lycanthropy {
   background-color: #ff9800;
   background-image: url("../images/LycanthropyToken.png");

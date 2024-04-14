@@ -105,6 +105,7 @@ export class EntityManager {
       this.monsterSpecificAggro[monsterId],
       0
     );
+    console.log(this.monsterSpecificAggro)
   }
 
   modifyShield(amount) {

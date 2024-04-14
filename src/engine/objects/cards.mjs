@@ -36,7 +36,8 @@ export const cards = [
     properties: {
       target: 3,
       aggro: 3,
-      health: 3,
+      shield: -2,
+      strengthen: -2
     },
   },
   {

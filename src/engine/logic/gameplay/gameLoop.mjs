@@ -1,25 +1,47 @@
-import { heroes, monsters, playFactionTurn, resetShield, resetStrengthen, processEndOfTurnEffects, updateEntityStatus, removeDefeatedEntities } from "./playTurns.mjs";
+// gameLoop.mjs
+import {
+  heroes,
+  monsters,
+  playMonstersTurn,
+  resetShield,
+  resetStrengthen,
+  processEndOfTurnEffects,
+  updateEntityStatus,
+  removeDefeatedEntities,
+} from "./playTurns.mjs";
+import { updateUI } from "../../../ui/gameUI.mjs";
 
 let roundCounter = 0;
 let winner = "";
 
 export let actions = [];
 
-heroes.forEach((hero) => (hero.initialHealth = hero.health));
-monsters.forEach((monster) => (monster.initialHealth = monster.health));
+heroes.forEach(
+  (hero) => ((hero.initialHealth = hero.health), (hero.alive = true))
+);
+monsters.forEach(
+  (monster) => (
+    (monster.initialHealth = monster.health), (monster.alive = true)
+  )
+);
 
 export function startGame() {
-  // Initialization code
+  // Initialize or reset the game state
   heroes.forEach((hero) => {
+    hero.turnTaken = false;
     hero.drawnCards = [];
   });
   monsters.forEach((monster) => {
+    monster.turnTaken = false;
     monster.drawnCards = [];
   });
+  roundCounter = 0;
+  winner = "";
+  console.log("Game Start");
 }
 
 export function getGameState() {
-  // Return current state of the game
+  // Return the current state of the game
   return {
     roundCounter,
     winner,
@@ -29,95 +51,70 @@ export function getGameState() {
   };
 }
 
-// Function to execute a single round
-function executeRound() {
-  console.log(`Round ${roundCounter + 1} Start`);
+let isMonstersTurnProcessing = false;
 
-  actions = [];
+export function executeMonstersTurn() {
+  if (!isMonstersTurnProcessing && monsters.some(monster => monster.alive)) {
+    isMonstersTurnProcessing = true;
+    console.log(`Round ${roundCounter + 1} Start: Monsters' Turn`);
 
-  playFactionTurn(heroes, monsters);
-  resetShield(monsters);
-  resetStrengthen(heroes);
-  playFactionTurn(monsters, heroes);
-  resetShield(heroes);
-  resetStrengthen(monsters);
+    playMonstersTurn(monsters, heroes);
 
-  processEndOfTurnEffects(heroes);
-  processEndOfTurnEffects(monsters);
+    resetShield(heroes);
+    resetStrengthen(monsters);
+    processEndOfTurnEffects(monsters);
+    processEndOfTurnEffects(heroes);
+    monsters.forEach(updateEntityStatus);
+    heroes.forEach(updateEntityStatus);
+    removeDefeatedEntities(heroes);
+    removeDefeatedEntities(monsters);
+    checkGameOver();
+    roundCounter++;
 
-  heroes.map(hero => updateEntityStatus(hero));
-  monsters.map(monster => updateEntityStatus(monster));
-
-  removeDefeatedEntities(heroes);
-  removeDefeatedEntities(monsters)
-
-  roundCounter++;
-  console.log(`Round ${roundCounter} End`);
+    console.log(`Round ${roundCounter} End`);
+    isMonstersTurnProcessing = false;
+  }
 }
 
-// Function to start or continue the game
-export function startNextRound() {
-  heroes.forEach((hero) => {
-    hero.drawnCards = [];
-  });
-  monsters.forEach((monster) => {
-    monster.drawnCards = [];
-  });
 
-  if (heroes.some((h) => h.alive) && monsters.some((m) => m.alive)) {
-    executeRound();
-
-    // Check for a winner after the round
-    if (!heroes.some((h) => h.alive)) {
-      winner = "monsters";
-    } else if (!monsters.some((m) => m.alive)) {
-      winner = "heroes";
-    }
-
-    // Update the UI here or after function call
+function checkGameOver() {
+  if (!heroes.some((h) => h.alive)) {
+    winner = "Monsters";
+    console.log("Monsters win the game!");
+  } else if (!monsters.some((m) => m.alive)) {
+    winner = "Heroes";
+    console.log("Heroes win the game!");
   }
 
+  // Additional handling if the game has ended
   if (winner) {
     console.log(`${winner} wins!`);
-    // Further UI update to show the winner
+    // Code to handle end of the game, e.g., restarting or updating the UI
   }
 }
 
-// function gameplayLoop() {
-//   while (heroes.some((h) => h.alive) && monsters.some((m) => m.alive)) {
-//     console.log(`Round ${roundCounter + 1} Start`);
-
-//     playFactionTurn(heroes, monsters);
-//     resetShield(monsters);
-//     resetStrengthen(heroes);
-//     playFactionTurn(monsters, heroes);
-//     resetShield(heroes);
-//     resetStrengthen(monsters);
-
-//     processEndOfTurnEffects(heroes);
-//     processEndOfTurnEffects(monsters);
-
-//     roundCounter++;
-//     console.log(`Round ${roundCounter} End`);
-//   }
-//   if (heroes.some((h) => h.alive)) {
-//     winner = "heroes";
-//     heroes.map((hero) =>
-//       console.log(`Role: ${hero.role}, Health: ${hero.health}`)
-//     );
-//   } else if (monsters.some((m) => m.alive)) {
-//     winner = "monsters";
-//     monsters.map((monster) =>
-//       console.log(`Role: ${monster.role}, Health: ${monster.health}`)
-//     );
-//   } else {
-//     winner = "none";
-//   }
-//   console.log(`${winner} wins!`);
-
-//   console.log("Gameplay Loop ended after", roundCounter, "rounds.");
-// }
+export function checkAndProgressRound() {
+  if (!isMonstersTurnProcessing) {
+    const allHeroesDone = heroes.every(hero => hero.turnTaken);
+    if (allHeroesDone) {
+      executeMonstersTurn();  // This will now check if it's safe to process
+      updateUI();
+      startNextRound(); // Maybe this needs to be safeguarded or adjusted as well
+    }
+  }
+}
 
 
+function resetTurns(entities) {
+  entities.forEach(entity => {
+      entity.turnTaken = false;
+  });
+}
 
+export function startNextRound(){
+  executeMonstersTurn();
+  resetTurns([...heroes, ...monsters]);
+}
+
+// Initialization of the game
 startGame();
