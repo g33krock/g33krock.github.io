@@ -7,7 +7,7 @@ import {
   applyVampirismEffect,
   revertVampirismEffect,
 } from "./formShifting.mjs";
-import { updateUI } from "../../../ui/gameUI.mjs";
+import { displayDrawnCards, updateUI } from "../../../ui/gameUI.mjs";
 
 export let heroes = shuffledHeroes;
 export let monsters = shuffledMonsters;

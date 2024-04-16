@@ -11,7 +11,7 @@ import {
   drawCards,
   adjustAggro,
   processReactions,
-  removeDefeatedMonsters
+  removeDefeatedMonsters,
 } from "../engine/logic/gameplay/playTurns.mjs";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,37 +19,37 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 export async function updateUI() {
-    const {
-      roundCounter,
-      winner,
-      heroes,
-      monsters,
-      actions = [],
-    } = getGameState();
-  
-    updateGameInfo(roundCounter, winner);  // Assuming synchronous
-    displayEntities([...heroes, ...monsters]);  // Assuming synchronous
-    displayActions(actions);  // Assuming synchronous
-  
-    // Async loop to handle hero updates
-    for (const hero of heroes) {
-      const heroDiv = document.getElementById(`entity-${hero.id}`);
-      if (!heroDiv) continue;  // Skip if the hero div is not found
-      const deckVisualDiv = heroDiv.querySelector(".deck-visual");
-      if (!deckVisualDiv) continue;  // Skip if deck visual is not found
-  
-      // Handling CSS class changes potentially could be async if animations or transitions need to complete
-      if (hero.turnTaken) {
-        deckVisualDiv.classList.add("turn-taken");
-      } else {
-        deckVisualDiv.classList.remove("turn-taken");
-      }
+  const {
+    roundCounter,
+    winner,
+    heroes,
+    monsters,
+    actions = [],
+  } = getGameState();
+
+  updateGameInfo(roundCounter, winner); // Assuming synchronous
+  displayEntities([...heroes, ...monsters]); // Assuming synchronous
+  displayActions(actions); // Assuming synchronous
+
+  // Async loop to handle hero updates
+  for (const hero of heroes) {
+    const heroDiv = document.getElementById(`entity-${hero.id}`);
+    if (!heroDiv) continue; // Skip if the hero div is not found
+    const deckVisualDiv = heroDiv.querySelector(".deck-visual");
+    if (!deckVisualDiv) continue; // Skip if deck visual is not found
+
+    // Handling CSS class changes potentially could be async if animations or transitions need to complete
+    if (hero.turnTaken) {
+      deckVisualDiv.classList.add("turn-taken");
+    } else {
+      deckVisualDiv.classList.remove("turn-taken");
     }
-  
-    // If you need to wait for any asynchronous operations to complete
-    // you can use await with a promise here. For example:
-    await new Promise(resolve => setTimeout(resolve, 0));  // Simulate async behavior if needed
   }
+
+  // If you need to wait for any asynchronous operations to complete
+  // you can use await with a promise here. For example:
+  await new Promise((resolve) => setTimeout(resolve, 0)); // Simulate async behavior if needed
+}
 
 function updateGameInfo(round, winner) {
   document.getElementById("roundCounter").textContent = `Round: ${round}`;
@@ -59,57 +59,58 @@ function updateGameInfo(round, winner) {
 }
 
 function displayEntities(entities) {
-    const heroesContainer = document.getElementById("heroes");
-    const monstersContainer = document.getElementById("monsters");
-    heroesContainer.innerHTML = "";
-    monstersContainer.innerHTML = "";
-  
-    entities.forEach((entity, index) => {
-      // Main entity container
-      const entityDiv = document.createElement("div");
-      entityDiv.classList.add("entity");
-      entityDiv.setAttribute("data-faction", entity.faction);
-      entityDiv.setAttribute("data-id", entity.id);
-      entityDiv.id = `entity-${entity.id}`;
-      entityDiv.style.display = "flex";
-      entityDiv.style.flexDirection = "column";
-      entityDiv.style.alignItems = "center";
-      entityDiv.style.justifyContent = "flex-start";
-  
-      // Entity name and role
-      const nameDiv = document.createElement("div");
-      nameDiv.innerHTML = `<strong>${entity.proficiency.name || ""} ${entity.role}</strong>`;
-      entityDiv.appendChild(nameDiv);
-  
-      // Stats with icons
-      const statsDiv = document.createElement("div");
-      statsDiv.innerHTML = `
+  const heroesContainer = document.getElementById("heroes");
+  const monstersContainer = document.getElementById("monsters");
+  heroesContainer.innerHTML = "";
+  monstersContainer.innerHTML = "";
+
+  entities.forEach((entity, index) => {
+    // Main entity container
+    const entityDiv = document.createElement("div");
+    entityDiv.classList.add("entity");
+    entityDiv.setAttribute("data-faction", entity.faction);
+    entityDiv.setAttribute("data-id", entity.id);
+    entityDiv.id = `entity-${entity.id}`;
+    entityDiv.style.display = "flex";
+    entityDiv.style.flexDirection = "column";
+    entityDiv.style.alignItems = "center";
+    entityDiv.style.justifyContent = "flex-start";
+
+    // Entity name and role
+    const nameDiv = document.createElement("div");
+    nameDiv.innerHTML = `<strong>${entity.proficiency.name || ""} ${
+      entity.role
+    }</strong>`;
+    entityDiv.appendChild(nameDiv);
+
+    // Stats with icons
+    const statsDiv = document.createElement("div");
+    statsDiv.innerHTML = `
         <div style="margin-right:5px"><img src="../../images/icons/health.ico" alt="Health" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.health} </span></div>
         <div style="margin-right:5px"><img src="../../images/icons/shield.ico" alt="Shield" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.shield} </span></div>
         <div style="margin-right:5px"><img src="../../images/icons/strengthen.ico" alt="Strength" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.strengthen} </span></div>
         <div style="margin-right:5px"><img src="../../images/icons/aggro.ico" alt="Aggro" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.aggro} </span></div>
       `;
-      entityDiv.appendChild(statsDiv);
-  
-      // Deck visuals
-      const deckVisualDiv = createDeckVisual(entity);
-      entityDiv.appendChild(deckVisualDiv);
-  
-      // Drawn cards and effects visuals
-      const drawnCardsDiv = createDrawnCardsVisual(entity);
-      const effectsDiv = createEffectsVisual(entity);
-      entityDiv.appendChild(drawnCardsDiv);
-      entityDiv.appendChild(effectsDiv);
-  
-      // Append to appropriate container
-      if (entity.faction === "hero") {
-        heroesContainer.appendChild(entityDiv);
-      } else {
-        monstersContainer.appendChild(entityDiv);
-      }
-    });
-  }
-  
+    entityDiv.appendChild(statsDiv);
+
+    // Deck visuals
+    const deckVisualDiv = createDeckVisual(entity);
+    entityDiv.appendChild(deckVisualDiv);
+
+    // Drawn cards and effects visuals
+    const drawnCardsDiv = createDrawnCardsVisual(entity);
+    const effectsDiv = createEffectsVisual(entity);
+    entityDiv.appendChild(drawnCardsDiv);
+    entityDiv.appendChild(effectsDiv);
+
+    // Append to appropriate container
+    if (entity.faction === "hero") {
+      heroesContainer.appendChild(entityDiv);
+    } else {
+      monstersContainer.appendChild(entityDiv);
+    }
+  });
+}
 
 function createDeckVisual(entity, index) {
   const deckVisualDiv = document.createElement("div");
@@ -142,7 +143,8 @@ function createDeckVisual(entity, index) {
   return deckVisualDiv;
 }
 
-function displayDrawnCards(cards, entity) {
+export function displayDrawnCards(cards, entity) {
+  console.log(entity);
   const drawSelectCardArea = document.getElementById("drawSelectCard");
   drawSelectCardArea.innerHTML = "";
   cards.forEach((card, cardIndex) => {
@@ -223,8 +225,7 @@ function requestTargetSelection(entity, card) {
           const targetId = parseInt(target.getAttribute("data-id"), 10);
           const targetEntity = allEntities.find((e) => e.id === targetId);
           executeCardAction(entity, card, targetEntity);
-          processReactions(card, targetEntity, entity)
-
+          processReactions(card, targetEntity, entity);
           clearDrawnCardsAndResetDeck(entity);
           document.querySelectorAll(".highlight-target").forEach((t) => {
             t.classList.remove("highlight-target");
@@ -235,11 +236,18 @@ function requestTargetSelection(entity, card) {
       );
     });
   } else {
-    clearDrawnCardsAndResetDeck(entity);
-    document.querySelectorAll(".highlight-target").forEach((t) => {
-      t.classList.remove("highlight-target");
-      t.removeEventListener("click", targetSelectionHandler);
-    });
+    if (card.name === "mastermind") {
+      const mastermindCards = drawCards(entity, 2, true);
+      console.log(mastermindCards);
+      console.log(entity);
+      displayDrawnCards(mastermindCards, entity);
+    } else {
+      clearDrawnCardsAndResetDeck(entity);
+      document.querySelectorAll(".highlight-target").forEach((t) => {
+        t.classList.remove("highlight-target");
+        t.removeEventListener("click", targetSelectionHandler);
+      });
+    }
   }
 }
 
@@ -259,7 +267,14 @@ function executeCardAction(origin, card, target) {
   applyEffectOverTimeTokens(card, target);
   removeDefeatedMonsters();
   updateUI();
-  checkAndProgressRound();
+  if (card.name === "mastermind") {
+    const mastermindCards = drawCards(origin, 2, true);
+    console.log(mastermindCards);
+    console.log(origin);
+    displayDrawnCards(mastermindCards, origin);
+  } else {
+    checkAndProgressRound();
+  }
 }
 
 function createEffectsVisual(entity) {
