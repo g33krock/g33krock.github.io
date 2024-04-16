@@ -287,7 +287,7 @@ export const entities = [
     ],
   },
   {
-    role: "mind flayer",
+    role: "mindflayer",
     health: 25,
     shield: 0,
     strengthen: 0,

@@ -7,40 +7,68 @@ import {
   applyVampirismEffect,
   revertVampirismEffect,
 } from "./formShifting.mjs";
+import { updateUI } from "../../../ui/gameUI.mjs";
 
 export let heroes = shuffledHeroes;
 export let monsters = shuffledMonsters;
 
-// Function for playing the monster's turn automatically
-export function playMonstersTurn(activeFaction, opposingFaction) {
-  activeFaction.forEach((monster) => {
-    if (!monster.alive) return;
-
-    monster.turnTaken = false;
-    // Handling proficiency effects such as shield or strengthen
-    applyProficiencyEffects(monster, activeFaction);
-
-    // Skip turn if interrupted
-    if (
-      monster.effects.some(
-        (effect) => effect.type === "interrupt" && effect.counter > 0
-      )
-    ) {
-      console.log(`${monster.role} is interrupted and cannot act this turn.`);
-      monster.effects.forEach((effect) => {
-        if (effect.type === "interrupt") effect.counter--;
-        if (effect.counter === 0) {
-          const index = monster.effects.indexOf(effect);
-          monster.effects.splice(index, 1);
-        }
-      });
-      return;
+// Function to delay execution
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
+  // Function to animate the hop
+  function animateHop(element) {
+    element.style.transition = 'transform 0.2s';
+    element.style.transform = 'translateY(-5px)';
+  
+    return new Promise(resolve => {
+      setTimeout(() => {
+        element.style.transform = 'translateY(0px)';
+        setTimeout(resolve, 200); // Ensure resolve is called after the animation completes
+      }, 200);
+    });
+  }
+  
+  export async function playMonstersTurn(activeFaction, opposingFaction) {
+    for (const monster of activeFaction) {
+      if (!monster.alive) continue;
+  
+      monster.turnTaken = false;
+      applyProficiencyEffects(monster, activeFaction);
+  
+      if (monster.effects.some(effect => effect.type === "interrupt" && effect.counter > 0)) {
+        console.log(`${monster.role} is interrupted and cannot act this turn.`);
+        monster.effects.forEach(effect => {
+          if (effect.type === "interrupt") effect.counter--;
+          if (effect.counter === 0) {
+            const index = monster.effects.indexOf(effect);
+            monster.effects.splice(index, 1);
+          }
+        });
+        await delay(1000);
+        await updateUI();
+        continue;
+      }
+  
+      const elementId = `entity-${monster.id}`;
+      const monsterElement = document.getElementById(elementId);
+      if (monsterElement) {
+        const deckVisual = monsterElement.querySelector('.deck-visual');
+        await animateHop(deckVisual);
+      } else {
+        console.log(`No element found for ${monster.role} with ID ${monster.id}`);
+      }
+  
+      simulateMonsterAction(monster, opposingFaction, activeFaction);
+      await delay(1000);
+      await updateUI();
     }
-
-    // Simulate card selection and action
-    simulateMonsterAction(monster, opposingFaction, activeFaction);
-  });
-}
+    resetShield(heroes);
+    resetStrengthen(monsters);
+    await updateUI();
+  }
+   
 
 function applyProficiencyEffects(entity, faction) {
   if (entity.proficiency) {
@@ -86,6 +114,10 @@ function simulateMonsterAction(monster, opposingFaction, activeFaction) {
 
   // Apply card effects
   applyDirectEffects(selectedCard, target, monster);
+
+  applyEffectOverTimeTokens(selectedCard, target)
+
+  processReactions(selectedCard, target, monster);
 
   // Update game state for the end of the monster's turn
   discardCards(monster, drawnCards);
@@ -305,6 +337,9 @@ export function applyDirectEffects(selectedCard, target, entity) {
       actions.push(
         `${actingEntity.role} deals ${damageAmount} damage to ${targetEntity.role}`
       );
+      if(target.health <= 0) {
+        target.alive === false
+      }
     } else if (adjustedCard.properties.health > 0) {
       // Handling for healing
       const potentialHealth =
@@ -458,7 +493,7 @@ export function applyEffectOverTimeTokens(card, target) {
   });
 }
 
-function processReactions(selectedCard, target, activeEntity) {
+export function processReactions(selectedCard, target, activeEntity) {
   const targets = Array.isArray(target) ? target : [target];
 
   targets.forEach((targetEntity) => {
@@ -644,6 +679,9 @@ export function processEndOfTurnEffects(faction) {
           vampirismActive = false;
         }
       }
+      if(entity.health <= 0) {
+        entity.alive === false
+      }
     });
 
     entity.effects = entity.effects.filter((effect) => effect.counter > 0);
@@ -655,19 +693,17 @@ export function processEndOfTurnEffects(faction) {
       revertVampirismEffect(entity);
     }
   });
+  removeDefeatedHeroes()
 }
 
-export function updateEntityStatus(entity) {
-  if (
-    ((entity.aggroLife && entity.aggro <= 0) ||
-      (!entity.aggroLife && entity.health <= 0)) &&
-    entity.alive
-  ) {
-    entity.alive = false;
-    console.log(`${entity.role} has been defeated.`);
+export function removeDefeatedHeroes() {
+    heroes = heroes.filter((entity) => entity.alive);
+    return heroes
   }
-}
 
-export function removeDefeatedEntities(faction) {
-  return faction.filter((entity) => entity.alive);
-}
+  export function removeDefeatedMonsters() {
+    monsters = monsters.filter((entity) => entity.alive);
+    return monsters
+  }
+
+

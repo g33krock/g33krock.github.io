@@ -1,6 +1,9 @@
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
+  background-image: url("../images/feltbg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 #entities div,
@@ -42,10 +45,10 @@ body {
 }
 
 #drawSelectCard {
+    height: 225px;
   display: flex; /* Enables flexbox layout */
   align-items: center; /* Vertically centers the content */
   justify-content: center; /* Horizontally centers the content */
-  background-color: #ffff99; /* Example color */
   flex-wrap: wrap; /* Allows items to wrap as needed */
 }
 
@@ -83,8 +86,8 @@ body {
   flex: 1;
   padding: 10px;
   margin: 5px;
+  max-width: 200px;
   min-height: 250px;
-  background: rgba(255, 255, 255, 0.8);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -130,7 +133,7 @@ body {
   margin: 5px;
   padding: 5px;
   background-color: #000000;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 4px;
 }
 
@@ -145,6 +148,7 @@ body {
 .card-visual {
   background-size: cover;
   background-position: center;
+  border: 2px solid #ddd;
   width: 70px;
   height: 100px;
   position: absolute;
@@ -184,8 +188,8 @@ body {
 }
 
 .icon {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     vertical-align: middle;
   }
 

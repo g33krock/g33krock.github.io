@@ -10,34 +10,46 @@ import {
   applyEffectOverTimeTokens,
   drawCards,
   adjustAggro,
+  processReactions,
+  removeDefeatedMonsters
 } from "../engine/logic/gameplay/playTurns.mjs";
 
 document.addEventListener("DOMContentLoaded", () => {
   updateUI(); // Initial UI update
 });
 
-export function updateUI() {
-  const {
-    roundCounter,
-    winner,
-    heroes,
-    monsters,
-    actions = [],
-  } = getGameState();
-
-  updateGameInfo(roundCounter, winner);
-  displayEntities([...heroes, ...monsters]);
-  displayActions(actions);
-  heroes.forEach((hero, index) => {
-    const heroDiv = document.getElementById(`entity-${hero.id}`);
-    const deckVisualDiv = heroDiv.querySelector(".deck-visual"); // Get the deck visual div
-    if (hero.turnTaken) {
-      deckVisualDiv.classList.add("turn-taken"); // Apply 'turn-taken' to deck visual
-    } else {
-      deckVisualDiv.classList.remove("turn-taken"); // Remove 'turn-taken' from deck visual
+export async function updateUI() {
+    const {
+      roundCounter,
+      winner,
+      heroes,
+      monsters,
+      actions = [],
+    } = getGameState();
+  
+    updateGameInfo(roundCounter, winner);  // Assuming synchronous
+    displayEntities([...heroes, ...monsters]);  // Assuming synchronous
+    displayActions(actions);  // Assuming synchronous
+  
+    // Async loop to handle hero updates
+    for (const hero of heroes) {
+      const heroDiv = document.getElementById(`entity-${hero.id}`);
+      if (!heroDiv) continue;  // Skip if the hero div is not found
+      const deckVisualDiv = heroDiv.querySelector(".deck-visual");
+      if (!deckVisualDiv) continue;  // Skip if deck visual is not found
+  
+      // Handling CSS class changes potentially could be async if animations or transitions need to complete
+      if (hero.turnTaken) {
+        deckVisualDiv.classList.add("turn-taken");
+      } else {
+        deckVisualDiv.classList.remove("turn-taken");
+      }
     }
-  });
-}
+  
+    // If you need to wait for any asynchronous operations to complete
+    // you can use await with a promise here. For example:
+    await new Promise(resolve => setTimeout(resolve, 0));  // Simulate async behavior if needed
+  }
 
 function updateGameInfo(round, winner) {
   document.getElementById("roundCounter").textContent = `Round: ${round}`;
@@ -72,10 +84,10 @@ function displayEntities(entities) {
       // Stats with icons
       const statsDiv = document.createElement("div");
       statsDiv.innerHTML = `
-        <div><img src="../../images/icons/health.ico" alt="Health" class="icon"> ${entity.health}</div>
-        <div><img src="../../images/icons/shield.ico" alt="Shield" class="icon"> ${entity.shield}</div>
-        <div><img src="../../images/icons/strengthen.ico" alt="Strength" class="icon"> ${entity.strengthen}</div>
-        <div><img src="../../images/icons/aggro.ico" alt="Aggro" class="icon"> ${entity.aggro}</div>
+        <div style="margin-right:5px"><img src="../../images/icons/health.ico" alt="Health" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.health} </span></div>
+        <div style="margin-right:5px"><img src="../../images/icons/shield.ico" alt="Shield" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.shield} </span></div>
+        <div style="margin-right:5px"><img src="../../images/icons/strengthen.ico" alt="Strength" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.strengthen} </span></div>
+        <div style="margin-right:5px"><img src="../../images/icons/aggro.ico" alt="Aggro" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.aggro} </span></div>
       `;
       entityDiv.appendChild(statsDiv);
   
@@ -211,6 +223,7 @@ function requestTargetSelection(entity, card) {
           const targetId = parseInt(target.getAttribute("data-id"), 10);
           const targetEntity = allEntities.find((e) => e.id === targetId);
           executeCardAction(entity, card, targetEntity);
+          processReactions(card, targetEntity, entity)
 
           clearDrawnCardsAndResetDeck(entity);
           document.querySelectorAll(".highlight-target").forEach((t) => {
@@ -228,7 +241,6 @@ function requestTargetSelection(entity, card) {
       t.removeEventListener("click", targetSelectionHandler);
     });
   }
-  checkAndProgressRound();
 }
 
 function clearDrawnCardsAndResetDeck(entity) {
@@ -245,7 +257,9 @@ function executeCardAction(origin, card, target) {
   adjustAggro(origin, card, target);
   applyDirectEffects(card, target, origin);
   applyEffectOverTimeTokens(card, target);
+  removeDefeatedMonsters();
   updateUI();
+  checkAndProgressRound();
 }
 
 function createEffectsVisual(entity) {
@@ -275,7 +289,6 @@ function createEffectsVisual(entity) {
       effectTypeDiv.appendChild(effectTokenDiv);
     }
   });
-
   return effectsDiv;
 }
 

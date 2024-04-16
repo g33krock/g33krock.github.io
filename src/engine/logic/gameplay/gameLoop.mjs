@@ -6,8 +6,8 @@ import {
   resetShield,
   resetStrengthen,
   processEndOfTurnEffects,
-  updateEntityStatus,
-  removeDefeatedEntities,
+  removeDefeatedHeroes,
+  removeDefeatedMonsters
 } from "./playTurns.mjs";
 import { updateUI } from "../../../ui/gameUI.mjs";
 
@@ -53,28 +53,34 @@ export function getGameState() {
 
 let isMonstersTurnProcessing = false;
 
-export function executeMonstersTurn() {
+export async function executeMonstersTurn() {
   if (!isMonstersTurnProcessing && monsters.some(monster => monster.alive)) {
     isMonstersTurnProcessing = true;
     console.log(`Round ${roundCounter + 1} Start: Monsters' Turn`);
 
-    playMonstersTurn(monsters, heroes);
+    await playMonstersTurn(monsters, heroes);
 
-    resetShield(heroes);
-    resetStrengthen(monsters);
     processEndOfTurnEffects(monsters);
     processEndOfTurnEffects(heroes);
-    monsters.forEach(updateEntityStatus);
-    heroes.forEach(updateEntityStatus);
-    removeDefeatedEntities(heroes);
-    removeDefeatedEntities(monsters);
+    for (const monster of monsters) {
+      updateEntityStatus(monster);
+    }
+    for (const hero of heroes) {
+      updateEntityStatus(hero);
+    }
+    // Optionally ensure these also respect the sequential flow if they involve asynchronous operations
+    // await removeDefeatedEntities(heroes);
+    // await removeDefeatedEntities(monsters);
+
     checkGameOver();
     roundCounter++;
 
     console.log(`Round ${roundCounter} End`);
     isMonstersTurnProcessing = false;
+    updateUI();
   }
 }
+
 
 
 function checkGameOver() {
@@ -98,8 +104,11 @@ export function checkAndProgressRound() {
     const allHeroesDone = heroes.every(hero => hero.turnTaken);
     if (allHeroesDone) {
       executeMonstersTurn();  // This will now check if it's safe to process
-      updateUI();
+      resetShield(monsters);
+    resetStrengthen(heroes);
+      actions = []
       startNextRound(); // Maybe this needs to be safeguarded or adjusted as well
+      updateUI();
     }
   }
 }
@@ -112,8 +121,19 @@ function resetTurns(entities) {
 }
 
 export function startNextRound(){
-  executeMonstersTurn();
+  // executeMonstersTurn();
   resetTurns([...heroes, ...monsters]);
+}
+
+function updateEntityStatus(entity) {
+  if (
+    ((entity.aggroLife && entity.aggro <= 0) ||
+      (!entity.aggroLife && entity.health <= 0)) &&
+    entity.alive
+  ) {
+    entity.alive = false;
+    console.log(`${entity.role} has been defeated.`);
+  }
 }
 
 // Initialization of the game
