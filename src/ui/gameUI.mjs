@@ -117,7 +117,7 @@ function createDeckVisual(entity, index) {
   if (entity.faction === "hero") {
     deckVisualDiv.addEventListener("click", () => {
       if (!entity.turnTaken) {
-        const drawnCards = drawCards(entity, 2);
+        const drawnCards = drawCards(entity, 2, false);
         if (drawnCards.length > 0) {
           displayDrawnCards(drawnCards, entity); // Show the cards if drawn
         }

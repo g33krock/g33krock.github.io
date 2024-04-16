@@ -95,7 +95,7 @@ function applyProficiencyEffects(entity, faction) {
 
 function simulateMonsterAction(monster, opposingFaction, activeFaction) {
   // Draw and select cards
-  const drawnCards = drawCards(monster, 2);
+  const drawnCards = drawCards(monster, 2, false);
   const selectedCard = selectCard(drawnCards);
   console.log(selectedCard)
   console.log(monster)
@@ -123,9 +123,9 @@ function simulateMonsterAction(monster, opposingFaction, activeFaction) {
   discardCards(monster, drawnCards);
 }
 
-export function drawCards(entity, count) {
+export function drawCards(entity, count, flurry) {
     console.log(entity)
-    if (entity.turnTaken) {
+    if (entity.turnTaken && !flurry) {
         console.log(`${entity.role} has already taken a turn this round.`);
         return []; // Return an empty array to signify no cards drawn
     } else {
@@ -410,7 +410,8 @@ export function applyDirectEffects(selectedCard, target, entity) {
     actions.push(
       `${entity.role} activates flurry and plays their next to cards on ${target.role}`
     );
-    const nextTwoCards = drawCards(entity, 2); // Draw the next two cards for flurry
+    const nextTwoCards = drawCards(entity, 2, true); // Draw the next two cards for flurry
+    console.log(nextTwoCards)
 
     nextTwoCards.forEach((nextCard) => {
       const adjustedNextCard = adjustCardEffectsBasedOnProficiency(
