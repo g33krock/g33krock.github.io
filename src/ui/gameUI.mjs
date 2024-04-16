@@ -181,6 +181,24 @@ function requestTargetSelection(entity, card) {
   const allEntities = [...gameState.heroes, ...gameState.monsters];
   let potentialTargets = [];
 
+  // Adjust targeting if shadowForm is active to prevent damaging own team
+  if (
+    entity.shadowForm &&
+    (card.properties.health > 0 || card.properties.hot > 0)
+  ) {
+    // actions.push(
+    //   `${entity.role} in shadowform corrupts ${card.name} to deal shadow damage instead of healing`
+    // );
+    switch (card.properties.target) {
+      case 2: // Originally targeting own faction for positive effect, now target opposing faction
+        card.properties.target = 3;
+        break;
+      case 4: // Originally targeting all allies, now target all enemies
+        card.properties.target = 5;
+        break;
+    }
+  }
+
   switch (card.properties.target) {
     case 0: // Target self
       executeCardAction(entity, card, entity);
@@ -264,7 +282,6 @@ function executeCardAction(origin, card, target) {
   console.log(origin);
   adjustAggro(origin, card, target);
   applyDirectEffects(card, target, origin);
-  applyEffectOverTimeTokens(card, target);
   removeDefeatedMonsters();
   updateUI();
   if (card.name === "mastermind") {

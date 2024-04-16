@@ -7,7 +7,8 @@ import {
   resetStrengthen,
   processEndOfTurnEffects,
   removeDefeatedHeroes,
-  removeDefeatedMonsters
+  removeDefeatedMonsters,
+  applyProficiencyEffects
 } from "./playTurns.mjs";
 import { updateUI } from "../../../ui/gameUI.mjs";
 
@@ -38,6 +39,9 @@ export function startGame() {
   roundCounter = 0;
   winner = "";
   console.log("Game Start");
+  heroes.forEach(hero => {
+    applyProficiencyEffects(hero, heroes)
+  })
 }
 
 export function getGameState() {
@@ -121,8 +125,10 @@ function resetTurns(entities) {
 }
 
 export function startNextRound(){
-  // executeMonstersTurn();
   resetTurns([...heroes, ...monsters]);
+  heroes.forEach(hero => {
+    applyProficiencyEffects(hero, heroes)
+  })
 }
 
 function updateEntityStatus(entity) {

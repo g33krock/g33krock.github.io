@@ -70,7 +70,7 @@ function delay(ms) {
   }
    
 
-function applyProficiencyEffects(entity, faction) {
+export function applyProficiencyEffects(entity, faction) {
   if (entity.proficiency) {
     if (entity.proficiency.shieldAll) {
       faction.forEach((e) => (e.shield = entity.proficiency.shieldAll));
@@ -115,8 +115,6 @@ function simulateMonsterAction(monster, opposingFaction, activeFaction) {
   // Apply card effects
   applyDirectEffects(selectedCard, target, monster);
 
-  applyEffectOverTimeTokens(selectedCard, target)
-
   processReactions(selectedCard, target, monster);
 
   // Update game state for the end of the monster's turn
@@ -142,20 +140,7 @@ function selectCard(drawnCards) {
   return drawnCards[randomIndex];
 }
 
-function selectTarget(entity, card, opposingFaction, activeFaction) {
-    // Adjust targeting if shadowForm is active to prevent damaging own team
-    if (entity.shadowForm && (card.properties.health > 0 || card.properties.hot > 0)) {
-      actions.push(`${entity.role} in shadowform corrupts ${card.name} to deal shadow damage instead of healing`);
-      switch (card.properties.target) {
-        case 2: // Originally targeting own faction for positive effect, now target opposing faction
-          card.properties.target = 3;
-          break;
-        case 4: // Originally targeting all allies, now target all enemies
-          card.properties.target = 5;
-          break;
-      }
-    }
-  
+function selectTarget(entity, card, opposingFaction, activeFaction) {  
     // Original switch logic for target selection
     switch (card.properties.target) {
       case 0:
@@ -400,10 +385,13 @@ export function applyDirectEffects(selectedCard, target, entity) {
     console.log("Target is an array, applying effects to each target.");
     target.forEach((singleTarget) => {
       applyEffects(adjustedCard, singleTarget, entity);
+      applyEffectOverTimeTokens(adjustedCard, singleTarget, entity)
     });
   } else {
     console.log("Target is a single entity, applying effects.");
+    console.log(adjustedCard)
     applyEffects(adjustedCard, target, entity);
+    applyEffectOverTimeTokens(adjustedCard, target, entity)
   }
 
   if (selectedCard.name === "flurry") {
@@ -432,17 +420,17 @@ export function applyDirectEffects(selectedCard, target, entity) {
         currentTarget.forEach(
           (singleTarget) =>
             applyEffects(adjustedNextCard, singleTarget, entity),
-          applyEffectOverTimeTokens(adjustedNextCard, singleTarget)
+          applyEffectOverTimeTokens(adjustedNextCard, singleTarget, entity)
         ); // Apply effects to each target in the array
       } else {
         applyEffects(adjustedNextCard, currentTarget, entity);
-        applyEffectOverTimeTokens(adjustedNextCard, currentTarget);
+        applyEffectOverTimeTokens(adjustedNextCard, currentTarget, entity);
       }
     });
   }
 }
 
-export function applyEffectOverTimeTokens(card, target) {
+export function applyEffectOverTimeTokens(card, target, entity) {
   const targets = Array.isArray(target) ? target : [target];
 
   targets.forEach((targetEntity) => {
@@ -467,14 +455,14 @@ export function applyEffectOverTimeTokens(card, target) {
       if (properties[effect] !== undefined) {
         if (
           effect === "hot" &&
-          targetEntity.shadowForm &&
+          entity.shadowForm &&
           properties[effect] > 0
         ) {
           console.log(
             `Converting hot effect to damage due to shadowForm for ${targetEntity.role}.`
           );
           console.log(effect);
-          effect *= -1;
+          properties[effect] *= -1;
         }
         actions.push(
           `Applying ${effect}: ${properties[effect]} for ${properties.counter} turns to ${targetEntity.role}.`
@@ -512,7 +500,7 @@ export function processReactions(selectedCard, target, activeEntity) {
 
         applyEffectOverTimeTokens(
           { properties: { hot: -2, counter: 3 } },
-          activeEntity
+          activeEntity, activeEntity
         );
         return false;
       } else if (effect.type === "paralyzingTrap" && effect.counter > 0) {
@@ -521,7 +509,7 @@ export function processReactions(selectedCard, target, activeEntity) {
         );
         applyEffectOverTimeTokens(
           { properties: { interrupt: 1, counter: 2 } },
-          activeEntity
+          activeEntity, activeEntity
         );
         return false;
       } else if (effect.type === "reflect" && effect.counter > 0) {
@@ -551,7 +539,7 @@ function handleShieldReactions(targetEntity, activeEntity) {
 
       applyEffectOverTimeTokens(
         { properties: { hot: -2, counter: 1 } },
-        activeEntity
+        activeEntity, activeEntity
       );
     }
     if (targetEntity.frostShield) {
@@ -566,7 +554,7 @@ function handleShieldReactions(targetEntity, activeEntity) {
 
       applyEffectOverTimeTokens(
         { properties: { shot: 1, stot: -3, counter: 2 } },
-        activeEntity
+        activeEntity, activeEntity
       );
     }
     if (targetEntity.arcaneShield) {
@@ -581,7 +569,7 @@ function handleShieldReactions(targetEntity, activeEntity) {
 
       applyEffectOverTimeTokens(
         { properties: { shot: -1, counter: 2 } },
-        activeEntity
+        activeEntity, activeEntity
       );
     }
   } else {
