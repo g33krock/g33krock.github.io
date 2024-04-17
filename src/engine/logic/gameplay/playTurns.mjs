@@ -8,6 +8,7 @@ import {
   revertVampirismEffect,
 } from "./formShifting.mjs";
 import { displayDrawnCards, updateUI } from "../../../ui/gameUI.mjs";
+import { createFloatingText } from "./actionEffects.mjs";
 
 export let heroes = shuffledHeroes;
 export let monsters = shuffledMonsters;
@@ -266,8 +267,8 @@ export function applyDirectEffects(selectedCard, target, entity) {
 
   const applyEffects = (adjustedCard, targetEntity, actingEntity) => {
     // Handling for damage
+    let damageAmount = adjustedCard.properties.health;
     if (adjustedCard.properties.health < 0) {
-      let damageAmount = adjustedCard.properties.health;
       console.log(`Vanilla Damage: ${damageAmount}`);
 
       // If actingEntity has strengthen effect, modify the damage
@@ -325,6 +326,10 @@ export function applyDirectEffects(selectedCard, target, entity) {
       if(target.health <= 0) {
         target.alive === false
       }
+      if (damageAmount !== 0) {
+        const color = damageAmount < 0 ? 'red' : 'green'; // Negative for damage, positive for healing
+        createFloatingText(targetEntity.id, damageAmount, color, adjustedCard.name);
+      }
     } else if (adjustedCard.properties.health > 0) {
       // Handling for healing
       const potentialHealth =
@@ -336,6 +341,10 @@ export function applyDirectEffects(selectedCard, target, entity) {
       actions.push(
         `${actingEntity.role} deals ${adjustedCard.properties.health} healing to ${targetEntity.role}`
       );
+      if (damageAmount !== 0) {
+        const color = damageAmount < 0 ? 'red' : 'green'; // Negative for damage, positive for healing
+        createFloatingText(targetEntity.id, damageAmount, color, adjustedCard.name);
+      }
     }
     if (targetEntity.health > targetEntity.initialHealth) {
       targetEntity.health = targetEntity.initialHealth;
@@ -347,6 +356,11 @@ export function applyDirectEffects(selectedCard, target, entity) {
       actions.push(
         `${actingEntity.role} deals ${adjustedCard.properties.shield} shield to ${targetEntity.role}`
       );
+      if (adjustedCard.properties.shield) {
+        const shieldText = adjustedCard.properties.shield > 0 ? '+' + adjustedCard.properties.shield : adjustedCard.properties.shield;
+        const color = adjustedCard.properties.shield > 0 ? 'blue' : 'yellow';
+        createFloatingText(targetEntity.id, shieldText, color, adjustedCard.name);
+      }
     }
     if (targetEntity.shield > 10) {
       targetEntity.shield = 10;
@@ -359,6 +373,11 @@ export function applyDirectEffects(selectedCard, target, entity) {
         `${actingEntity.role} deals ${adjustedCard.properties.strengthen} strengthen to ${targetEntity.role}`
       );
       targetEntity.strengthen += adjustedCard.properties.strengthen;
+      if (adjustedCard.properties.strengthen) {
+        const strengthText = adjustedCard.properties.strengthen > 0 ? '+' + adjustedCard.properties.strengthen : adjustedCard.properties.strengthen;
+        const color = adjustedCard.properties.strengthen > 0 ? 'blue' : 'yellow';
+        createFloatingText(targetEntity.id, strengthText, color, adjustedCard.name);
+      }
     }
     if (targetEntity.strengthen > 10) {
       targetEntity.strengthen = 10;

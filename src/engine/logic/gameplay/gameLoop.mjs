@@ -103,19 +103,20 @@ function checkGameOver() {
   }
 }
 
-export function checkAndProgressRound() {
+export async function checkAndProgressRound() {
   if (!isMonstersTurnProcessing) {
     const allHeroesDone = heroes.every(hero => hero.turnTaken);
     if (allHeroesDone) {
-      executeMonstersTurn();  // This will now check if it's safe to process
+      await executeMonstersTurn();  // Await for the completion of the monsters' turn
       resetShield(monsters);
-    resetStrengthen(heroes);
-      actions = []
+      resetStrengthen(heroes);
+      actions = [];
       startNextRound(); // Maybe this needs to be safeguarded or adjusted as well
       updateUI();
     }
   }
 }
+
 
 
 function resetTurns(entities) {

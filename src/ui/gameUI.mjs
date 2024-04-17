@@ -27,6 +27,7 @@ export async function updateUI() {
     actions = [],
   } = getGameState();
 
+  console.log('updating UI')
   updateGameInfo(roundCounter, winner); // Assuming synchronous
   displayEntities([...heroes, ...monsters]); // Assuming synchronous
   displayActions(actions); // Assuming synchronous
@@ -276,12 +277,16 @@ function clearDrawnCardsAndResetDeck(entity) {
   entity.drawnCards = []; // Clear drawn cards
 }
 
-function executeCardAction(origin, card, target) {
+async function executeCardAction(origin, card, target) {
   console.log(card);
   console.log(target);
   console.log(origin);
   adjustAggro(origin, card, target);
   applyDirectEffects(card, target, origin);
+
+  // Pause for 1.5 seconds
+  await new Promise(resolve => setTimeout(resolve, 1500));
+
   removeDefeatedMonsters();
   updateUI();
   if (card.name === "mastermind") {
