@@ -1,4 +1,7 @@
-import { roleProficiencies } from "../models/Player.mjs";
+// import { roleProficiencies } from "../models/Player.mjs";
+import { roleProficiencies } from "../../src/engine/objects/proficiencies.mjs";
+
+console.log(roleProficiencies)
 
 document.addEventListener("DOMContentLoaded", () => {
   const partySizeSelector = document.getElementById("party-size");
@@ -10,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startGameButton.disabled = true; // Disable the start game button by default
 
   const playerRoles = [
-    "Warrior", "Cleric", "Rogue", "Mage", "Paladin", "Druid", "DeathKnight",
+    "warrior", "cleric", "rogue", "mage", "paladin", "druid", "death knight",
   ];
 
   function updateStartButtonState() {
@@ -122,7 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     localStorage.setItem("selectedRoles", JSON.stringify(selectedRoles));
 
-    window.location.href = "../../gameplay.html";
+    // window.location.href = "../../gameplay.html";
+    window.location.href = "../../src/index.html";
   });
 
   generateRoleAndProficiencySelections(parseInt(partySizeSelector.value, 10));

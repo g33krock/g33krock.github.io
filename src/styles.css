@@ -197,6 +197,23 @@ body {
     box-shadow: 0 0 8px 3px green; /* Horizontal offset, vertical offset, blur radius, spread radius, and color */
 }
 
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-10px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(10px);
+  }
+}
+
+.shake {
+  animation: shake 0.8s; /* Control the duration of the shake here */
+  animation-timing-function: ease-in-out;
+}
+
 .effect-token.hot.positive {
   background-color: #4caf50;
   background-image: url("../images/HealingToken.png");

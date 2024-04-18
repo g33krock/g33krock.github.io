@@ -1,5 +1,5 @@
 // playTurns.mjs
-import { actions, checkAndProgressRound } from "./gameLoop.mjs";
+import { actions, checkAndProgressRound, updateEntityStatus } from "./gameLoop.mjs";
 import { shuffledHeroes, shuffledMonsters } from "./shuffleEntities.mjs";
 import {
   applyLycanthropyEffect,
@@ -74,16 +74,16 @@ function delay(ms) {
 export function applyProficiencyEffects(entity, faction) {
   if (entity.proficiency) {
     if (entity.proficiency.shieldAll) {
-      faction.forEach((e) => (e.shield = entity.proficiency.shieldAll));
+      faction.forEach((e) => (e.shield += entity.proficiency.shieldAll));
     }
     if (entity.proficiency.strengthenAll) {
-      faction.forEach((e) => (e.strengthen = entity.proficiency.strengthenAll));
+      faction.forEach((e) => (e.strengthen += entity.proficiency.strengthenAll));
     }
     if (entity.proficiency.shieldSelf) {
-      entity.shield = entity.proficiency.shieldSelf;
+      entity.shield += entity.proficiency.shieldSelf;
     }
     if (entity.proficiency.strengthenSelf) {
-      entity.strengthen = entity.proficiency.strengthenSelf;
+      entity.strengthen += entity.proficiency.strengthenSelf;
     }
     if (entity.proficiency.aggroModifier) {
       entity.aggro += entity.proficiency.aggroModifier;
@@ -113,10 +113,16 @@ function simulateMonsterAction(monster, opposingFaction, activeFaction) {
   );
   console.log(`Target selected: ${target.role}`);
 
+    // Apply shaking effect to the target
+    applyTargetEffect(target);
+
+
   // Apply card effects
   applyDirectEffects(selectedCard, target, monster);
 
   processReactions(selectedCard, target, monster);
+  updateEntityStatus(monster)
+  updateEntityStatus(target)
 
   // Update game state for the end of the monster's turn
   discardCards(monster, drawnCards);
@@ -208,6 +214,10 @@ export function adjustAggro(entity, selectedCard, target) {
         // Modify aggro based on the selected card's aggro property
         entity.monsterSpecificAggro[target.id] += selectedCard.properties.aggro;
 
+        if(entity.aggroLife){
+          entity.aggro += selectedCard.properties.aggro;
+        }
+
         // Clamp the value between 0 and 20
         entity.monsterSpecificAggro[target.id] = Math.max(0, Math.min(20, entity.monsterSpecificAggro[target.id]));
     } else {
@@ -250,6 +260,19 @@ function adjustCardEffectsBasedOnProficiency(entity, card) {
   console.log(entity.proficiency?.name);
   return adjustedCard;
 }
+
+export function applyTargetEffect(entity) {
+  const entityElement = document.getElementById(`entity-${entity.id}`);
+  if (entityElement) {
+    entityElement.classList.add('shake');
+
+    // Remove the class after the animation duration (800ms here)
+    setTimeout(() => {
+      entityElement.classList.remove('shake');
+    }, 800);
+  }
+}
+
 
 export function applyDirectEffects(selectedCard, target, entity) {
   console.log(`Aggro: ${entity.aggro}`);

@@ -6,6 +6,7 @@ import { monstersArray } from "../models/Monster.mjs";
 import { UIManager } from "../game/UIManager.mjs";
 
 export let playerRoles = JSON.parse(localStorage.getItem('playerConfigurations') || '[]');
+console.log(playerRoles)
 export const playerManager = new PlayerManager(playerRoles.length);
 export const gameplay = new Gameplay(playerRoles.length, playerManager);
 export const cardManager = new CardManager();

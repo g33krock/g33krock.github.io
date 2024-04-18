@@ -31,6 +31,10 @@ export function startGame() {
   heroes.forEach((hero) => {
     hero.turnTaken = false;
     hero.drawnCards = [];
+    console.log(hero)
+    if (hero.aggroLife) {
+      hero.aggro = 20
+    }
   });
   monsters.forEach((monster) => {
     monster.turnTaken = false;
@@ -132,16 +136,20 @@ export function startNextRound(){
   })
 }
 
-function updateEntityStatus(entity) {
-  if (
-    ((entity.aggroLife && entity.aggro <= 0) ||
+export function updateEntityStatus(entity) {
+  return new Promise((resolve, reject) => {
+    if (
+      ((entity.aggroLife && entity.aggro <= 0) ||
       (!entity.aggroLife && entity.health <= 0)) &&
-    entity.alive
-  ) {
-    entity.alive = false;
-    console.log(`${entity.role} has been defeated.`);
-  }
+      entity.alive
+    ) {
+      entity.alive = false;
+      console.log(`${entity.role} has been defeated.`);
+    }
+    resolve(); // Resolve the promise after the update is done
+  });
 }
+
 
 // Initialization of the game
 startGame();

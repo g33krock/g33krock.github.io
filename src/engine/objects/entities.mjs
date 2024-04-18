@@ -154,7 +154,7 @@ export const entities = [
     health: 25,
     shield: 0,
     strengthen: 0,
-    aggro: 10,
+    aggro: 0,
     effects: [],
     faction: "hero",
     alive: true,
@@ -220,7 +220,7 @@ export const entities = [
     alive: true,
     proficiency: {},
     
-    power: 1,
+    power: 3,
     defaultDeck: [
       { cardName: "scratch", frequency: 4 },
       { cardName: "vampiric bite", frequency: 10 },
@@ -239,7 +239,7 @@ export const entities = [
     alive: true,
     proficiency: {},
     
-    power: 1,
+    power: 3,
     defaultDeck: [
       { cardName: "strike", frequency: 3 },
       { cardName: "bandage", frequency: 2 },

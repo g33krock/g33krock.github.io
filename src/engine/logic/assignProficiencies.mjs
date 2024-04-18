@@ -1,31 +1,31 @@
 import { roleProficiencies } from "../objects/proficiencies.mjs";
+import { playerConfigurations } from "./entitySelection.mjs";
 
 export function assignProficiencies(entities) {
     return entities.map(entity => {
-        const proficiencies = roleProficiencies[entity.role];
-        if (proficiencies && proficiencies.length > 0) {
-            // Select a random proficiency for simplicity. You can implement other selection logic here.
-            const randomIndex = Math.floor(Math.random() * proficiencies.length);
-            const selectedProficiency = proficiencies[randomIndex];
-            // Assign the selected proficiency to the entity
-            entity.proficiency = selectedProficiency;
+        // Find the player configuration for the current entity's role
+        const playerConfig = playerConfigurations.find(pc => pc.role === entity.role);
+        if (playerConfig) {
+            // Get proficiencies array for the entity's role
+            const proficiencies = roleProficiencies[entity.role];
+            if (proficiencies && proficiencies.length > 0) {
+                // Find the specific proficiency from roleProficiencies that matches the name specified in playerConfiguration
+                const selectedProficiency = proficiencies.find(p => p.name === playerConfig.proficiency);
+                if (selectedProficiency) {
+                    entity.proficiency = selectedProficiency;
+                }
+            }
         }
-        if (entity.proficiency.isFlameShield){
-            entity.flameShield = true
+        
+        // Assign boolean properties based on the selected proficiency
+        if (entity.proficiency) {
+            entity.flameShield = !!entity.proficiency.isFlameShield;
+            entity.frostShield = !!entity.proficiency.isFrostShield;
+            entity.arcaneShield = !!entity.proficiency.isArcaneShield;
+            entity.shadowForm = !!entity.proficiency.isShadow;
+            entity.aggroLife = !!entity.proficiency.isAggroLife;
         }
-        if (entity.proficiency.isFrostShield){
-            entity.frostShield = true
-        }
-        if (entity.proficiency.isArcaneShield){
-            entity.arcaneShield = true
-        }
-        if (entity.proficiency.isShadow){
-            entity.shadowForm = true
-        }
-        if (entity.proficiency.isAggroLife){
-            entity.aggroLife = true
-        }
-        console.log(entity)
+
         return entity;
     });
 }

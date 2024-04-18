@@ -3,6 +3,7 @@ import {
   checkAndProgressRound,
   getGameState,
   startNextRound,
+  updateEntityStatus,
 } from "../engine/logic/gameplay/gameLoop.mjs";
 
 import {
@@ -12,6 +13,7 @@ import {
   adjustAggro,
   processReactions,
   removeDefeatedMonsters,
+  applyTargetEffect,
 } from "../engine/logic/gameplay/playTurns.mjs";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -27,7 +29,7 @@ export async function updateUI() {
     actions = [],
   } = getGameState();
 
-  console.log('updating UI')
+  console.log("updating UI");
   updateGameInfo(roundCounter, winner); // Assuming synchronous
   displayEntities([...heroes, ...monsters]); // Assuming synchronous
   displayActions(actions); // Assuming synchronous
@@ -282,10 +284,20 @@ async function executeCardAction(origin, card, target) {
   console.log(target);
   console.log(origin);
   adjustAggro(origin, card, target);
+
+  // Apply shaking effect to the target
+  applyTargetEffect(target);
+
   applyDirectEffects(card, target, origin);
 
   // Pause for 1.5 seconds
-  await new Promise(resolve => setTimeout(resolve, 1500));
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  // Await both updateEntityStatus calls to finish
+  await Promise.all([
+    updateEntityStatus(origin),
+    updateEntityStatus(target)
+  ]);
 
   removeDefeatedMonsters();
   updateUI();
