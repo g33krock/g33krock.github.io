@@ -78,6 +78,7 @@ function displayEntities(entities) {
     entityDiv.style.flexDirection = "column";
     entityDiv.style.alignItems = "center";
     entityDiv.style.justifyContent = "flex-start";
+    entityDiv.style.color = 'black'
 
     // Entity name and role
     const nameDiv = document.createElement("div");
@@ -152,39 +153,46 @@ export function displayDrawnCards(cards, entity) {
   const drawSelectCardArea = document.getElementById("drawSelectCard");
   drawSelectCardArea.innerHTML = "";
   cards.forEach((card, cardIndex) => {
-    console.log(card)
+    console.log(card);
     const cardDiv = document.createElement("div");
     const cardInfo = document.createElement("p");
     cardDiv.classList.add("card");
-    cardDiv.textContent = card.name; // This sets the name at the top. Might need adjustment if it overlaps with cardInfo.
+    cardDiv.textContent = card.name;
     cardDiv.style.color = "white";
     cardDiv.style.width = "150px";
     cardDiv.style.height = "200px";
     cardDiv.style.backgroundImage = `url('../../images/${card.name}.png')`;
     cardDiv.style.backgroundSize = "contain";
     cardDiv.style.backgroundRepeat = "no-repeat";
-    cardDiv.style.position = "relative";  // Ensure that positioning inside cardDiv is relative to it.
+    cardDiv.style.position = "relative";
 
-    // Style adjustments for card info text
     cardInfo.innerHTML = card.properties?.info.replace(/\n/g, '<br>');
     cardInfo.style.color = "white";
-    cardInfo.style.fontSize = "12px";  // Smaller font size
-    cardInfo.style.position = "absolute";  // Absolute positioning to place it at the bottom
-    cardInfo.style.bottom = "5px";  // 5px from the bottom of the cardDiv
-    cardInfo.style.width = "100%";  // Ensure it spans the width of the cardDiv
-    cardInfo.style.textAlign = "center";  // Center-align the text
-    cardInfo.style.overflow = "hidden";  // Prevents overflow
-    cardInfo.style.whiteSpace = "nowrap";  // Ensures text does not wrap
-    cardInfo.style.textOverflow = "ellipsis";  // Adds an ellipsis if text overflows
-
-    cardDiv.addEventListener("click", () => {
-      requestTargetSelection(entity, card);
-    });
+    cardInfo.style.fontSize = "12px";
+    cardInfo.style.position = "absolute";
+    cardInfo.style.bottom = "5px";
+    cardInfo.style.width = "100%";
+    cardInfo.style.textAlign = "center";
 
     cardDiv.appendChild(cardInfo);
+
+    cardDiv.addEventListener("click", () => {
+      if (cardDiv.classList.contains("highlight-target")) {
+        cardDiv.classList.remove("highlight-target");
+      } else {
+        // Remove highlight from all other cards first
+        const allCards = document.querySelectorAll(".card");
+        allCards.forEach(c => c.classList.remove("highlight-target"));
+        cardDiv.classList.add("highlight-target");
+        // You may also want to handle card selection here
+        requestTargetSelection(entity, card);
+      }
+    });
+
     drawSelectCardArea.appendChild(cardDiv);
   });
 }
+
 
 
 
@@ -367,6 +375,7 @@ function displayActions(actions) {
   actionsContainer.innerHTML = "";
   actions.forEach((action) => {
     const actionDiv = document.createElement("div");
+    actionDiv.style.color = 'black';
     actionDiv.textContent = action;
     actionsContainer.appendChild(actionDiv);
   });
