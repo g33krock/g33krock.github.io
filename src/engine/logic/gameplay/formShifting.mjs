@@ -70,7 +70,7 @@ export function applyLycanthropyEffect(entity) {
         frequency: 8
       },
       {
-        name: "bandage",
+        name: "regenerate",
         properties: {
           target: 0,
           aggro: 2,
