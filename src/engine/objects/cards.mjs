@@ -5,6 +5,7 @@ export const cards = [
       target: 3,
       aggro: 2,
       health: -2,
+      info: "2 damage to single enemy \n aggro:2"
     },
   },
   {
@@ -13,6 +14,7 @@ export const cards = [
       target: 0,
       aggro: 2,
       health: 3,
+      info: "heals self for 3 \n aggro:2"
     },
   },
   {
@@ -21,6 +23,7 @@ export const cards = [
       target: 2,
       aggro: 2,
       health: 2,
+      info: "heals 2 to single ally \n aggro:2"
     },
   },
   {
@@ -29,6 +32,7 @@ export const cards = [
       target: 2,
       aggro: 2,
       shield: 2,
+      info: "shield 2 to single ally \n aggro:2"
     },
   },
   {
@@ -37,7 +41,8 @@ export const cards = [
       target: 3,
       aggro: 3,
       shield: -2,
-      strengthen: -2
+      strengthen: -2,
+      info: "shield -2 to single enemy \n strengthen -2 to single enemy \n aggro:3"
     },
   },
   {
@@ -48,6 +53,7 @@ export const cards = [
       counter: 2,
       target: 0,
       aggro: 4,
+      info: "shield 3 to self \n 2 shield 3 counters to self \n aggro:4"
     },
   },
   {
@@ -58,15 +64,18 @@ export const cards = [
       counter: 1,
       target: 0,
       aggro: 4,
+      info: "shield 1 to self \n 1 reflect counter to self \n aggro:4"
     },
   },
   {
     name: "rejuvinate",
     properties: {
+      health: 2,
       counter: 3,
       hot: 2,
       target: 2,
-      aggro: 2,
+      aggro: 3,
+      info: "heal 2 to single ally \n 2 heal 2 counters to ally \n aggro:3"
     },
   },
   {
@@ -76,6 +85,7 @@ export const cards = [
       strengthen: 1,
       target: 2,
       aggro: 2,
+      info: "shield 1 to single ally \n strengthen 1 to single ally \n aggro:2"
     },
   },
   {
@@ -85,6 +95,7 @@ export const cards = [
       strengthen: -1,
       target: 3,
       aggro: 2,
+      info: "shield -1 to single enemy \n strengthen -1 to single enemy \n aggro:2"
     },
   },
   {
@@ -95,6 +106,7 @@ export const cards = [
       stot: -1,
       target: 3,
       aggro: 2,
+      info: "3 strengthen -1 counters to single enemy \n 3 health -1 counters to single enemy \n aggro:2"
     },
   },
   {
@@ -106,6 +118,7 @@ export const cards = [
       stot: -1,
       target: 3,
       aggro: 3,
+      info: "2 damage to single enemy \n 2 strengthen -1 counters\n to single enemy \n 2 health -1 counters to\n single enemy \n aggro:3"
     },
   },
   {
@@ -113,6 +126,7 @@ export const cards = [
     properties: {
       target: 0,
       aggro: -4,
+      info: "aggro:-4 \n"
     },
   },
   {
@@ -120,6 +134,7 @@ export const cards = [
     properties: {
       target: 0,
       aggro: 1,
+      info: "draw 2 cards and play 1 \n aggro:1"
     },
   },
   {
@@ -127,6 +142,7 @@ export const cards = [
     properties: {
       target: 3,
       aggro: 1,
+      info: "draw 2 cards and immediately \n play them against \n selected enemy \n aggro:1"
     },
   },
   {
@@ -137,6 +153,7 @@ export const cards = [
       counter: 1,
       aggro: 3,
     },
+    info: "1 explosive poison trap counter on self \n when enemy targets this entity \n enemy recieves 10 damage and 2 health -2 counters \n aggro:3"
   },
   {
     name: "paralyzing trap",
@@ -145,6 +162,7 @@ export const cards = [
       aggro: 3,
       paralyzingTrap: 1,
       counter: 1,
+      info: "1 paralyzing trap counter on self \n when enemy targets this entity \n enemy recieves 2 interrupt counters \n aggro:3"
     },
   },
   {
@@ -152,6 +170,7 @@ export const cards = [
     properties: {
       target: 0,
       aggro: -2,
+      info: " aggro:-2 \n"
     },
   },
   {
@@ -161,16 +180,18 @@ export const cards = [
       counter: 1,
       hot: -1,
       target: 3,
-      aggro: 2,
+      aggro: 3,
+      info: "5 damage to single enemy \n 1 health -1 counter to enemy \n aggro:3"
     },
   },
   {
     name: "spell block",
     properties: {
       target: 3,
-      aggro: 1,
+      aggro: 3,
       interrupt: 1,
       counter: 1,
+      info: "1 interrupt counter to enemy \n aggro:3"
     },
   },
   {
@@ -182,6 +203,7 @@ export const cards = [
       stot: -2,
       target: 3,
       aggro: 3,
+      info: "3 damage to single enemy \n 2 shield 2 counter to enemy \n aggro:3"
     },
   },
   {
@@ -189,6 +211,7 @@ export const cards = [
     properties: {
       target: 0,
       aggro: 3,
+      info: "create a copy of this player \n until end of round \n aggro:3"
     },
   },
   {
@@ -197,6 +220,7 @@ export const cards = [
       health: 5,
       target: 2,
       aggro: 2,
+      info: "heal 5 to single ally \n deal 3 damage to self \n aggro:2"
     },
   },
   {
@@ -205,6 +229,7 @@ export const cards = [
       health: -3,
       target: 3,
       aggro: 3,
+      info: "3 damage to single enemy \n 3 health to self \n aggro:3"
     },
   },
   {
@@ -212,6 +237,7 @@ export const cards = [
     properties: {
       target: 0,
       aggro: 5,
+      info: "aggro:5 \n"
     },
   },
   {

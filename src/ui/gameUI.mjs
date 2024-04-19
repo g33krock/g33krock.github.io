@@ -152,21 +152,41 @@ export function displayDrawnCards(cards, entity) {
   const drawSelectCardArea = document.getElementById("drawSelectCard");
   drawSelectCardArea.innerHTML = "";
   cards.forEach((card, cardIndex) => {
+    console.log(card)
     const cardDiv = document.createElement("div");
+    const cardInfo = document.createElement("p");
     cardDiv.classList.add("card");
-    cardDiv.textContent = card.name;
+    cardDiv.textContent = card.name; // This sets the name at the top. Might need adjustment if it overlaps with cardInfo.
     cardDiv.style.color = "white";
     cardDiv.style.width = "150px";
     cardDiv.style.height = "200px";
     cardDiv.style.backgroundImage = `url('../../images/${card.name}.png')`;
     cardDiv.style.backgroundSize = "contain";
     cardDiv.style.backgroundRepeat = "no-repeat";
+    cardDiv.style.position = "relative";  // Ensure that positioning inside cardDiv is relative to it.
+
+    // Style adjustments for card info text
+    cardInfo.innerHTML = card.properties?.info.replace(/\n/g, '<br>');
+    cardInfo.style.color = "white";
+    cardInfo.style.fontSize = "12px";  // Smaller font size
+    cardInfo.style.position = "absolute";  // Absolute positioning to place it at the bottom
+    cardInfo.style.bottom = "5px";  // 5px from the bottom of the cardDiv
+    cardInfo.style.width = "100%";  // Ensure it spans the width of the cardDiv
+    cardInfo.style.textAlign = "center";  // Center-align the text
+    cardInfo.style.overflow = "hidden";  // Prevents overflow
+    cardInfo.style.whiteSpace = "nowrap";  // Ensures text does not wrap
+    cardInfo.style.textOverflow = "ellipsis";  // Adds an ellipsis if text overflows
+
     cardDiv.addEventListener("click", () => {
       requestTargetSelection(entity, card);
     });
+
+    cardDiv.appendChild(cardInfo);
     drawSelectCardArea.appendChild(cardDiv);
   });
 }
+
+
 
 function createDrawnCardsVisual(entity) {
   const drawnCardsDiv = document.createElement("div");
@@ -352,7 +372,7 @@ function displayActions(actions) {
   });
 }
 
-document.getElementById("nextRound").addEventListener("click", () => {
-  startNextRound();
-  updateUI();
-});
+// document.getElementById("nextRound").addEventListener("click", () => {
+//   startNextRound();
+//   updateUI();
+// });
