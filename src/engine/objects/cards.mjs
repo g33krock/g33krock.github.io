@@ -152,8 +152,8 @@ export const cards = [
       explosivePoisonTrap: 1,
       counter: 1,
       aggro: 3,
+      info: "1 explosive poison trap counter on self \n when enemy targets this entity \n enemy recieves 10 damage and 2 health -2 counters \n aggro:3"
     },
-    info: "1 explosive poison trap counter on self \n when enemy targets this entity \n enemy recieves 10 damage and 2 health -2 counters \n aggro:3"
   },
   {
     name: "paralyzing trap",
@@ -288,6 +288,7 @@ export const cards = [
       target: 3,
       shield: -5,
       aggro: 3,
+      info: "-5 shield to single target \n aggro:3"
     },
   },
   {
@@ -298,6 +299,7 @@ export const cards = [
       shot: -1,
       counter: 2,
       aggro: 3,
+      info: "3 damage to single target \n -1 health counters \n to single target \n aggro:3"
     },
   },
   {
@@ -306,6 +308,7 @@ export const cards = [
       target: 3,
       health: -8,
       aggro: 3,
+      info: "8 damage to single target \n aggro:3"
     },
   },
   {
@@ -317,6 +320,7 @@ export const cards = [
       stot: -1,
       counter: 2,
       aggro: 5,
+      info: "5 damage to all enemies \n 3 -1 health counters \n to all enemies \n aggro:5"
     },
   },
   {
@@ -325,6 +329,7 @@ export const cards = [
       target: 0,
       health: 10,
       aggro: 3,
+      info: "10 health to self  \n aggro:3"
     },
   },
   {
@@ -453,6 +458,7 @@ export const cards = [
       aggro: 3,
       counter: 3,
       lycanthropy: 1,
+      info: "8 damage to single target \n 3 lycanthropy counters \n to single target \n aggro:3"
     },
   },
   {
@@ -463,6 +469,7 @@ export const cards = [
       aggro: 3,
       counter: 3,
       vampirism: 1,
+      info: "8 damage to single target \n 3 vampirism counters \n to single target \n aggro:3"
     },
   },
 ];
