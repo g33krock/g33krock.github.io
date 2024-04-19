@@ -364,9 +364,18 @@ export function applyDirectEffects(selectedCard, target, entity) {
       actions.push(
         `${actingEntity.role} deals ${adjustedCard.properties.health} healing to ${targetEntity.role}`
       );
+      if(adjustedCard.name === 'selfless sacrifice'){
+        entity.health -= 3;
+        damageAmount = 3
+        const color = damageAmount < 0 ? 'red' : 'green'; // Negative for damage, positive for healing
+        createFloatingText(entity.id, damageAmount, color, adjustedCard.name);
+      }
       if (damageAmount !== 0) {
         const color = damageAmount < 0 ? 'red' : 'green'; // Negative for damage, positive for healing
         createFloatingText(targetEntity.id, damageAmount, color, adjustedCard.name);
+      }
+      if(adjustedCard.name === 'selfless sacrifice'){
+        entity.health -= 3;
       }
     }
     if (targetEntity.health > targetEntity.initialHealth) {
@@ -375,10 +384,26 @@ export function applyDirectEffects(selectedCard, target, entity) {
 
     // Apply shield and strengthen effects
     if (adjustedCard.properties.shield) {
-      targetEntity.shield += adjustedCard.properties.shield;
+      if(entity.proficiency.shield && entity.proficiency.shield > 0 && adjustedCard.properties.shield > 0){
+        targetEntity.shield += (adjustedCard.properties.shield + entity.proficiency.shield);
       actions.push(
-        `${actingEntity.role} deals ${adjustedCard.properties.shield} shield to ${targetEntity.role}`
+        `${actingEntity.role} deals ${adjustedCard.properties.shield + entity.proficiency.shield} shield to ${targetEntity.role}`
       );
+      
+      } else if(entity.proficiency.shield && entity.proficiency.shield > 0 && adjustedCard.properties.shield < 0){
+        targetEntity.shield += (adjustedCard.properties.shield - entity.proficiency.shield);
+      actions.push(
+        `${actingEntity.role} deals ${adjustedCard.properties.shield - entity.proficiency.shield} shield to ${targetEntity.role}`
+      );
+      
+      } 
+      else {
+        targetEntity.shield += adjustedCard.properties.shield;
+        actions.push(
+          `${actingEntity.role} deals ${adjustedCard.properties.shield} shield to ${targetEntity.role}`
+        );
+      }
+
       if (adjustedCard.properties.shield) {
         const shieldText = adjustedCard.properties.shield > 0 ? '+' + adjustedCard.properties.shield : adjustedCard.properties.shield;
         const color = adjustedCard.properties.shield > 0 ? 'blue' : 'yellow';
@@ -392,10 +417,23 @@ export function applyDirectEffects(selectedCard, target, entity) {
       targetEntity.shield = -10;
     }
     if (adjustedCard.properties.strengthen) {
+      if(entity.proficiency.strengthen && entity.proficiency.strengthen > 0 && adjustedCard.properties.strengthen > 0){
+        targetEntity.strengthen += (adjustedCard.properties.strengthen + entity.proficiency.strengthen);
       actions.push(
-        `${actingEntity.role} deals ${adjustedCard.properties.strengthen} strengthen to ${targetEntity.role}`
+        `${actingEntity.role} deals ${adjustedCard.properties.strengthen + entity.proficiency.strengthen} strengthen to ${targetEntity.role}`
       );
-      targetEntity.strengthen += adjustedCard.properties.strengthen;
+      } else if(entity.proficiency.strengthen && entity.proficiency.strengthen > 0 && adjustedCard.properties.strengthen < 0){
+        targetEntity.strengthen += (adjustedCard.properties.strengthen - entity.proficiency.strengthen);
+      actions.push(
+        `${actingEntity.role} deals ${adjustedCard.properties.strengthen - entity.proficiency.strengthen} strengthen to ${targetEntity.role}`
+      );
+      } 
+      else {
+        targetEntity.strengthen += adjustedCard.properties.strengthen;
+        actions.push(
+          `${actingEntity.role} deals ${adjustedCard.properties.strengthen} strengthen to ${targetEntity.role}`
+        );
+      }
       if (adjustedCard.properties.strengthen) {
         const strengthText = adjustedCard.properties.strengthen > 0 ? '+' + adjustedCard.properties.strengthen : adjustedCard.properties.strengthen;
         const color = adjustedCard.properties.strengthen > 0 ? 'blue' : 'yellow';
