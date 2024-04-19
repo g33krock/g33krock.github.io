@@ -1,8 +1,6 @@
 // import { roleProficiencies } from "../models/Player.mjs";
 import { roleProficiencies } from "../../src/engine/objects/proficiencies.mjs";
 
-console.log(roleProficiencies)
-
 document.addEventListener("DOMContentLoaded", () => {
   const partySizeSelector = document.getElementById("party-size");
   const roleSelectionColumn = document.getElementById("role-selection-column");
