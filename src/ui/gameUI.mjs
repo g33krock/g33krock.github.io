@@ -136,11 +136,12 @@ function createDeckVisual(entity, index) {
     cardVisualDiv.classList.add("card-visual");
     cardVisualDiv.style.transform = `rotate(${(i - 1) * 5}deg)`;
     cardVisualDiv.style.position = "absolute";
+    cardVisualDiv.style.top = "-50px"; 
     cardVisualDiv.style.left = `${i * 5}px`;
     cardVisualDiv.style.backgroundImage = `url('../../images/${entity.role}.png')`;
     cardVisualDiv.style.backgroundColor = `black`;
-    cardVisualDiv.style.width = "70px";
-    cardVisualDiv.style.height = "100px";
+    cardVisualDiv.style.width = "110px";
+    cardVisualDiv.style.height = "150px";
     deckVisualDiv.appendChild(cardVisualDiv);
   }
   return deckVisualDiv;
