@@ -6,7 +6,7 @@ export function applyLycanthropyEffect(entity) {
     let lycanthropyDeck = [
       {
         name: "scratch",
-        properties: { target: 3, health: -3, shot: -1, counter: 2, aggro: 3 },
+        properties: { target: 3, health: -3, shot: -1, counter: 2, aggro: 3, info: "3 damage to single target \n -1 health counters \n to single target \n aggro:3" },
         frequency: 6,
       },
       {
@@ -17,6 +17,7 @@ export function applyLycanthropyEffect(entity) {
           aggro: 3,
           counter: 3,
           lycanthropy: 1,
+          info: "8 damage to single target \n 3 lycanthropy counters \n to single target \n aggro:3"
         },
         frequency: 5,
       },
@@ -29,12 +30,13 @@ export function applyLycanthropyEffect(entity) {
           stot: -1,
           counter: 2,
           aggro: 5,
+          info: "5 damage to all enemies \n 3 -1 health counters \n to all enemies \n aggro:5"
         },
         frequency: 3,
       },
       {
         name: "monster heal",
-        properties: { target: 0, health: 10, aggro: 3 },
+        properties: { target: 0, health: 10, aggro: 3, info: "10 health to self  \n aggro:3" },
         frequency: 1,
       },
     ];
@@ -63,6 +65,7 @@ export function applyLycanthropyEffect(entity) {
           health: -3,
           target: 3,
           aggro: 3,
+          info: "3 damage to single enemy \n 3 health to self \n aggro:3"
         },
         frequency: 8
       },
@@ -72,6 +75,7 @@ export function applyLycanthropyEffect(entity) {
           target: 0,
           aggro: 2,
           health: 3,
+          info: "heals self for 3 \n aggro:2"
         },
         frequency: 4
       },
@@ -81,6 +85,7 @@ export function applyLycanthropyEffect(entity) {
           target: 0,
           aggro: 2,
           shield: 2,
+          info: "shield 2 to single ally \n aggro:2"
         },
         frequency: 4
       },
@@ -90,6 +95,7 @@ export function applyLycanthropyEffect(entity) {
           target: 3,
           aggro: 3,
           health: 3,
+          info: "heals self for 3 \n aggro:2"
         },
         frequency: 4
       },
