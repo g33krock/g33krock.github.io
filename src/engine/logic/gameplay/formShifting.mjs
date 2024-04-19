@@ -80,12 +80,11 @@ export function applyLycanthropyEffect(entity) {
         frequency: 4
       },
       {
-        name: "shield",
+        name: "vanish",
         properties: {
           target: 0,
-          aggro: 2,
-          shield: 2,
-          info: "shield 2 to single ally \n aggro:2"
+          aggro: -4,
+          info: "aggro:-4 \n"
         },
         frequency: 4
       },
