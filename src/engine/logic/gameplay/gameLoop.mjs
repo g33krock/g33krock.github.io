@@ -95,9 +95,11 @@ function checkGameOver() {
   if (!heroes.some((h) => h.alive)) {
     winner = "Monsters";
     console.log("Monsters win the game!");
+    window.location.href = "../../../../index.html";
   } else if (!monsters.some((m) => m.alive)) {
     winner = "Heroes";
     console.log("Heroes win the game!");
+    window.location.href = "../../../../index.html";
   }
 
   // Additional handling if the game has ended
