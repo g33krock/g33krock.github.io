@@ -9,30 +9,40 @@ export const selectedHeroes = playerConfigurations.map(player => player.role);
 
 const powerLimit = 3 * playerConfigurations.length;
 
-// Function to randomly select monsters without exceeding the power limit
 function selectMonsters(limit) {
     const availableMonsters = entities.filter(e => e.faction === "monster");
     let totalPower = 0;
     let selectedMonsters = [];
 
-    // Randomize array order
-    availableMonsters.sort(() => Math.random() - 0.5);
+    // Continue selecting monsters while there is power left and the pool has monsters
+    while (totalPower < limit && availableMonsters.length > 0) {
+        // Randomly pick a monster each time to allow duplicates
+        const randomIndex = Math.floor(Math.random() * availableMonsters.length);
+        const monster = availableMonsters[randomIndex];
 
-    // Select monsters until the power limit is reached or all monsters are considered
-    for (const monster of availableMonsters) {
+        // Check if adding this monster exceeds the power limit
         if (totalPower + monster.power <= limit) {
             selectedMonsters.push(monster.role);
             totalPower += monster.power;
+        } else {
+            break; // If the monster cannot be added without exceeding the limit, stop trying
         }
     }
+
     return selectedMonsters;
 }
 
+
 export const selectedMonsters = selectMonsters(powerLimit);
 
-const heroesWithDecks = selectedHeroes.map(hero => {
-    const entity = entities.find(e => e.role === hero);
-    return buildInitialDeck(entity, cards);
+const entityMap = new Map(entities.map(e => [e.role, e]));
+const heroesWithDecks = selectedHeroes.map((hero, index) => {
+    const entity = entityMap.get(hero);
+    if (entity) {
+        const clonedEntity = { ...entity, id: `entity-${index}` };
+        return buildInitialDeck(clonedEntity, cards);
+    }
+    return null;
 });
 
 const monstersWithDecks = selectedMonsters.map(monster => {

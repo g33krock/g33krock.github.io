@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ).map((select) => select.value);
 
     const playerConfigurations = selectedRoles.map((role, index) => ({
+      id: `entity-${index}`,
       role: role,
       proficiency: selectedProficiencies[index],
     }));

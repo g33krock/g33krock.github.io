@@ -2,21 +2,23 @@ import { roleProficiencies } from "../objects/proficiencies.mjs";
 import { playerConfigurations } from "./entitySelection.mjs";
 
 export function assignProficiencies(entities) {
+    // Iterate through each entity to assign proficiencies
     return entities.map(entity => {
-        // Find the player configuration for the current entity's role
-        const playerConfig = playerConfigurations.find(pc => pc.role === entity.role);
+        console.log(entity)
+        // Match the entity with its configuration based on an identifier or additional logic
+        const playerConfig = playerConfigurations.find(pc => pc.id === entity.id); // Assuming entity.id needs to match pc.id
+
         if (playerConfig) {
-            // Get proficiencies array for the entity's role
+            // Retrieve proficiencies specific to the role defined in the matched configuration
             const proficiencies = roleProficiencies[entity.role];
-            if (proficiencies && proficiencies.length > 0) {
-                // Find the specific proficiency from roleProficiencies that matches the name specified in playerConfiguration
-                const selectedProficiency = proficiencies.find(p => p.name === playerConfig.proficiency);
-                if (selectedProficiency) {
-                    entity.proficiency = selectedProficiency;
-                }
+            // Find the specific proficiency from roleProficiencies that matches the name specified in the matched configuration
+            const selectedProficiency = proficiencies.find(p => p.name === playerConfig?.proficiency);
+
+            if (selectedProficiency) {
+                entity.proficiency = selectedProficiency;
             }
         }
-        
+
         // Assign boolean properties based on the selected proficiency
         if (entity.proficiency) {
             entity.flameShield = !!entity.proficiency.isFlameShield;
