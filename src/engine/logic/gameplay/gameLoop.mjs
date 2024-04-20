@@ -110,6 +110,7 @@ function checkGameOver() {
 export async function checkAndProgressRound() {
   if (!isMonstersTurnProcessing) {
     const allHeroesDone = heroes.every(hero => hero.turnTaken);
+    checkGameOver();
     if (allHeroesDone) {
       await executeMonstersTurn();  // Await for the completion of the monsters' turn
       resetShield(monsters);
