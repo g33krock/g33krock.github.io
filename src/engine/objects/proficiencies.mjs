@@ -25,7 +25,7 @@ export const roleProficiencies = {
       { name: "Balance", shieldAll: 1, strengthenAll: 1, info:"all players get +1 strength and +1 shield while active" },
     ],
     'druid': [
-      { name: "Bear", shield: 5, damageModifier: -1, info:"+5 shield to self each round, -1 to hit" },
+      { name: "Bear", shieldSelf: 3, damageModifier: 1, info:"+3 shield to self each round, +1 to hit" },
       { name: "Panther", aggroModifier: -1, damageModifier: 3, info:"-1 aggro each round, +3 to hit" },
       { name: "Life", healModifier: 3, strengthen: 2, info:"+3 to heals, +2 to strengthen self or others" },
     ],
