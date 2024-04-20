@@ -93,8 +93,9 @@ export function applyLycanthropyEffect(entity) {
         properties: {
           target: 3,
           aggro: 3,
-          health: 3,
-          info: "heals self for 3 \n aggro:2"
+          shield: -2,
+          strength: -2,
+          info: "-2 shield to single enemy \n -2 strength to single enemy \n aggro:3"
         },
         frequency: 4
       },

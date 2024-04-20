@@ -379,6 +379,7 @@ function displayActions(actions) {
     actionDiv.textContent = action;
     actionsContainer.appendChild(actionDiv);
   });
+  actionsContainer.scrollTop = actionsContainer.scrollHeight;
 }
 
 // document.getElementById("nextRound").addEventListener("click", () => {

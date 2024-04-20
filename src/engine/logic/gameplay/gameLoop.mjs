@@ -114,7 +114,7 @@ export async function checkAndProgressRound() {
       await executeMonstersTurn();  // Await for the completion of the monsters' turn
       resetShield(monsters);
       resetStrengthen(heroes);
-      actions = [];
+      // actions = [];
       startNextRound(); // Maybe this needs to be safeguarded or adjusted as well
       updateUI();
     }
