@@ -32,6 +32,6 @@ export const roleProficiencies = {
     'death knight': [
       { name: "Frozen", isFrostShield: true, info:"when you are hit, give the attacker -3 strength immediately and -3 strength next round" },
       { name: "Torment", isAggroLife: true, info:"start encounter with 10 aggro, attacks will affect your aggro instead of health, when aggro is 0 you are dead" },
-      { name: "Plague", additionalCounters: 2, info:"when applying counters, get an extra 2 counters" },
+      { name: "Plague", additionalCounters: 3, info:"when applying counters, get an extra 3 counters" },
     ],
   };
