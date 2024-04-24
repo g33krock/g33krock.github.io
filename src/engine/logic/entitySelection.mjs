@@ -1,5 +1,5 @@
 import { buildInitialDeck } from "./buildDecks.mjs";
-import { entities } from "../objects/entities.mjs";
+import { entities } from "./state/stateManager.mjs";
 import { cards } from "../objects/cards.mjs";
 import { assignProficiencies } from "./assignProficiencies.mjs";
 
@@ -7,30 +7,37 @@ export let playerConfigurations = JSON.parse(localStorage.getItem('playerConfigu
 
 export const selectedHeroes = playerConfigurations.map(player => player.role);
 
-const powerLimit = 3 * playerConfigurations.length;
+const powerLimit = entities.filter(entity => !entity.locked && entity.faction === 'hero').reduce((acc, entity) => acc + entity.power, 0);
 
 function selectMonsters(limit) {
-    const availableMonsters = entities.filter(e => e.faction === "monster");
-    let totalPower = 0;
     let selectedMonsters = [];
 
-    // Continue selecting monsters while there is power left and the pool has monsters
-    while (totalPower < limit && availableMonsters.length > 0) {
-        // Randomly pick a monster each time to allow duplicates
-        const randomIndex = Math.floor(Math.random() * availableMonsters.length);
-        const monster = availableMonsters[randomIndex];
+    do {
+        const availableMonsters = entities.filter(e => e.faction === "monster");
+        let totalPower = 0;
+        selectedMonsters = []; // Reset the selected monsters list for each attempt
 
-        // Check if adding this monster exceeds the power limit
-        if (totalPower + monster.power <= limit) {
-            selectedMonsters.push(monster.role);
-            totalPower += monster.power;
-        } else {
-            break; // If the monster cannot be added without exceeding the limit, stop trying
+        while (totalPower < limit && availableMonsters.length > 0) {
+            // Randomly pick a monster each time to allow duplicates
+            const randomIndex = Math.floor(Math.random() * availableMonsters.length);
+            const monster = availableMonsters[randomIndex];
+
+            // Check if adding this monster exceeds the power limit
+            if (totalPower + monster.power <= limit) {
+                selectedMonsters.push(monster.role);
+                totalPower += monster.power;
+            } else {
+                // If the monster cannot be added without exceeding the limit, try another one
+                availableMonsters.splice(randomIndex, 1); // Remove the selected monster from the pool
+            }
         }
-    }
+
+        // The loop will rerun if no monsters were selected
+    } while (selectedMonsters.length === 0 && entities.some(e => e.faction === "monster" && e.power <= limit));
 
     return selectedMonsters;
 }
+
 
 
 export const selectedMonsters = selectMonsters(powerLimit);

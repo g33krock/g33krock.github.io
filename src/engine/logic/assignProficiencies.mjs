@@ -1,4 +1,4 @@
-import { roleProficiencies } from "../objects/proficiencies.mjs";
+import { roleProficiencies } from "./state/stateManager.mjs";
 import { playerConfigurations } from "./entitySelection.mjs";
 
 export function assignProficiencies(entities) {

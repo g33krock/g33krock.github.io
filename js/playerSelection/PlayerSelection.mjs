@@ -1,18 +1,52 @@
-// import { roleProficiencies } from "../models/Player.mjs";
-import { roleProficiencies } from "../../src/engine/objects/proficiencies.mjs";
+import { getProficiencies, getEntities, resetGame } from "../../src/engine/logic/state/stateManager.mjs";
+
+function updatePartySizeOptions() {
+  const partySizeSelector = document.getElementById("party-size");
+  const playerRoles = getEntities().filter(entity => entity.faction === 'hero' && !entity.locked).map(entity => entity.role);
+
+  partySizeSelector.innerHTML = '';  // Clear existing options
+
+  // Create and append a default "select" option
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "0";
+  defaultOption.textContent = "Select Your Party Size";
+  defaultOption.disabled = true;
+  defaultOption.selected = true;
+  partySizeSelector.appendChild(defaultOption);
+
+  // Append options based on the number of available roles
+  const maxOptions = Math.min(playerRoles.length, 5);
+  for (let i = 1; i <= maxOptions; i++) {
+      const option = document.createElement("option");
+      option.value = i.toString();
+      option.textContent = i.toString();
+      partySizeSelector.appendChild(option);
+  }
+
+  // Initialize with the first real option if available
+  if (playerRoles.length > 0) {
+      partySizeSelector.value = "1";
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
+  updatePartySizeOptions();
+  const roleProficiencies = getProficiencies();
+  const entities = getEntities();
   const partySizeSelector = document.getElementById("party-size");
   const roleSelectionColumn = document.getElementById("role-selection-column");
   const proficiencySelectionColumn = document.getElementById("proficiency-selection-column");
   const form = document.getElementById("party-selection-form");
   const startGameButton = document.querySelector("button[type='submit']");
+  const resetButton = document.getElementById("reset-game-button");
+    if (resetButton) {
+        resetButton.addEventListener("click", resetPaperDungeon);
+    }
 
   startGameButton.disabled = true; // Disable the start game button by default
 
-  const playerRoles = [
-    "warrior", "cleric", "rogue", "mage", "paladin", "druid", "death knight",
-  ];
+  const playerRoles = entities.filter(entity => entity.faction === 'hero' && !entity.locked).map(entity => entity.role);
+  console.log(roleProficiencies)
 
   function updateStartButtonState() {
       let allSelected = true;
@@ -48,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
         profSelect.classList.add("select-style");
         profSelect.classList.add("fire-option");
         profSelect.innerHTML = "";
-        proficiencies.forEach((prof) => {
+        proficiencies.filter(prof => !prof.locked).forEach((prof) => {
           const option = document.createElement("option");
           option.value = prof.name;
           option.textContent = prof.name;
@@ -127,6 +161,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // window.location.href = "../../gameplay.html";
     window.location.href = "../../src/index.html";
   });
+
+  async function resetPaperDungeon() {
+    localStorage.removeItem("playerConfigurations");
+    localStorage.removeItem("selectedRoles");
+    await resetGame();
+    document.getElementById("party-selection-form").reset();
+    updatePartySizeOptions();
+    roleSelectionColumn.innerHTML = '';
+    proficiencySelectionColumn.innerHTML = '';
+    console.log("Game has been reset.");
+    generateRoleAndProficiencySelections(parseInt(partySizeSelector.value, 10));
+}
 
   generateRoleAndProficiencySelections(parseInt(partySizeSelector.value, 10));
 });

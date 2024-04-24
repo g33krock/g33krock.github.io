@@ -1,23 +1,23 @@
 export const entities = [
-  {
-    role: "onion knight",
-    health: 20,
-    shield: 0,
-    strengthen: 0,
-    aggro: 0,
-    effects: [],
-    faction: "hero",
-    alive: true,
-    proficiency: {},
-    
-    power: 1,
-    defaultDeck: [
-      { cardName: "strike", frequency: 5 },
-      { cardName: "bandage", frequency: 5 },
-      { cardName: "shield", frequency: 5 },
-      { cardName: "disengage", frequency: 5 },
-    ],
-  },
+  // {
+  //   role: "onion knight",
+  //   health: 20,
+  //   shield: 0,
+  //   strengthen: 0,
+  //   aggro: 0,
+  //   effects: [],
+  //   faction: "hero",
+  //   alive: true,
+  //   proficiency: {},
+  //   locked: true,
+  //   power: 1,
+  //   defaultDeck: [
+  //     { cardName: "strike", frequency: 5 },
+  //     { cardName: "bandage", frequency: 5 },
+  //     { cardName: "shield", frequency: 5 },
+  //     { cardName: "disengage", frequency: 5 },
+  //   ],
+  // },
   {
     role: "warrior",
     health: 30,
@@ -28,8 +28,8 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    
-    power: 3,
+    locked: false,
+    power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 4 },
       { cardName: "bandage", frequency: 2 },
@@ -51,8 +51,8 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    
-    power: 3,
+    locked: true,
+    power: 1,
     defaultDeck: [
       { cardName: "rejuvinate", frequency: 3 },
       { cardName: "empower", frequency: 3 },
@@ -72,8 +72,8 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    
-    power: 3,
+    locked: true,
+    power: 1,
     defaultDeck: [
       { cardName: "poison", frequency: 4 },
       { cardName: "venom blade", frequency: 3 },
@@ -95,8 +95,8 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    
-    power: 3,
+    locked: true,
+    power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 3 },
       { cardName: "fireball", frequency: 4 },
@@ -117,8 +117,8 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    
-    power: 3,
+    locked: true,
+    power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 6 },
       { cardName: "selfless sacrifice", frequency: 2 },
@@ -138,8 +138,8 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    
-    power: 3,
+    locked: true,
+    power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 3 },
       { cardName: "poison", frequency: 4 },
@@ -159,8 +159,8 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    
-    power: 3,
+    locked: true,
+    power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 4 },
       { cardName: "siphon life", frequency: 2 },
@@ -259,12 +259,12 @@ export const entities = [
     alive: true,
     proficiency: {},
     
-    power: 1,
+    power: 3,
     defaultDeck: [
       { cardName: "scratch", frequency: 3 },
-      { cardName: "bite", frequency: 2 },
+      { cardName: "bite", frequency: 3 },
       { cardName: "swipe", frequency: 3},
-      { cardName: "monster heal", frequency: 2},
+      { cardName: "monster heal", frequency: 1},
     ],
   },
   {

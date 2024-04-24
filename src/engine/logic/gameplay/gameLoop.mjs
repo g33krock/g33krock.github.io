@@ -6,11 +6,11 @@ import {
   resetShield,
   resetStrengthen,
   processEndOfTurnEffects,
-  removeDefeatedHeroes,
-  removeDefeatedMonsters,
   applyProficiencyEffects
 } from "./playTurns.mjs";
 import { updateUI } from "../../../ui/gameUI.mjs";
+import { increasePower, unlockHero, unlockProficiency } from "../state/stateManager.mjs";
+
 
 let roundCounter = 0;
 let winner = "";
@@ -99,12 +99,15 @@ function checkGameOver() {
   } else if (!monsters.some((m) => m.alive)) {
     winner = "Heroes";
     console.log("Heroes win the game!");
-    window.location.href = "../../../../index.html";
+    window.location.href = "../../../playerSelect.html";
   }
 
   // Additional handling if the game has ended
   if (winner) {
     console.log(`${winner} wins!`);
+    unlockProficiency();
+    unlockHero();
+    increasePower();
     // Code to handle end of the game, e.g., restarting or updating the UI
   }
 }
