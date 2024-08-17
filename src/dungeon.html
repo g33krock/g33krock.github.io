@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dungeon Generator</title>
+    <title>Dungeon Crawler</title>
     <link rel="stylesheet" href="dungeon.css">
 </head>
 <body>
-    <button onclick="generateDungeon()">Generate Dungeon</button>
     <div id="dungeon"></div>
-    <script src="dungeon/dungeon.mjs" type="module"></script>
+    <div id="fight-screen" style="display: none;">
+        <h1>Fight!</h1>
+        <div id="fight-info"></div>
+        <button id="fight-button">Fight</button>
+    </div>
+    <script src="dungeon/dungeon.mjs"  type="module"></script>
 </body>
 </html>

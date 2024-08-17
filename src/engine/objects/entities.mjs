@@ -1,25 +1,8 @@
 export const entities = [
-  // {
-  //   role: "onion knight",
-  //   health: 20,
-  //   shield: 0,
-  //   strengthen: 0,
-  //   aggro: 0,
-  //   effects: [],
-  //   faction: "hero",
-  //   alive: true,
-  //   proficiency: {},
-  //   locked: true,
-  //   power: 1,
-  //   defaultDeck: [
-  //     { cardName: "strike", frequency: 5 },
-  //     { cardName: "bandage", frequency: 5 },
-  //     { cardName: "shield", frequency: 5 },
-  //     { cardName: "disengage", frequency: 5 },
-  //   ],
-  // },
+  // Existing entities
   {
     role: "warrior",
+    types: ["physical", "earth"],
     health: 30,
     shield: 0,
     strengthen: 0,
@@ -43,6 +26,7 @@ export const entities = [
   },
   {
     role: "cleric",
+    types: ["light", "nature"],
     health: 15,
     shield: 0,
     strengthen: 0,
@@ -51,7 +35,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    locked: true,
+    locked: false,
     power: 1,
     defaultDeck: [
       { cardName: "rejuvinate", frequency: 3 },
@@ -64,6 +48,7 @@ export const entities = [
   },
   {
     role: "rogue",
+    types: ["poison", "dark"],
     health: 20,
     shield: 0,
     strengthen: 0,
@@ -72,7 +57,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    locked: true,
+    locked: false,
     power: 1,
     defaultDeck: [
       { cardName: "poison", frequency: 4 },
@@ -87,6 +72,7 @@ export const entities = [
   },
   {
     role: "mage",
+    types: ["arcane", "fire"],
     health: 15,
     shield: 0,
     strengthen: 0,
@@ -95,7 +81,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    locked: true,
+    locked: false,
     power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 3 },
@@ -109,6 +95,7 @@ export const entities = [
   },
   {
     role: "paladin",
+    types: ["light", "physical"],
     health: 25,
     shield: 0,
     strengthen: 0,
@@ -117,7 +104,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    locked: true,
+    locked: false,
     power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 6 },
@@ -130,6 +117,7 @@ export const entities = [
   },
   {
     role: "druid",
+    types: ["nature", "poison"],
     health: 25,
     shield: 0,
     strengthen: 0,
@@ -138,7 +126,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    locked: true,
+    locked: false,
     power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 3 },
@@ -151,6 +139,7 @@ export const entities = [
   },
   {
     role: "death knight",
+    types: ["dark", "frost"],
     health: 25,
     shield: 0,
     strengthen: 0,
@@ -159,7 +148,7 @@ export const entities = [
     faction: "hero",
     alive: true,
     proficiency: {},
-    locked: true,
+    locked: false,
     power: 1,
     defaultDeck: [
       { cardName: "strike", frequency: 4 },
@@ -172,7 +161,31 @@ export const entities = [
     ],
   },
   {
+    role: "bard",
+    types: ["arcane", "light"],
+    health: 25,
+    shield: 0,
+    strengthen: 0,
+    aggro: 0,
+    effects: [],
+    faction: "hero",
+    alive: true,
+    proficiency: {},
+    locked: false,
+    power: 1,
+    defaultDeck: [
+      { cardName: "strike", frequency: 4 },
+      { cardName: "humiliate", frequency: 2 },
+      { cardName: "shield", frequency: 2 },
+      { cardName: "healing word", frequency: 2 },
+      { cardName: "power chord", frequency: 4 },
+      { cardName: "inspiring medley", frequency: 3 },
+      { cardName: "cutting remark", frequency: 5 },
+    ],
+  },
+  {
     role: "goblin",
+    types: ["physical", "dark"],
     health: 10,
     shield: 0,
     strengthen: 0,
@@ -181,17 +194,16 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    
     power: 1,
     defaultDeck: [
       { cardName: "slash", frequency: 8 },
-      // { cardName: "evade", frequency: 6 },
       { cardName: "quick attack", frequency: 5 },
       { cardName: "regenerate", frequency: 1 },
     ],
   },
   {
     role: "skeleton",
+    types: ["dark", "physical"],
     health: 15,
     shield: 0,
     strengthen: 0,
@@ -200,7 +212,6 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    
     power: 2,
     defaultDeck: [
       { cardName: "slash", frequency: 8 },
@@ -211,6 +222,7 @@ export const entities = [
   },
   {
     role: "vampire",
+    types: ["dark", "blood"],
     health: 15,
     shield: 0,
     strengthen: 0,
@@ -219,7 +231,6 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    
     power: 3,
     defaultDeck: [
       { cardName: "scratch", frequency: 4 },
@@ -230,6 +241,7 @@ export const entities = [
   },
   {
     role: "werewolf",
+    types: ["dark", "nature"],
     health: 20,
     shield: 0,
     strengthen: 0,
@@ -238,18 +250,18 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    
     power: 3,
     defaultDeck: [
       { cardName: "strike", frequency: 3 },
       { cardName: "bandage", frequency: 2 },
-      { cardName: "shield", frequency: 3},
-      { cardName: "disengage", frequency: 2},
+      { cardName: "shield", frequency: 3 },
+      { cardName: "disengage", frequency: 2 },
       { cardName: "lycanthropy", frequency: 10 },
     ],
   },
   {
     role: "orc",
+    types: ["physical", "earth"],
     health: 25,
     shield: 0,
     strengthen: 0,
@@ -258,17 +270,17 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    
     power: 3,
     defaultDeck: [
       { cardName: "scratch", frequency: 3 },
       { cardName: "bite", frequency: 3 },
-      { cardName: "swipe", frequency: 3},
-      { cardName: "monster heal", frequency: 1},
+      { cardName: "swipe", frequency: 3 },
+      { cardName: "monster heal", frequency: 1 },
     ],
   },
   {
     role: "ogre",
+    types: ["earth", "physical"],
     health: 35,
     shield: 0,
     strengthen: 0,
@@ -277,7 +289,6 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    
     power: 6,
     defaultDeck: [
       { cardName: "crush", frequency: 8 },
@@ -288,6 +299,7 @@ export const entities = [
   },
   {
     role: "mindflayer",
+    types: ["psychic", "dark"],
     health: 25,
     shield: 0,
     strengthen: 0,
@@ -296,7 +308,6 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    
     power: 9,
     defaultDeck: [
       { cardName: "mind blast", frequency: 8 },
@@ -307,6 +318,7 @@ export const entities = [
   },
   {
     role: "dragon",
+    types: ["fire", "arcane"],
     health: 50,
     shield: 0,
     strengthen: 0,
@@ -315,13 +327,110 @@ export const entities = [
     faction: "monster",
     alive: true,
     proficiency: {},
-    
     power: 12,
     defaultDeck: [
       { cardName: "fire breath", frequency: 8 },
       { cardName: "tail swipe", frequency: 6 },
       { cardName: "wing gust", frequency: 5 },
       { cardName: "fiery regeneration", frequency: 1 },
+    ],
+  },
+  // New entities
+  {
+    role: "elemental",
+    types: ["fire", "earth"],
+    health: 20,
+    shield: 0,
+    strengthen: 0,
+    aggro: 0,
+    effects: [],
+    faction: "monster",
+    alive: true,
+    proficiency: {},
+    power: 4,
+    defaultDeck: [
+      { cardName: "flame wave", frequency: 4 },
+      { cardName: "earthquake", frequency: 4 },
+      { cardName: "rock shield", frequency: 3 },
+      { cardName: "magma surge", frequency: 3 },
+    ],
+  },
+  {
+    role: "necromancer",
+    types: ["dark", "arcane"],
+    health: 18,
+    shield: 0,
+    strengthen: 0,
+    aggro: 0,
+    effects: [],
+    faction: "monster",
+    alive: true,
+    proficiency: {},
+    power: 6,
+    defaultDeck: [
+      { cardName: "dark reaping", frequency: 4 },
+      { cardName: "summon skeleton", frequency: 3 },
+      { cardName: "arcane barrier", frequency: 3 },
+      { cardName: "soul drain", frequency: 4 },
+    ],
+  },
+  {
+    role: "phoenix",
+    types: ["fire", "light"],
+    health: 22,
+    shield: 0,
+    strengthen: 0,
+    aggro: 0,
+    effects: [],
+    faction: "monster",
+    alive: true,
+    proficiency: {},
+    power: 5,
+    defaultDeck: [
+      { cardName: "phoenix flame", frequency: 4 },
+      { cardName: "rebirth", frequency: 2 },
+      { cardName: "blazing aura", frequency: 4 },
+      { cardName: "healing flame", frequency: 2 },
+    ],
+  },
+  {
+    role: "shaman",
+    types: ["nature", "psychic"],
+    health: 20,
+    shield: 0,
+    strengthen: 0,
+    aggro: 0,
+    effects: [],
+    faction: "hero",
+    alive: true,
+    proficiency: {},
+    locked: false,
+    power: 2,
+    defaultDeck: [
+      { cardName: "spirit link", frequency: 4 },
+      { cardName: "healing rain", frequency: 3 },
+      { cardName: "totem summon", frequency: 3 },
+      { cardName: "mind cleanse", frequency: 3 },
+    ],
+  },
+  {
+    role: "berserker",
+    types: ["physical", "blood"],
+    health: 28,
+    shield: 0,
+    strengthen: 0,
+    aggro: 0,
+    effects: [],
+    faction: "hero",
+    alive: true,
+    proficiency: {},
+    locked: false,
+    power: 3,
+    defaultDeck: [
+      { cardName: "frenzy", frequency: 4 },
+      { cardName: "blood rage", frequency: 4 },
+      { cardName: "reckless strike", frequency: 4 },
+      { cardName: "self-heal", frequency: 2 },
     ],
   },
 ];

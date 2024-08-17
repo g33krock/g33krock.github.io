@@ -1,82 +1,43 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
 #dungeon {
     display: grid;
-    grid-template-columns: repeat(20, 1fr); /* Each cell takes up an equal fraction of the total width */
-    width: 100vw; /* Set the width of the dungeon to 100% of the viewport width */
-    height: 100vh; /* Optional: You might want to limit the height if it becomes too tall */
-    /* grid-gap: 1px; */
-    box-sizing: border-box;
-    max-width: 100%; /* Ensure it does not exceed the screen width */
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 2px;
 }
 
-.cell {
-    width: 100%; /* Each cell will stretch to fill its fraction of the grid */
-    padding-top: 100%; /* Padding top as a percentage of the width creates a square */
-    position: relative; /* Needed to position the content of the cell using absolute positioning */
-    overflow: hidden;
-    background-image:url('../images/floor-tile.png');
-    background-size: cover;
-    background-repeat: no-repeat
+.tile {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
 }
 
-.cell img {
+.player {
+    background-color: blue;
+}
+
+.monster {
+    background-color: red;
+}
+
+#fight-screen {
     position: absolute;
-    z-index: 10;  /* Ensure the image is above other content */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.player img {
-    z-index: 100; /* Ensure this is higher to appear above all other cell content */
-}
-
-.cell::after {
-    content: '';
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #333; /* Default unseen color, changed dynamically */
-    transition: background-color 0.3s; /* Smooth transition for visibility changes */
-}
-
-.visible::after, .dim::after {
-    background-image:url('../images/floor-tile.png');
-    background-size: cover;
-    background-repeat: no-repeat
-}
-
-.wall.visible::after, .wall.dim::after {
-    background-color: black;
-    background-image: none
-}
-
-.player::after {
-    /* No more background-color needed */
-    content: '';
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-}
-
-
-.monster.visible::after, .monster.dim::after {
-    content: '';
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.fog::after {
-    background-color: #333; /* Unseen areas */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border: 2px solid black;
+    text-align: center;
 }

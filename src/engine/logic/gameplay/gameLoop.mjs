@@ -99,16 +99,14 @@ function checkGameOver() {
   } else if (!monsters.some((m) => m.alive)) {
     winner = "Heroes";
     console.log("Heroes win the game!");
-    window.location.href = "../../../playerSelect.html";
+    window.location.href = "../../../../dungeonCrawl/dungeonCrawl.html";
   }
 
-  // Additional handling if the game has ended
   if (winner) {
     console.log(`${winner} wins!`);
     unlockProficiency();
     unlockHero();
     increasePower();
-    // Code to handle end of the game, e.g., restarting or updating the UI
   }
 }
 

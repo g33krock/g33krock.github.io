@@ -2,6 +2,7 @@ export const cards = [
   {
     name: "strike",
     properties: {
+      types: ["physical", "earth"],
       target: 3,
       aggro: 2,
       health: -2,
@@ -11,6 +12,7 @@ export const cards = [
   {
     name: "bandage",
     properties: {
+      types: ["nature", "light"],
       target: 0,
       aggro: 2,
       health: 3,
@@ -20,6 +22,7 @@ export const cards = [
   {
     name: "heal",
     properties: {
+      types: ["light", "nature"],
       target: 2,
       aggro: 2,
       health: 2,
@@ -27,8 +30,53 @@ export const cards = [
     },
   },
   {
+    name: "humiliate",
+    properties: {
+      types: ["psychic", "dark"],
+      target: 3,
+      aggro: 4,
+      health: -2,
+      strengthen: -4,
+      info: "damage 2 to single enemy \n weaken 5 to a single enemy \n  aggro:4"
+    },
+  },
+  {
+    name: "cutting remark",
+    properties: {
+      types: ["psychic", "dark"],
+      target: 3,
+      aggro: 2,
+      health: -1,
+      strengthen: -1,
+      info: "damage 1 to single enemy \n weaken 1 to a single enemy \n  aggro:2"
+    },
+  },
+  {
+    name: "power chord",
+    properties: {
+      types: ["arcane", "light"],
+      target: 4,
+      aggro: 2,
+      health: 1,
+      strengthen: 1,
+      info: "strengthen 1 to single ally \n heal 1 to a single ally \n  aggro:2"
+    },
+  },
+  {
+    name: "inspiring medley",
+    properties: {
+      types: ["arcane", "light"],
+      target: 4,
+      aggro: 3,
+      health: 1,
+      strengthen: 1,
+      info: "heal 1 to all allies \n strengthen 1 to all allies \n  aggro:3"
+    },
+  },
+  {
     name: "shield",
     properties: {
+      types: ["earth", "arcane"],
       target: 2,
       aggro: 2,
       shield: 2,
@@ -38,6 +86,7 @@ export const cards = [
   {
     name: "grapple",
     properties: {
+      types: ["physical", "earth"],
       target: 3,
       aggro: 3,
       shield: -2,
@@ -48,6 +97,7 @@ export const cards = [
   {
     name: "plate armor",
     properties: {
+      types: ["earth", "physical"],
       shield: 3,
       shot: 3,
       counter: 2,
@@ -59,6 +109,7 @@ export const cards = [
   {
     name: "mirror shield",
     properties: {
+      types: ["arcane", "earth"],
       shield: 1,
       reflect: 1,
       counter: 1,
@@ -70,6 +121,7 @@ export const cards = [
   {
     name: "rejuvinate",
     properties: {
+      types: ["nature", "light"],
       health: 2,
       counter: 3,
       hot: 2,
@@ -81,6 +133,7 @@ export const cards = [
   {
     name: "empower",
     properties: {
+      types: ["light", "arcane"],
       shield: 1,
       strengthen: 1,
       target: 2,
@@ -91,6 +144,7 @@ export const cards = [
   {
     name: "weaken",
     properties: {
+      types: ["psychic", "dark"],
       shield: -1,
       strengthen: -1,
       target: 3,
@@ -101,6 +155,7 @@ export const cards = [
   {
     name: "poison",
     properties: {
+      types: ["poison", "dark"],
       counter: 3,
       hot: -1,
       stot: -1,
@@ -112,6 +167,7 @@ export const cards = [
   {
     name: "venom blade",
     properties: {
+      types: ["poison", "physical"],
       health: -2,
       counter: 2,
       hot: -1,
@@ -124,6 +180,7 @@ export const cards = [
   {
     name: "vanish",
     properties: {
+      types: ["arcane", "wind"],
       target: 0,
       aggro: -4,
       info: "aggro:-4 \n"
@@ -132,6 +189,7 @@ export const cards = [
   {
     name: "mastermind",
     properties: {
+      types: ["psychic", "arcane"],
       target: 0,
       aggro: 1,
       info: "draw 2 cards and play 1 \n aggro:1"
@@ -140,6 +198,7 @@ export const cards = [
   {
     name: "flurry",
     properties: {
+      types: ["physical", "wind"],
       target: 3,
       aggro: 1,
       info: "draw 2 cards and immediately \n play them against \n selected enemy \n aggro:1"
@@ -148,34 +207,38 @@ export const cards = [
   {
     name: "explosive poison trap",
     properties: {
+      types: ["poison", "fire"],
       target: 0,
       explosivePoisonTrap: 1,
       counter: 1,
       aggro: 3,
-      info: "1 explosive poison trap counter on self \n when enemy targets this entity \n enemy recieves 10 damage and 2 health -2 counters \n aggro:3"
+      info: "1 explosive poison trap counter on self \n when enemy targets this entity \n enemy receives 10 damage and 2 health -2 counters \n aggro:3"
     },
   },
   {
     name: "paralyzing trap",
     properties: {
+      types: ["poison", "psychic"],
       target: 0,
       aggro: 3,
       paralyzingTrap: 1,
       counter: 1,
-      info: "1 paralyzing trap counter on self \n when enemy targets this entity \n enemy recieves 2 interrupt counters \n aggro:3"
+      info: "1 paralyzing trap counter on self \n when enemy targets this entity \n enemy receives 2 interrupt counters \n aggro:3"
     },
   },
   {
     name: "disengage",
     properties: {
+      types: ["wind", "arcane"],
       target: 0,
       aggro: -2,
-      info: " aggro:-2 \n"
+      info: "aggro:-2 \n"
     },
   },
   {
     name: "fireball",
     properties: {
+      types: ["fire", "arcane"],
       health: -5,
       counter: 1,
       hot: -1,
@@ -187,6 +250,7 @@ export const cards = [
   {
     name: "spell block",
     properties: {
+      types: ["arcane", "psychic"],
       target: 3,
       aggro: 3,
       interrupt: 1,
@@ -197,6 +261,7 @@ export const cards = [
   {
     name: "freeze",
     properties: {
+      types: ["frost", "arcane"],
       health: -3,
       shield: 2,
       counter: 2,
@@ -209,6 +274,7 @@ export const cards = [
   {
     name: "illusion",
     properties: {
+      types: ["arcane", "psychic"],
       target: 0,
       aggro: 3,
       info: "create a copy of this player \n until end of round \n aggro:3"
@@ -217,6 +283,7 @@ export const cards = [
   {
     name: "selfless sacrifice",
     properties: {
+      types: ["light", "blood"],
       health: 5,
       target: 2,
       aggro: 2,
@@ -226,6 +293,7 @@ export const cards = [
   {
     name: "siphon life",
     properties: {
+      types: ["dark", "blood"],
       health: -3,
       target: 3,
       aggro: 3,
@@ -235,6 +303,7 @@ export const cards = [
   {
     name: "taunt",
     properties: {
+      types: ["physical", "earth"],
       target: 0,
       aggro: 5,
       info: "aggro:5 \n"
@@ -243,6 +312,7 @@ export const cards = [
   {
     name: "slash",
     properties: {
+      types: ["physical", "wind"],
       target: 3,
       health: -3,
       aggro: 2,
@@ -251,6 +321,7 @@ export const cards = [
   {
     name: "evade",
     properties: {
+      types: ["wind", "arcane"],
       target: 0,
       shield: 2,
       aggro: 2,
@@ -259,6 +330,7 @@ export const cards = [
   {
     name: "quick attack",
     properties: {
+      types: ["physical", "wind"],
       target: 3,
       shield: -2,
       health: -1,
@@ -268,6 +340,7 @@ export const cards = [
   {
     name: "regenerate",
     properties: {
+      types: ["nature", "light"],
       target: 0,
       counter: 3,
       hot: 2,
@@ -277,6 +350,7 @@ export const cards = [
   {
     name: "block",
     properties: {
+      types: ["earth", "physical"],
       target: 0,
       shield: 2,
       aggro: 2,
@@ -285,6 +359,7 @@ export const cards = [
   {
     name: "rend armor",
     properties: {
+      types: ["physical", "earth"],
       target: 3,
       shield: -5,
       aggro: 3,
@@ -294,6 +369,7 @@ export const cards = [
   {
     name: "scratch",
     properties: {
+      types: ["physical", "dark"],
       target: 3,
       health: -3,
       shot: -1,
@@ -305,6 +381,7 @@ export const cards = [
   {
     name: "bite",
     properties: {
+      types: ["physical", "dark"],
       target: 3,
       health: -8,
       aggro: 3,
@@ -314,6 +391,7 @@ export const cards = [
   {
     name: "swipe",
     properties: {
+      types: ["physical", "earth"],
       target: 5,
       health: -3,
       shot: -1,
@@ -326,6 +404,7 @@ export const cards = [
   {
     name: "monster heal",
     properties: {
+      types: ["nature", "dark"],
       target: 0,
       health: 10,
       aggro: 3,
@@ -335,6 +414,7 @@ export const cards = [
   {
     name: "crush",
     properties: {
+      types: ["physical", "earth"],
       target: 3,
       health: -5,
       shot: -2,
@@ -345,6 +425,7 @@ export const cards = [
   {
     name: "throw rock",
     properties: {
+      types: ["earth", "physical"],
       target: 3,
       health: -10,
       aggro: 4,
@@ -353,6 +434,7 @@ export const cards = [
   {
     name: "stomp",
     properties: {
+      types: ["earth", "physical"],
       target: 5,
       health: -3,
       shot: -2,
@@ -364,6 +446,7 @@ export const cards = [
   {
     name: "mind blast",
     properties: {
+      types: ["psychic", "arcane"],
       target: 3,
       health: -5,
       counter: 1,
@@ -374,6 +457,7 @@ export const cards = [
   {
     name: "psychic scream",
     properties: {
+      types: ["psychic", "dark"],
       target: 5,
       health: -5,
       shot: -1,
@@ -385,6 +469,7 @@ export const cards = [
   {
     name: "debilitate",
     properties: {
+      types: ["psychic", "dark"],
       target: 5,
       shot: -1,
       stot: -2,
@@ -395,6 +480,7 @@ export const cards = [
   {
     name: "reconstitute",
     properties: {
+      types: ["nature", "dark"],
       target: 0,
       counter: 3,
       hot: 5,
@@ -404,6 +490,7 @@ export const cards = [
   {
     name: "fire breath",
     properties: {
+      types: ["fire", "wind"],
       target: 3,
       health: -10,
       counter: 1,
@@ -414,6 +501,7 @@ export const cards = [
   {
     name: "tail swipe",
     properties: {
+      types: ["physical", "earth"],
       target: 5,
       health: -8,
       shot: -2,
@@ -425,6 +513,7 @@ export const cards = [
   {
     name: "wing gust",
     properties: {
+      types: ["wind", "arcane"],
       target: 5,
       shot: -3,
       stot: -3,
@@ -435,6 +524,7 @@ export const cards = [
   {
     name: "fiery regeneration",
     properties: {
+      types: ["fire", "light"],
       target: 0,
       counter: 3,
       hot: 10,
@@ -444,6 +534,7 @@ export const cards = [
   {
     name: "lycanthropy",
     properties: {
+      types: ["dark", "nature"],
       target: 0,
       counter: 3,
       lycanthropy: 1,
@@ -453,6 +544,7 @@ export const cards = [
   {
     name: "lycanthropic bite",
     properties: {
+      types: ["dark", "physical"],
       target: 1,
       health: -8,
       aggro: 3,
@@ -464,12 +556,218 @@ export const cards = [
   {
     name: "vampiric bite",
     properties: {
+      types: ["dark", "blood"],
       target: 3,
       health: -8,
       aggro: 3,
       counter: 3,
       vampirism: 1,
       info: "8 damage to single target \n 3 vampirism counters \n to single target \n aggro:3"
+    },
+  },
+  {
+    name: "flame wave",
+    properties: {
+      types: ["fire", "wind"],
+      target: 5,
+      aggro: 3,
+      health: -3,
+      info: "3 damage to all enemies \n aggro:3"
+    },
+  },
+  {
+    name: "earthquake",
+    properties: {
+      types: ["earth", "physical"],
+      target: 5,
+      aggro: 4,
+      health: -4,
+      shield: -2,
+      info: "4 damage to all enemies \n -2 shield to all enemies \n aggro:4"
+    },
+  },
+  {
+    name: "rock shield",
+    properties: {
+      types: ["earth", "light"],
+      target: 2,
+      aggro: 2,
+      shield: 4,
+      info: "4 shield to single ally \n aggro:2"
+    },
+  },
+  {
+    name: "magma surge",
+    properties: {
+      types: ["fire", "earth"],
+      target: 3,
+      aggro: 4,
+      health: -5,
+      hot: -2,
+      info: "5 damage to single enemy \n 2 health -2 counters to enemy \n aggro:4"
+    },
+  },
+  {
+    name: "dark reaping",
+    properties: {
+      types: ["dark", "psychic"],
+      target: 3,
+      aggro: 3,
+      health: -4,
+      info: "4 damage to single enemy \n aggro:3"
+    },
+  },
+  {
+    name: "summon skeleton",
+    properties: {
+      types: ["dark", "arcane"],
+      target: 0,
+      aggro: 3,
+      summon: 1,
+      info: "summons a skeleton minion \n aggro:3"
+    },
+  },
+  {
+    name: "arcane barrier",
+    properties: {
+      types: ["arcane", "light"],
+      target: 2,
+      aggro: 2,
+      shield: 3,
+      info: "3 shield to single ally \n aggro:2"
+    },
+  },
+  {
+    name: "soul drain",
+    properties: {
+      types: ["dark", "blood"],
+      target: 3,
+      aggro: 3,
+      health: -3,
+      heal: 3,
+      info: "3 damage to single enemy \n 3 health to self \n aggro:3"
+    },
+  },
+  {
+    name: "phoenix flame",
+    properties: {
+      types: ["fire", "light"],
+      target: 3,
+      aggro: 3,
+      health: -5,
+      info: "5 damage to single enemy \n aggro:3"
+    },
+  },
+  {
+    name: "rebirth",
+    properties: {
+      types: ["fire", "light"],
+      target: 0,
+      aggro: 0,
+      heal: 10,
+      info: "revives with 10 health \n aggro:0"
+    },
+  },
+  {
+    name: "blazing aura",
+    properties: {
+      types: ["fire", "arcane"],
+      target: 0,
+      aggro: 3,
+      health: 1,
+      strengthen: 1,
+      info: "1 heal and 1 strengthen to self \n aggro:3"
+    },
+  },
+  {
+    name: "healing flame",
+    properties: {
+      types: ["fire", "light"],
+      target: 2,
+      aggro: 2,
+      health: 4,
+      info: "4 health to single ally \n aggro:2"
+    },
+  },
+  {
+    name: "spirit link",
+    properties: {
+      types: ["psychic", "nature"],
+      target: 4,
+      aggro: 2,
+      health: 2,
+      info: "2 health to all allies \n aggro:2"
+    },
+  },
+  {
+    name: "healing rain",
+    properties: {
+      types: ["nature", "light"],
+      target: 5,
+      aggro: 3,
+      health: 3,
+      info: "3 health to all allies \n aggro:3"
+    },
+  },
+  {
+    name: "totem summon",
+    properties: {
+      types: ["nature", "arcane"],
+      target: 0,
+      aggro: 3,
+      summon: 1,
+      info: "summons a totem with 10 health \n aggro:3"
+    },
+  },
+  {
+    name: "mind cleanse",
+    properties: {
+      types: ["psychic", "light"],
+      target: 2,
+      aggro: 2,
+      removeDebuff: 1,
+      info: "removes one debuff from ally \n aggro:2"
+    },
+  },
+  {
+    name: "frenzy",
+    properties: {
+      types: ["physical", "blood"],
+      target: 3,
+      aggro: 3,
+      health: -3,
+      info: "3 damage to single enemy \n aggro:3"
+    },
+  },
+  {
+    name: "blood rage",
+    properties: {
+      types: ["blood", "dark"],
+      target: 0,
+      aggro: 4,
+      strengthen: 3,
+      info: "3 strengthen to self \n aggro:4"
+    },
+  },
+  {
+    name: "reckless strike",
+    properties: {
+      types: ["physical", "blood"],
+      target: 3,
+      aggro: 4,
+      health: -6,
+      selfDamage: 2,
+      info: "6 damage to single enemy \n 2 damage to self \n aggro:4"
+    },
+  },
+  {
+    name: "self-heal",
+    properties: {
+      types: ["nature", "blood"],
+      target: 0,
+      aggro: 2,
+      health: 4,
+      info: "4 health to self \n aggro:2"
     },
   },
 ];
