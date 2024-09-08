@@ -111,6 +111,7 @@ function checkGameOver() {
 }
 
 export async function checkAndProgressRound() {
+  console.log(heroes)
   if (!isMonstersTurnProcessing) {
     const allHeroesDone = heroes.every(hero => hero.turnTaken);
     checkGameOver();

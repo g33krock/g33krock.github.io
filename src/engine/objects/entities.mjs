@@ -134,7 +134,7 @@ export const entities = [
       { cardName: "heal", frequency: 4 },
       { cardName: "rejuvinate", frequency: 3 },
       { cardName: "disengage", frequency: 3 },
-      { cardName: "grapple", frequency: 3 },
+      { cardName: "summon spirit", frequency: 3 },
     ],
   },
   {
@@ -363,7 +363,7 @@ export const entities = [
     strengthen: 0,
     aggro: 0,
     effects: [],
-    faction: "monster",
+    faction: "hero",
     alive: true,
     proficiency: {},
     power: 6,
@@ -411,6 +411,8 @@ export const entities = [
       { cardName: "healing rain", frequency: 3 },
       { cardName: "totem summon", frequency: 3 },
       { cardName: "mind cleanse", frequency: 3 },
+      { cardName: "strike", frequency: 3 },
+      { cardName: "disengage", frequency: 3 },
     ],
   },
   {

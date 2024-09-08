@@ -1,5 +1,9 @@
 // playTurns.mjs
-import { actions, checkAndProgressRound, updateEntityStatus } from "./gameLoop.mjs";
+import {
+  actions,
+  checkAndProgressRound,
+  updateEntityStatus,
+} from "./gameLoop.mjs";
 import { shuffledHeroes, shuffledMonsters } from "./shuffleEntities.mjs";
 import {
   applyLycanthropyEffect,
@@ -9,67 +13,72 @@ import {
 } from "./formShifting.mjs";
 import { displayDrawnCards, updateUI } from "../../../ui/gameUI.mjs";
 import { createFloatingText } from "./actionEffects.mjs";
+import { cards } from "../../objects/cards.mjs";
+import { buildDeck } from "../buildDecks.mjs";
 
 export let heroes = shuffledHeroes;
 export let monsters = shuffledMonsters;
 
 // Function to delay execution
 function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-  
-  // Function to animate the hop
-  function animateHop(element) {
-    element.style.transition = 'transform 0.2s';
-    element.style.transform = 'translateY(-5px)';
-  
-    return new Promise(resolve => {
-      setTimeout(() => {
-        element.style.transform = 'translateY(0px)';
-        setTimeout(resolve, 200); // Ensure resolve is called after the animation completes
-      }, 200);
-    });
-  }
-  
-  export async function playMonstersTurn(activeFaction, opposingFaction) {
-    for (const monster of activeFaction) {
-      if (!monster.alive) continue;
-  
-      monster.turnTaken = false;
-      applyProficiencyEffects(monster, activeFaction);
-  
-      if (monster.effects.some(effect => effect.type === "interrupt" && effect.counter > 0)) {
-        console.log(`${monster.role} is interrupted and cannot act this turn.`);
-        monster.effects.forEach(effect => {
-          if (effect.type === "interrupt") effect.counter--;
-          if (effect.counter === 0) {
-            const index = monster.effects.indexOf(effect);
-            monster.effects.splice(index, 1);
-          }
-        });
-        await delay(1000);
-        await updateUI();
-        continue;
-      }
-  
-      const elementId = `entity-${monster.id}`;
-      const monsterElement = document.getElementById(elementId);
-      if (monsterElement) {
-        const deckVisual = monsterElement.querySelector('.deck-visual');
-        await animateHop(deckVisual);
-      } else {
-        console.log(`No element found for ${monster.role} with ID ${monster.id}`);
-      }
-  
-      simulateMonsterAction(monster, opposingFaction, activeFaction);
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Function to animate the hop
+function animateHop(element) {
+  element.style.transition = "transform 0.2s";
+  element.style.transform = "translateY(-5px)";
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      element.style.transform = "translateY(0px)";
+      setTimeout(resolve, 200); // Ensure resolve is called after the animation completes
+    }, 200);
+  });
+}
+
+export async function playMonstersTurn(activeFaction, opposingFaction) {
+  for (const monster of activeFaction) {
+    if (!monster.alive) continue;
+
+    monster.turnTaken = false;
+    applyProficiencyEffects(monster, activeFaction);
+
+    if (
+      monster.effects.some(
+        (effect) => effect.type === "interrupt" && effect.counter > 0
+      )
+    ) {
+      console.log(`${monster.role} is interrupted and cannot act this turn.`);
+      monster.effects.forEach((effect) => {
+        if (effect.type === "interrupt") effect.counter--;
+        if (effect.counter === 0) {
+          const index = monster.effects.indexOf(effect);
+          monster.effects.splice(index, 1);
+        }
+      });
       await delay(1000);
       await updateUI();
+      continue;
     }
-    resetShield(heroes);
-    resetStrengthen(monsters);
+
+    const elementId = `entity-${monster.id}`;
+    const monsterElement = document.getElementById(elementId);
+    if (monsterElement) {
+      const deckVisual = monsterElement.querySelector(".deck-visual");
+      await animateHop(deckVisual);
+    } else {
+      console.log(`No element found for ${monster.role} with ID ${monster.id}`);
+    }
+
+    simulateMonsterAction(monster, opposingFaction, activeFaction);
+    await delay(1000);
     await updateUI();
   }
-   
+  resetShield(heroes);
+  resetStrengthen(monsters);
+  await updateUI();
+}
 
 export function applyProficiencyEffects(entity, faction) {
   if (entity.proficiency) {
@@ -77,7 +86,9 @@ export function applyProficiencyEffects(entity, faction) {
       faction.forEach((e) => (e.shield += entity.proficiency.shieldAll));
     }
     if (entity.proficiency.strengthenAll) {
-      faction.forEach((e) => (e.strengthen += entity.proficiency.strengthenAll));
+      faction.forEach(
+        (e) => (e.strengthen += entity.proficiency.strengthenAll)
+      );
     }
     if (entity.proficiency.shieldSelf) {
       entity.shield += entity.proficiency.shieldSelf;
@@ -98,8 +109,8 @@ function simulateMonsterAction(monster, opposingFaction, activeFaction) {
   // Draw and select cards
   const drawnCards = drawCards(monster, 2, false);
   const selectedCard = selectCard(drawnCards);
-  console.log(selectedCard)
-  console.log(monster)
+  console.log(selectedCard);
+  console.log(monster);
   console.log(
     `Monster ${monster.role} selected the card: ${selectedCard.name}`
   );
@@ -113,33 +124,44 @@ function simulateMonsterAction(monster, opposingFaction, activeFaction) {
   );
   console.log(`Target selected: ${target.role}`);
 
-    // Apply shaking effect to the target
-    applyTargetEffect(target);
-
+  // Apply shaking effect to the target
+  applyTargetEffect(target);
 
   // Apply card effects
   applyDirectEffects(selectedCard, target, monster);
 
   processReactions(selectedCard, target, monster);
-  updateEntityStatus(monster)
-  updateEntityStatus(target)
+  updateEntityStatus(monster);
+  updateEntityStatus(target);
 
   // Update game state for the end of the monster's turn
   discardCards(monster, drawnCards);
 }
 
 export function drawCards(entity, count, flurry) {
-    console.log(entity)
-    if (entity.turnTaken && !flurry) {
-        console.log(`${entity.role} has already taken a turn this round.`);
-        return []; // Return an empty array to signify no cards drawn
-    } else {
-        entity.turnTaken = true; // Set turnTaken to true since cards are being drawn
-        const cardsDrawn = entity.deck.splice(0, count);
-        entity.deck.push(...cardsDrawn); // This line ensures that drawn cards are put back if necessary, or manage deck differently
-        return cardsDrawn;
-    }
+  console.log('you drew two cards');
+
+  // Ensure entity.drawnCards is initialized
+  if (!entity.drawnCards) {
+    entity.drawnCards = [];
+  }
+
+  if (!entity.deck || entity.deck.length === 0) {
+    console.log(`${entity.role} has no cards to draw.`);
+    return []; // No cards to draw if the deck is empty
+  }
+
+  if (entity.turnTaken && !flurry) {
+    console.log(`${entity.role} has already taken a turn this round.`);
+    return []; // Return an empty array to signify no cards drawn
+  } else {
+    entity.turnTaken = true; // Set turnTaken to true since cards are being drawn
+    const cardsDrawn = entity.deck.splice(0, count);
+    entity.drawnCards = [...cardsDrawn]; // Store drawn cards in entity.drawnCards
+    return cardsDrawn;
+  }
 }
+
 
 
 function selectCard(drawnCards) {
@@ -147,86 +169,93 @@ function selectCard(drawnCards) {
   return drawnCards[randomIndex];
 }
 
-function selectTarget(entity, card, opposingFaction, activeFaction) {  
-    // Original switch logic for target selection
-    switch (card.properties.target) {
-      case 0:
-        checkAndProgressRound();
-        return entity;
-      case 1:
-        checkAndProgressRound();
-        return [...activeFaction, ...opposingFaction][Math.floor(Math.random() * (activeFaction.length + opposingFaction.length))];
-      case 2:
-        checkAndProgressRound();
-        return activeFaction[Math.floor(Math.random() * activeFaction.length)];
-      case 3:
-        checkAndProgressRound();
-        // Initialize monsterSpecificAggro if not already set up
-        if (!entity.monsterSpecificAggro) {
-          entity.monsterSpecificAggro = {};
-          opposingFaction.forEach(target => entity.monsterSpecificAggro[target.id] = 0);
+function selectTarget(entity, card, opposingFaction, activeFaction) {
+  // Original switch logic for target selection
+  switch (card.properties.target) {
+    case 0:
+      checkAndProgressRound();
+      return entity;
+    case 1:
+      checkAndProgressRound();
+      return [...activeFaction, ...opposingFaction][
+        Math.floor(
+          Math.random() * (activeFaction.length + opposingFaction.length)
+        )
+      ];
+    case 2:
+      checkAndProgressRound();
+      return activeFaction[Math.floor(Math.random() * activeFaction.length)];
+    case 3:
+      checkAndProgressRound();
+      // Initialize monsterSpecificAggro if not already set up
+      if (!entity.monsterSpecificAggro) {
+        entity.monsterSpecificAggro = {};
+        opposingFaction.forEach(
+          (target) => (entity.monsterSpecificAggro[target.id] = 0)
+        );
+      }
+      // Calculate total aggro considering existing aggro, specific aggro, and a random component
+      return opposingFaction.reduce((selectedTarget, currentTarget) => {
+        const baseAggro = currentTarget.aggro;
+        const msAggro = entity.monsterSpecificAggro[currentTarget.id] || 0; // Safe access
+        const aggroVariation = Math.random() * 20;
+        const totalAggro = baseAggro + msAggro + aggroVariation;
+
+        if (!selectedTarget || totalAggro > selectedTarget.totalAggro) {
+          return { target: currentTarget, totalAggro: totalAggro };
         }
-        // Calculate total aggro considering existing aggro, specific aggro, and a random component
-        return opposingFaction.reduce((selectedTarget, currentTarget) => {
-          const baseAggro = currentTarget.aggro;
-          const msAggro = entity.monsterSpecificAggro[currentTarget.id] || 0; // Safe access
-          const aggroVariation = Math.random() * 20;
-          const totalAggro = baseAggro + msAggro + aggroVariation;
-  
-          if (!selectedTarget || totalAggro > selectedTarget.totalAggro) {
-            return { target: currentTarget, totalAggro: totalAggro };
-          }
-          return selectedTarget;
-        }, null)?.target;
-      case 4:
-        checkAndProgressRound();
-        return activeFaction;
-      case 5:
-        checkAndProgressRound();
-        return opposingFaction;
-      case 6:
-        checkAndProgressRound();
-        return [...activeFaction, ...opposingFaction];
-      default:
-        checkAndProgressRound();
-        console.error("Invalid target type:", card.properties.target);
-        return null;
-    }
+        return selectedTarget;
+      }, null)?.target;
+    case 4:
+      checkAndProgressRound();
+      return activeFaction;
+    case 5:
+      checkAndProgressRound();
+      return opposingFaction;
+    case 6:
+      checkAndProgressRound();
+      return [...activeFaction, ...opposingFaction];
+    default:
+      checkAndProgressRound();
+      console.error("Invalid target type:", card.properties.target);
+      return null;
   }
-  
-  
+}
 
 export function adjustAggro(entity, selectedCard, target) {
-    console.log("Selected Card:", selectedCard);
-    console.log("Target Entity:", target);
+  console.log("Selected Card:", selectedCard);
+  console.log("Target Entity:", target);
 
-    // Initialize monsterSpecificAggro map if it does not exist
-    if (!entity.monsterSpecificAggro) {
-        entity.monsterSpecificAggro = {};
+  // Initialize monsterSpecificAggro map if it does not exist
+  if (!entity.monsterSpecificAggro) {
+    entity.monsterSpecificAggro = {};
+  }
+
+  if (selectedCard.properties.target === 3) {
+    // Ensure there is an initial value for the specific monster's aggro
+    if (!entity.monsterSpecificAggro[target.id]) {
+      entity.monsterSpecificAggro[target.id] = 0;
     }
 
-    if (selectedCard.properties.target === 3) {
-        // Ensure there is an initial value for the specific monster's aggro
-        if (!entity.monsterSpecificAggro[target.id]) {
-            entity.monsterSpecificAggro[target.id] = 0;
-        }
+    // Modify aggro based on the selected card's aggro property
+    entity.monsterSpecificAggro[target.id] += selectedCard.properties.aggro;
 
-        // Modify aggro based on the selected card's aggro property
-        entity.monsterSpecificAggro[target.id] += selectedCard.properties.aggro;
-
-        if(entity.aggroLife){
-          entity.aggro += selectedCard.properties.aggro;
-        }
-
-        // Clamp the value between 0 and 20
-        entity.monsterSpecificAggro[target.id] = Math.max(0, Math.min(20, entity.monsterSpecificAggro[target.id]));
-    } else {
-        // Adjust general aggro
-        entity.aggro += selectedCard.properties.aggro;
-        entity.aggro = Math.max(0, Math.min(20, entity.aggro));
+    if (entity.aggroLife) {
+      entity.aggro += selectedCard.properties.aggro;
     }
 
-    console.log("Updated Aggro:", entity.monsterSpecificAggro);
+    // Clamp the value between 0 and 20
+    entity.monsterSpecificAggro[target.id] = Math.max(
+      0,
+      Math.min(20, entity.monsterSpecificAggro[target.id])
+    );
+  } else {
+    // Adjust general aggro
+    entity.aggro += selectedCard.properties.aggro;
+    entity.aggro = Math.max(0, Math.min(20, entity.aggro));
+  }
+
+  console.log("Updated Aggro:", entity.monsterSpecificAggro);
 }
 
 function adjustCardEffectsBasedOnProficiency(entity, card) {
@@ -264,15 +293,14 @@ function adjustCardEffectsBasedOnProficiency(entity, card) {
 export function applyTargetEffect(entity) {
   const entityElement = document.getElementById(`entity-${entity.id}`);
   if (entityElement) {
-    entityElement.classList.add('shake');
+    entityElement.classList.add("shake");
 
     // Remove the class after the animation duration (800ms here)
     setTimeout(() => {
-      entityElement.classList.remove('shake');
+      entityElement.classList.remove("shake");
     }, 800);
   }
 }
-
 
 export function applyDirectEffects(selectedCard, target, entity) {
   console.log(`Aggro: ${entity.aggro}`);
@@ -280,6 +308,270 @@ export function applyDirectEffects(selectedCard, target, entity) {
     entity,
     selectedCard
   );
+
+  if (adjustedCard.properties.summon) {
+    const combinedArray = [...heroes, ...monsters];
+    const highestIdObject = combinedArray.reduce((max, obj) => {
+      return obj.id > max.id ? obj : max;
+  }, combinedArray[0]);
+  
+  const highestId = highestIdObject.id;
+
+    const summonedEntity = adjustedCard.properties.summon;
+    const proficiencies = adjustedCard.properties.summon.proficiencies;
+    const randomIndex = Math.floor(Math.random() * proficiencies.length);
+    summonedEntity.proficiency = proficiencies[randomIndex];
+    summonedEntity.id = highestId + 1
+    summonedEntity.role = adjustedCard.properties.summon.type;
+    summonedEntity.faction = entity.faction;
+    summonedEntity.initialHealth = summonedEntity.health;
+    summonedEntity.alive = true;
+    summonedEntity.turnTaken = false;
+    if(summonedEntity.type === "totem") {
+      summonedEntity.deck = [{
+        name: "strengthen all",
+        properties: {
+          types: ["light", "arcane"],
+          strengthen: 2,
+          target: 4,
+          aggro: 4,
+          info: "strengthen 2 to all allies \n aggro:2"
+        },
+      }, {
+        name: "strengthen all",
+        properties: {
+          types: ["light", "arcane"],
+          strengthen: 2,
+          target: 4,
+          aggro: 4,
+          info: "strengthen 2 to all allies \n aggro:2"
+        },
+      }, {
+        name: "shield all",
+        properties: {
+          types: ["earth", "arcane"],
+          target: 4,
+          aggro: 4,
+          shield: 2,
+          info: "shield 2 to all allies \n aggro:4"
+        },
+      },
+      {
+        name: "shield all",
+        properties: {
+          types: ["earth", "arcane"],
+          target: 4,
+          aggro: 4,
+          shield: 2,
+          info: "shield 2 to all allies \n aggro:4"
+        },
+      }]
+    }
+    if(summonedEntity.type === "skeleton") {
+      if(summonedEntity.proficiency === "berzerker"){
+        summonedEntity.deck = [{
+          name: "frenzy",
+          properties: {
+            types: ["physical", "blood"],
+            target: 3,
+            aggro: 3,
+            health: -3,
+            info: "3 damage to single enemy \n aggro:3"
+          },
+        },
+        {
+          name: "blood rage",
+          properties: {
+            types: ["blood", "dark"],
+            target: 0,
+            aggro: 4,
+            strengthen: 3,
+            info: "3 strengthen to self \n aggro:4"
+          },
+        },
+        {
+          name: "reckless strike",
+          properties: {
+            types: ["physical", "blood"],
+            target: 3,
+            aggro: 4,
+            health: -6,
+            selfDamage: 2,
+            info: "6 damage to single enemy \n 2 damage to self \n aggro:4"
+          },
+        }]
+      } else if(summonedEntity.proficiency === "defender"){
+        summonedEntity.deck = [{
+          name: "plate armor",
+          properties: {
+            types: ["earth", "physical"],
+            shield: 3,
+            shot: 3,
+            counter: 2,
+            target: 0,
+            aggro: 4,
+            info: "shield 3 to self \n 2 shield 3 counters to self \n aggro:4"
+          },
+        }, {
+          name: "mirror shield",
+          properties: {
+            types: ["arcane", "earth"],
+            shield: 1,
+            reflect: 1,
+            counter: 1,
+            target: 0,
+            aggro: 4,
+            info: "shield 1 to self \n 1 reflect counter to self \n aggro:4"
+          },
+        }, {
+          name: "shield",
+          properties: {
+            types: ["earth", "arcane"],
+            target: 2,
+            aggro: 2,
+            shield: 2,
+            info: "shield 2 to single ally \n aggro:2"
+          },
+        }]
+      }
+    };
+    if(summonedEntity.type === "spirit") {
+      if(summonedEntity.proficiency === "hawk"){
+        summonedEntity.deck = [{
+          name: "strike",
+          properties: {
+            types: ["physical", "earth"],
+            target: 3,
+            aggro: 2,
+            health: -2,
+            info: "2 damage to single enemy \n aggro:2"
+          },
+        }, {
+          name: "weaken",
+          properties: {
+            types: ["psychic", "dark"],
+            shield: -1,
+            strengthen: -1,
+            target: 3,
+            aggro: 2,
+            info: "shield -1 to single enemy \n strengthen -1 to single enemy \n aggro:2"
+          },
+        }, {
+          name: "rejuvinate",
+          properties: {
+            types: ["nature", "light"],
+            health: 2,
+            counter: 3,
+            hot: 2,
+            target: 2,
+            aggro: 3,
+            info: "heal 2 to single ally \n 2 heal 2 counters to ally \n aggro:3"
+          },
+        }]
+      } else if(summonedEntity.proficiency === "panther"){
+        summonedEntity.deck = [{
+          name: "strike",
+          properties: {
+            types: ["physical", "earth"],
+            target: 3,
+            aggro: 2,
+            health: -2,
+            info: "2 damage to single enemy \n aggro:2"
+          },
+        }, {
+          name: "vanish",
+          properties: {
+            types: ["arcane", "wind"],
+            target: 0,
+            aggro: -4,
+            info: "aggro:-4 \n"
+          },
+        }, {
+          name: "slash",
+          properties: {
+            types: ["physical", "wind"],
+            target: 3,
+            health: -3,
+            aggro: 2,
+          },
+        }]
+      } else if(summonedEntity.proficiency === "bear"){
+        summonedEntity.deck = [{
+          name: "grapple",
+          properties: {
+            types: ["physical", "earth"],
+            target: 3,
+            aggro: 3,
+            shield: -2,
+            strengthen: -2,
+            info: "shield -2 to single enemy \n strengthen -2 to single enemy \n aggro:3"
+          },
+        }, {
+          name: "strike",
+          properties: {
+            types: ["physical", "earth"],
+            target: 3,
+            aggro: 2,
+            health: -2,
+            info: "2 damage to single enemy \n aggro:2"
+          },
+        }, {
+          name: "plate armor",
+          properties: {
+            types: ["earth", "physical"],
+            shield: 3,
+            shot: 3,
+            counter: 2,
+            target: 0,
+            aggro: 4,
+            info: "shield 3 to self \n 2 shield 3 counters to self \n aggro:4"
+          },
+        }]
+      } else if(summonedEntity.proficiency === "wolf"){
+        summonedEntity.deck = [{
+          name: "empower",
+          properties: {
+            types: ["light", "arcane"],
+            shield: 1,
+            strengthen: 1,
+            target: 2,
+            aggro: 2,
+            info: "shield 1 to single ally \n strengthen 1 to single ally \n aggro:2"
+          },
+        }, {
+          name: "strike",
+          properties: {
+            types: ["physical", "earth"],
+            target: 3,
+            aggro: 2,
+            health: -2,
+            info: "2 damage to single enemy \n aggro:2"
+          },
+        }, {
+          name: "bite",
+          properties: {
+            types: ["physical", "dark"],
+            target: 3,
+            health: -8,
+            aggro: 3,
+            info: "8 damage to single target \n aggro:3"
+          },
+        }]
+      }
+    };
+    summonedEntity.effects = [];
+    summonedEntity.shield = 0;
+    summonedEntity.strengthen = 0;
+    summonedEntity.aggro = 0;
+    summonedEntity.monsterSpecificAggro = {};
+    summonedEntity.isSummon = true;
+
+    if (entity.faction === 'hero') {
+      heroes.push(summonedEntity);
+  } else {
+      monsters.push(summonedEntity);
+  }
+  }
 
   if (entity.shadowForm && adjustedCard.properties.health > 0) {
     actions.push(
@@ -346,12 +638,17 @@ export function applyDirectEffects(selectedCard, target, entity) {
       actions.push(
         `${actingEntity.role} deals ${damageAmount} damage to ${targetEntity.role}`
       );
-      if(target.health <= 0) {
-        target.alive === false
+      if (target.health <= 0) {
+        target.alive === false;
       }
       if (damageAmount !== 0) {
-        const color = damageAmount < 0 ? 'red' : 'green'; // Negative for damage, positive for healing
-        createFloatingText(targetEntity.id, damageAmount, color, adjustedCard.name);
+        const color = damageAmount < 0 ? "red" : "green"; // Negative for damage, positive for healing
+        createFloatingText(
+          targetEntity.id,
+          damageAmount,
+          color,
+          adjustedCard.name
+        );
       }
     } else if (adjustedCard.properties.health > 0) {
       // Handling for healing
@@ -364,17 +661,22 @@ export function applyDirectEffects(selectedCard, target, entity) {
       actions.push(
         `${actingEntity.role} deals ${adjustedCard.properties.health} healing to ${targetEntity.role}`
       );
-      if(adjustedCard.name === 'selfless sacrifice'){
+      if (adjustedCard.name === "selfless sacrifice") {
         entity.health -= 3;
-        damageAmount = 3
-        const color = damageAmount < 0 ? 'red' : 'green'; // Negative for damage, positive for healing
+        damageAmount = 3;
+        const color = damageAmount < 0 ? "red" : "green"; // Negative for damage, positive for healing
         createFloatingText(entity.id, damageAmount, color, adjustedCard.name);
       }
       if (damageAmount !== 0) {
-        const color = damageAmount < 0 ? 'red' : 'green'; // Negative for damage, positive for healing
-        createFloatingText(targetEntity.id, damageAmount, color, adjustedCard.name);
+        const color = damageAmount < 0 ? "red" : "green"; // Negative for damage, positive for healing
+        createFloatingText(
+          targetEntity.id,
+          damageAmount,
+          color,
+          adjustedCard.name
+        );
       }
-      if(adjustedCard.name === 'selfless sacrifice'){
+      if (adjustedCard.name === "selfless sacrifice") {
         entity.health -= 3;
       }
     }
@@ -384,20 +686,31 @@ export function applyDirectEffects(selectedCard, target, entity) {
 
     // Apply shield and strengthen effects
     if (adjustedCard.properties.shield) {
-      if(entity.proficiency.shield && entity.proficiency.shield > 0 && adjustedCard.properties.shield > 0){
-        targetEntity.shield += (adjustedCard.properties.shield + entity.proficiency.shield);
-      actions.push(
-        `${actingEntity.role} deals ${adjustedCard.properties.shield + entity.proficiency.shield} shield to ${targetEntity.role}`
-      );
-      
-      } else if(entity.proficiency.shield && entity.proficiency.shield > 0 && adjustedCard.properties.shield < 0){
-        targetEntity.shield += (adjustedCard.properties.shield - entity.proficiency.shield);
-      actions.push(
-        `${actingEntity.role} deals ${adjustedCard.properties.shield - entity.proficiency.shield} shield to ${targetEntity.role}`
-      );
-      
-      } 
-      else {
+      if (
+        entity.proficiency.shield &&
+        entity.proficiency.shield > 0 &&
+        adjustedCard.properties.shield > 0
+      ) {
+        targetEntity.shield +=
+          adjustedCard.properties.shield + entity.proficiency.shield;
+        actions.push(
+          `${actingEntity.role} deals ${
+            adjustedCard.properties.shield + entity.proficiency.shield
+          } shield to ${targetEntity.role}`
+        );
+      } else if (
+        entity.proficiency.shield &&
+        entity.proficiency.shield > 0 &&
+        adjustedCard.properties.shield < 0
+      ) {
+        targetEntity.shield +=
+          adjustedCard.properties.shield - entity.proficiency.shield;
+        actions.push(
+          `${actingEntity.role} deals ${
+            adjustedCard.properties.shield - entity.proficiency.shield
+          } shield to ${targetEntity.role}`
+        );
+      } else {
         targetEntity.shield += adjustedCard.properties.shield;
         actions.push(
           `${actingEntity.role} deals ${adjustedCard.properties.shield} shield to ${targetEntity.role}`
@@ -405,9 +718,17 @@ export function applyDirectEffects(selectedCard, target, entity) {
       }
 
       if (adjustedCard.properties.shield) {
-        const shieldText = adjustedCard.properties.shield > 0 ? '+' + adjustedCard.properties.shield : adjustedCard.properties.shield;
-        const color = adjustedCard.properties.shield > 0 ? 'blue' : 'yellow';
-        createFloatingText(targetEntity.id, shieldText, color, adjustedCard.name);
+        const shieldText =
+          adjustedCard.properties.shield > 0
+            ? "+" + adjustedCard.properties.shield
+            : adjustedCard.properties.shield;
+        const color = adjustedCard.properties.shield > 0 ? "blue" : "yellow";
+        createFloatingText(
+          targetEntity.id,
+          shieldText,
+          color,
+          adjustedCard.name
+        );
       }
     }
     if (targetEntity.shield > 10) {
@@ -417,27 +738,49 @@ export function applyDirectEffects(selectedCard, target, entity) {
       targetEntity.shield = -10;
     }
     if (adjustedCard.properties.strengthen) {
-      if(entity.proficiency.strengthen && entity.proficiency.strengthen > 0 && adjustedCard.properties.strengthen > 0){
-        targetEntity.strengthen += (adjustedCard.properties.strengthen + entity.proficiency.strengthen);
-      actions.push(
-        `${actingEntity.role} deals ${adjustedCard.properties.strengthen + entity.proficiency.strengthen} strengthen to ${targetEntity.role}`
-      );
-      } else if(entity.proficiency.strengthen && entity.proficiency.strengthen > 0 && adjustedCard.properties.strengthen < 0){
-        targetEntity.strengthen += (adjustedCard.properties.strengthen - entity.proficiency.strengthen);
-      actions.push(
-        `${actingEntity.role} deals ${adjustedCard.properties.strengthen - entity.proficiency.strengthen} strengthen to ${targetEntity.role}`
-      );
-      } 
-      else {
+      if (
+        entity.proficiency.strengthen &&
+        entity.proficiency.strengthen > 0 &&
+        adjustedCard.properties.strengthen > 0
+      ) {
+        targetEntity.strengthen +=
+          adjustedCard.properties.strengthen + entity.proficiency.strengthen;
+        actions.push(
+          `${actingEntity.role} deals ${
+            adjustedCard.properties.strengthen + entity.proficiency.strengthen
+          } strengthen to ${targetEntity.role}`
+        );
+      } else if (
+        entity.proficiency.strengthen &&
+        entity.proficiency.strengthen > 0 &&
+        adjustedCard.properties.strengthen < 0
+      ) {
+        targetEntity.strengthen +=
+          adjustedCard.properties.strengthen - entity.proficiency.strengthen;
+        actions.push(
+          `${actingEntity.role} deals ${
+            adjustedCard.properties.strengthen - entity.proficiency.strengthen
+          } strengthen to ${targetEntity.role}`
+        );
+      } else {
         targetEntity.strengthen += adjustedCard.properties.strengthen;
         actions.push(
           `${actingEntity.role} deals ${adjustedCard.properties.strengthen} strengthen to ${targetEntity.role}`
         );
       }
       if (adjustedCard.properties.strengthen) {
-        const strengthText = adjustedCard.properties.strengthen > 0 ? '+' + adjustedCard.properties.strengthen : adjustedCard.properties.strengthen;
-        const color = adjustedCard.properties.strengthen > 0 ? 'blue' : 'yellow';
-        createFloatingText(targetEntity.id, strengthText, color, adjustedCard.name);
+        const strengthText =
+          adjustedCard.properties.strengthen > 0
+            ? "+" + adjustedCard.properties.strengthen
+            : adjustedCard.properties.strengthen;
+        const color =
+          adjustedCard.properties.strengthen > 0 ? "blue" : "yellow";
+        createFloatingText(
+          targetEntity.id,
+          strengthText,
+          color,
+          adjustedCard.name
+        );
       }
     }
     if (targetEntity.strengthen > 10) {
@@ -465,13 +808,13 @@ export function applyDirectEffects(selectedCard, target, entity) {
     console.log("Target is an array, applying effects to each target.");
     target.forEach((singleTarget) => {
       applyEffects(adjustedCard, singleTarget, entity);
-      applyEffectOverTimeTokens(adjustedCard, singleTarget, entity)
+      applyEffectOverTimeTokens(adjustedCard, singleTarget, entity);
     });
   } else {
     console.log("Target is a single entity, applying effects.");
-    console.log(adjustedCard)
+    console.log(adjustedCard);
     applyEffects(adjustedCard, target, entity);
-    applyEffectOverTimeTokens(adjustedCard, target, entity)
+    applyEffectOverTimeTokens(adjustedCard, target, entity);
   }
 
   if (selectedCard.name === "flurry") {
@@ -479,7 +822,7 @@ export function applyDirectEffects(selectedCard, target, entity) {
       `${entity.role} activates flurry and plays their next to cards on ${target.role}`
     );
     const nextTwoCards = drawCards(entity, 2, true); // Draw the next two cards for flurry
-    console.log(nextTwoCards)
+    console.log(nextTwoCards);
 
     nextTwoCards.forEach((nextCard) => {
       const adjustedNextCard = adjustCardEffectsBasedOnProficiency(
@@ -533,11 +876,7 @@ export function applyEffectOverTimeTokens(card, target, entity) {
 
     effects.forEach((effect) => {
       if (properties[effect] !== undefined) {
-        if (
-          effect === "hot" &&
-          entity.shadowForm &&
-          properties[effect] > 0
-        ) {
+        if (effect === "hot" && entity.shadowForm && properties[effect] > 0) {
           console.log(
             `Converting hot effect to damage due to shadowForm for ${targetEntity.role}.`
           );
@@ -580,7 +919,8 @@ export function processReactions(selectedCard, target, activeEntity) {
 
         applyEffectOverTimeTokens(
           { properties: { hot: -2, counter: 3 } },
-          activeEntity, activeEntity
+          activeEntity,
+          activeEntity
         );
         return false;
       } else if (effect.type === "paralyzingTrap" && effect.counter > 0) {
@@ -589,7 +929,8 @@ export function processReactions(selectedCard, target, activeEntity) {
         );
         applyEffectOverTimeTokens(
           { properties: { interrupt: 1, counter: 2 } },
-          activeEntity, activeEntity
+          activeEntity,
+          activeEntity
         );
         return false;
       } else if (effect.type === "reflect" && effect.counter > 0) {
@@ -619,7 +960,8 @@ function handleShieldReactions(targetEntity, activeEntity) {
 
       applyEffectOverTimeTokens(
         { properties: { hot: -2, counter: 1 } },
-        activeEntity, activeEntity
+        activeEntity,
+        activeEntity
       );
     }
     if (targetEntity.frostShield) {
@@ -634,7 +976,8 @@ function handleShieldReactions(targetEntity, activeEntity) {
 
       applyEffectOverTimeTokens(
         { properties: { shot: 1, stot: -3, counter: 2 } },
-        activeEntity, activeEntity
+        activeEntity,
+        activeEntity
       );
     }
     if (targetEntity.arcaneShield) {
@@ -649,7 +992,8 @@ function handleShieldReactions(targetEntity, activeEntity) {
 
       applyEffectOverTimeTokens(
         { properties: { shot: -1, counter: 2 } },
-        activeEntity, activeEntity
+        activeEntity,
+        activeEntity
       );
     }
   } else {
@@ -660,10 +1004,9 @@ function handleShieldReactions(targetEntity, activeEntity) {
 }
 
 function discardCards(entity, drawnCards) {
-  entity.deck.push(...drawnCards); // Add used cards back to the deck
+  entity.deck.push(...drawnCards);
 }
 
-// Exported utility functions
 export function resetShield(entities) {
   entities.forEach((entity) => (entity.shield = 0));
 }
@@ -748,8 +1091,8 @@ export function processEndOfTurnEffects(faction) {
           vampirismActive = false;
         }
       }
-      if(entity.health <= 0) {
-        entity.alive === false
+      if (entity.health <= 0) {
+        entity.alive === false;
       }
     });
 
@@ -762,17 +1105,15 @@ export function processEndOfTurnEffects(faction) {
       revertVampirismEffect(entity);
     }
   });
-  removeDefeatedHeroes()
+  removeDefeatedHeroes();
 }
 
 export function removeDefeatedHeroes() {
-    heroes = heroes.filter((entity) => entity.alive);
-    return heroes
-  }
+  heroes = heroes.filter((entity) => entity.alive);
+  return heroes;
+}
 
-  export function removeDefeatedMonsters() {
-    monsters = monsters.filter((entity) => entity.alive);
-    return monsters
-  }
-
-
+export function removeDefeatedMonsters() {
+  monsters = monsters.filter((entity) => entity.alive);
+  return monsters;
+}

@@ -64,11 +64,19 @@ function updateGameInfo(round, winner) {
 function displayEntities(entities) {
   const heroesContainer = document.getElementById("heroes");
   const monstersContainer = document.getElementById("monsters");
+
+  // Ensure containers exist before manipulating them
+  if (!heroesContainer || !monstersContainer) {
+    console.error("Heroes or Monsters container is missing in the DOM.");
+    return;
+  }
+
+  // Clear the containers before repopulating them
   heroesContainer.innerHTML = "";
   monstersContainer.innerHTML = "";
 
-  entities.forEach((entity, index) => {
-    // Main entity container
+  entities.forEach((entity) => {
+    // Create main entity container
     const entityDiv = document.createElement("div");
     entityDiv.classList.add("entity");
     entityDiv.setAttribute("data-faction", entity.faction);
@@ -78,23 +86,45 @@ function displayEntities(entities) {
     entityDiv.style.flexDirection = "column";
     entityDiv.style.alignItems = "center";
     entityDiv.style.justifyContent = "flex-start";
-    entityDiv.style.color = 'black'
+    entityDiv.style.color = "black";
+    entityDiv.style.margin = "10px";
+    entityDiv.style.border = "1px solid #ccc";
+    entityDiv.style.borderRadius = "8px";
+    entityDiv.style.padding = "10px";
+    entityDiv.style.backgroundColor = "#f9f9f9";
+    entityDiv.style.width = "150px";
 
     // Entity name and role
     const nameDiv = document.createElement("div");
-    nameDiv.innerHTML = `<strong>${entity.proficiency.name || ""} ${
+    nameDiv.innerHTML = `<strong>${entity.proficiency?.name || entity.proficiency} ${
       entity.role
-    }</strong>`;
+    }${entity.isSummon ? " (Summon)" : ""}</strong>`;
+    nameDiv.style.marginBottom = "5px";
     entityDiv.appendChild(nameDiv);
 
     // Stats with icons
     const statsDiv = document.createElement("div");
+    statsDiv.style.display = "flex";
+    statsDiv.style.flexWrap = "wrap";
+    statsDiv.style.justifyContent = "center";
     statsDiv.innerHTML = `
-        <div style="margin-right:5px"><img src="../../images/icons/health.ico" alt="Health" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.health} </span></div>
-        <div style="margin-right:5px"><img src="../../images/icons/shield.ico" alt="Shield" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.shield} </span></div>
-        <div style="margin-right:5px"><img src="../../images/icons/strengthen.ico" alt="Strength" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.strengthen} </span></div>
-        <div style="margin-right:5px"><img src="../../images/icons/aggro.ico" alt="Aggro" class="icon" style="margin-right: -2px"><span style="margin-right: 2px">${entity.aggro} </span></div>
-      `;
+      <div style="display:flex; align-items:center; margin:2px;">
+        <img src="../../images/icons/health.ico" alt="Health" class="icon" style="width:16px; height:16px; margin-right:4px;">
+        <span>${entity.health}</span>
+      </div>
+      <div style="display:flex; align-items:center; margin:2px;">
+        <img src="../../images/icons/shield.ico" alt="Shield" class="icon" style="width:16px; height:16px; margin-right:4px;">
+        <span>${entity.shield}</span>
+      </div>
+      <div style="display:flex; align-items:center; margin:2px;">
+        <img src="../../images/icons/strengthen.ico" alt="Strengthen" class="icon" style="width:16px; height:16px; margin-right:4px;">
+        <span>${entity.strengthen}</span>
+      </div>
+      <div style="display:flex; align-items:center; margin:2px;">
+        <img src="../../images/icons/aggro.ico" alt="Aggro" class="icon" style="width:16px; height:16px; margin-right:4px;">
+        <span>${entity.aggro}</span>
+      </div>
+    `;
     entityDiv.appendChild(statsDiv);
 
     // Deck visuals
@@ -110,43 +140,83 @@ function displayEntities(entities) {
     // Append to appropriate container
     if (entity.faction === "hero") {
       heroesContainer.appendChild(entityDiv);
-    } else {
+    } else if (entity.faction === "monster") {
       monstersContainer.appendChild(entityDiv);
     }
   });
 }
 
-function createDeckVisual(entity, index) {
+
+
+
+
+
+function createDeckVisual(entity) {
   const deckVisualDiv = document.createElement("div");
   deckVisualDiv.classList.add("deck-visual");
+  deckVisualDiv.style.position = "relative";
+  deckVisualDiv.style.width = "100px";
+  deckVisualDiv.style.height = "140px";
+  deckVisualDiv.style.marginTop = "10px";
+  deckVisualDiv.style.cursor = entity.faction === "hero" ? "pointer" : "default";
+
+  // Enable card drawing for heroes
   if (entity.faction === "hero") {
     deckVisualDiv.addEventListener("click", () => {
       if (!entity.turnTaken) {
         const drawnCards = drawCards(entity, 2, false);
         if (drawnCards.length > 0) {
           displayDrawnCards(drawnCards, entity); // Show the cards if drawn
+          updateUI(); // Update UI after drawing cards
         }
       } else {
         console.log("This hero has already taken their turn.");
       }
     });
-    deckVisualDiv.style.cursor = "pointer";
   }
+
+  // Display a stack of cards to represent the deck
   for (let i = 0; i < Math.min(3, entity.deck.length); i++) {
-    const cardVisualDiv = document.createElement("div");
-    cardVisualDiv.classList.add("card-visual");
-    cardVisualDiv.style.transform = `rotate(${(i - 1) * 5}deg)`;
-    cardVisualDiv.style.position = "absolute";
-    cardVisualDiv.style.top = "-50px"; 
-    cardVisualDiv.style.left = `${i * 5}px`;
-    cardVisualDiv.style.backgroundImage = `url('../../images/${entity.role}.png')`;
-    cardVisualDiv.style.backgroundColor = `black`;
-    cardVisualDiv.style.width = "110px";
-    cardVisualDiv.style.height = "150px";
-    deckVisualDiv.appendChild(cardVisualDiv);
+    const cardBackDiv = document.createElement("div");
+    cardBackDiv.classList.add("card-back");
+    cardBackDiv.style.transform = `rotate(${(i - 1) * 5}deg)`;
+    cardBackDiv.style.position = "absolute";
+    cardBackDiv.style.width = "100px";
+    cardBackDiv.style.height = "140px";
+    cardBackDiv.style.backgroundColor = "#444";
+    cardBackDiv.style.border = "2px solid #222";
+    cardBackDiv.style.borderRadius = "8px";
+    cardBackDiv.style.position = "absolute";
+    cardBackDiv.style.top = `${-i * 2}px`;
+    cardBackDiv.style.left = `${i * 5}px`;
+    cardBackDiv.style.boxShadow = "0 2px 5px rgba(0,0,0,0.3)";
+    cardBackDiv.style.backgroundImage = entity.isSummon 
+    ? `url('../../images/${entity.proficiency}_${entity.role}.png')` 
+    : `url('../../images/${entity.role}.png')`;
+    cardBackDiv.style.backgroundSize = "cover";
+    cardBackDiv.style.backgroundRepeat = "no-repeat";
+    deckVisualDiv.appendChild(cardBackDiv);
   }
+
+  // Deck count
+  const deckCountDiv = document.createElement("div");
+  deckCountDiv.style.position = "absolute";
+  deckCountDiv.style.bottom = "-20px";
+  deckCountDiv.style.left = "50%";
+  deckCountDiv.style.transform = "translateX(-50%)";
+  deckCountDiv.style.backgroundColor = "#fff";
+  deckCountDiv.style.padding = "2px 6px";
+  deckCountDiv.style.borderRadius = "12px";
+  deckCountDiv.style.boxShadow = "0 1px 3px rgba(0,0,0,0.2)";
+  deckCountDiv.style.fontSize = "14px";
+  deckCountDiv.style.fontWeight = "bold";
+  deckCountDiv.textContent = entity.deck.length;
+  deckVisualDiv.appendChild(deckCountDiv);
+
   return deckVisualDiv;
 }
+
+
 
 export function displayDrawnCards(cards, entity) {
   console.log(entity);
@@ -193,18 +263,20 @@ export function displayDrawnCards(cards, entity) {
   });
 }
 
-
-
-
 function createDrawnCardsVisual(entity) {
   const drawnCardsDiv = document.createElement("div");
   drawnCardsDiv.classList.add("drawn-cards");
-  entity.drawnCards.forEach((card) => {
+
+  // Safely access drawnCards from the entity
+  const drawnCards = entity.drawnCards || [];
+
+  drawnCards.forEach((card) => {
     const cardDiv = document.createElement("div");
     cardDiv.classList.add("card");
     cardDiv.textContent = card.name;
     drawnCardsDiv.appendChild(cardDiv);
   });
+
   return drawnCardsDiv;
 }
 

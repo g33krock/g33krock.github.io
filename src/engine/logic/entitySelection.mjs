@@ -7,9 +7,12 @@ export let playerConfigurations = JSON.parse(localStorage.getItem('playerConfigu
 
 export const selectedHeroes = playerConfigurations.map(player => player.role);
 
-const powerLimit = entities.filter(entity => !entity.locked && entity.faction === 'hero').reduce((acc, entity) => acc + entity.power, 0);
+let fullSelectedEntities = entities.filter(entity => selectedHeroes.includes(entity.role));
+
+const powerLimit = fullSelectedEntities.filter(entity => !entity.locked && entity.faction === 'hero').reduce((acc, entity) => acc + entity.power, 0);
 
 function selectMonsters(limit) {
+    console.log(playerConfigurations)
     let selectedMonsters = [];
 
     do {

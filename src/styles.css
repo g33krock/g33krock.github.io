@@ -39,6 +39,12 @@ body {
   flex-direction: column;
 }
 
+
+#heroSummons {
+  height: 100px;
+  width: 100px
+}
+
 #heroes,
 #monsters {
   display: flex; /* Align heroes and monsters in a row */
@@ -94,6 +100,7 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-color: black;
 }
 
 /* Ensure the icons and text are aligned properly */
@@ -112,6 +119,7 @@ body {
 }
 
 .entity[data-faction="monster"] {
+  background-color: black;
     background-image: url("../images/cardboard.png");
 }
 
@@ -148,9 +156,10 @@ body {
   margin: 5px auto;
 }
 
-.card-visual {
+.card-visual .card-back{
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   border: 2px solid #ddd;
   width: 70px;
   height: 100px;

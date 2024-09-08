@@ -2,6 +2,7 @@ import { shuffleArray } from "./shuffleDeck.mjs";
 
 
 export function buildInitialDeck(entity, cards) {
+  console.log(entity)
   if (!entity.defaultDeck) return;
 
   entity.deck = [];

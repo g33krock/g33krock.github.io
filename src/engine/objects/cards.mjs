@@ -1,3 +1,5 @@
+import { proficiencies } from "./proficiencies.mjs";
+
 export const cards = [
   {
     name: "strike",
@@ -84,6 +86,16 @@ export const cards = [
     },
   },
   {
+    name: "shield all",
+    properties: {
+      types: ["earth", "arcane"],
+      target: 4,
+      aggro: 4,
+      shield: 2,
+      info: "shield 2 to all allies \n aggro:4"
+    },
+  },
+  {
     name: "grapple",
     properties: {
       types: ["physical", "earth"],
@@ -139,6 +151,16 @@ export const cards = [
       target: 2,
       aggro: 2,
       info: "shield 1 to single ally \n strengthen 1 to single ally \n aggro:2"
+    },
+  },
+  {
+    name: "strengthen all",
+    properties: {
+      types: ["light", "arcane"],
+      strengthen: 2,
+      target: 4,
+      aggro: 4,
+      info: "strengthen 2 to all allies \n aggro:2"
     },
   },
   {
@@ -623,8 +645,8 @@ export const cards = [
       types: ["dark", "arcane"],
       target: 0,
       aggro: 3,
-      summon: 1,
-      info: "summons a skeleton minion \n aggro:3"
+      summon: {amount: 1, type: "skeleton", health: 5, aggro: 10, proficiencies: ["berzerker", "defender"]},
+      info: "summons a skeleton minion \n aggro:10"
     },
   },
   {
@@ -703,7 +725,7 @@ export const cards = [
     name: "healing rain",
     properties: {
       types: ["nature", "light"],
-      target: 5,
+      target: 4,
       aggro: 3,
       health: 3,
       info: "3 health to all allies \n aggro:3"
@@ -715,8 +737,18 @@ export const cards = [
       types: ["nature", "arcane"],
       target: 0,
       aggro: 3,
-      summon: 1,
-      info: "summons a totem with 10 health \n aggro:3"
+      summon: {amount: 1, type: "totem", health: 10, aggro: 10, proficiencies: ["vengeance", "protection"]},
+      info: "summons a totem with 10 health \n aggro:10"
+    },
+  },
+  {
+    name: "summon spirit",
+    properties: {
+      types: ["nature", "arcane"],
+      target: 0,
+      aggro: 3,
+      summon: {amount: 1, type: "spirit", health: 5, aggro: 10, proficiencies: ["hawk", "panther", "wolf", "bear"]},
+      info: "summons a spirit animal minion \n aggro:10"
     },
   },
   {
