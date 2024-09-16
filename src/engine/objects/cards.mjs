@@ -299,6 +299,7 @@ export const cards = [
       types: ["arcane", "psychic"],
       target: 0,
       aggro: 3,
+      summon: {amount: 1, type: "illusion", health: 1, aggro: 20, proficiencies: ["berzerker", "defender"]},
       info: "create a copy of this player \n until end of round \n aggro:3"
     },
   },
@@ -802,4 +803,257 @@ export const cards = [
       info: "4 health to self \n aggro:2"
     },
   },
+  {
+    name: "crushing blow",
+    properties: {
+      types: ["physical", "earth"],
+      target: 3,
+      aggro: 3,
+      health: -6,
+      info: "6 damage to single enemy \n aggro:3"
+    }
+  },
+  {
+    name: "shield wall",
+    properties: {
+      types: ["earth", "arcane"],
+      target: 0,
+      aggro: 3,
+      shield: 4,
+      info: "4 shield to self \n aggro:3"
+    }
+  },
+  {
+    name: "war cry",
+    properties: {
+      types: ["physical", "arcane"],
+      target: 0,
+      aggro: 4,
+      strengthen: 2,
+      info: "2 strengthen to self \n aggro:4"
+    }
+  },
+  {
+    name: "overhead strike",
+    properties: {
+      types: ["physical", "earth"],
+      target: 3,
+      aggro: 3,
+      health: -5,
+      info: "5 damage to single enemy \n aggro:3"
+    }
+  },
+  {
+    name: "gladiator's roar",
+    properties: {
+      types: ["physical", "arcane"],
+      target: 5,
+      aggro: 5,
+      info: "taunts all enemies \n aggro:5"
+    }
+  },
+  {
+    name: "crush armor",
+    properties: {
+      types: ["earth", "physical"],
+      target: 3,
+      shield: -3,
+      aggro: 3,
+      info: "removes 3 shield from enemy \n aggro:3"
+    }
+  },
+  {
+    name: "divine strike",
+    properties: {
+      types: ["light", "arcane"],
+      target: 3,
+      aggro: 3,
+      health: -3,
+      info: "3 damage to single enemy \n aggro:3"
+    }
+  },
+  {
+    name: "holy shield",
+    properties: {
+      types: ["light", "arcane"],
+      target: 2,
+      aggro: 2,
+      shield: 3,
+      info: "3 shield to single ally \n aggro:2"
+    }
+  },
+  {
+    name: "purge",
+    properties: {
+      types: ["light", "arcane"],
+      target: 3,
+      aggro: 2,
+      removeBuff: 1,
+      info: "removes 1 buff from enemy \n aggro:2"
+    }
+  },
+  {
+    name: "revive",
+    properties: {
+      types: ["light", "nature"],
+      target: 0,
+      aggro: 4,
+      health: 5,
+      info: "revives fallen ally with 5 health \n aggro:4"
+    }
+  },
+  {
+    name: "dark strike",
+    properties: {
+      types: ["dark", "physical"],
+      target: 3,
+      aggro: 3,
+      health: -4,
+      info: "4 damage to single enemy \n aggro:3"
+    }
+  },
+  {
+    name: "dark blessing",
+    properties: {
+      types: ["dark", "arcane"],
+      target: 0,
+      aggro: 3,
+      strengthen: 2,
+      shield: 2,
+      info: "grants 2 shield and 2 strengthen to self \n aggro:3"
+    }
+  },
+  {
+    name: "divine wrath",
+    properties: {
+      types: ["light", "dark"],
+      target: 3,
+      aggro: 4,
+      health: -6,
+      info: "6 damage to single enemy \n aggro:4"
+    }
+  },
+  {
+    name: "dark pulse",
+    properties: {
+      types: ["dark", "arcane"],
+      target: 5,
+      aggro: 5,
+      health: -4,
+      info: "4 damage to all enemies \n aggro:5"
+    }
+  },
+  {
+    name: "holy strike",
+    properties: {
+      types: ["light", "physical"],
+      target: 3,
+      aggro: 4,
+      health: -5,
+      info: "5 damage to single enemy \n aggro:4"
+    }
+  },
+  {
+    name: "shield of corruption",
+    properties: {
+      types: ["dark", "arcane"],
+      target: 0,
+      aggro: 3,
+      shield: 5,
+      info: "grants 5 shield to self \n aggro:3"
+    }
+  },
+  {
+    name: "arcane blast",
+    properties: {
+      types: ["arcane", "fire"],
+      target: 3,
+      aggro: 4,
+      health: -5,
+      info: "5 damage to single enemy \n aggro:4"
+    }
+  },
+  {
+    name: "elemental shield",
+    properties: {
+      types: ["arcane", "earth"],
+      target: 2,
+      aggro: 2,
+      shield: 4,
+      info: "4 shield to single ally \n aggro:2"
+    }
+  },
+  {
+    name: "ignite",
+    properties: {
+      types: ["fire", "arcane"],
+      target: 3,
+      aggro: 3,
+      hot: -2,
+      info: "applies 2 health -2 counters to enemy \n aggro:3"
+    }
+  },
+  {
+    name: "lifedrain",
+    properties: {
+      types: ["dark", "blood"],
+      target: 3,
+      aggro: 4,
+      health: -4,
+      heal: 2,
+      info: "4 damage to single enemy \n heal 2 to self \n aggro:4"
+    }
+  },
+  {
+    name: "curse",
+    properties: {
+      types: ["dark", "arcane"],
+      target: 3,
+      aggro: 3,
+      health: -3,
+      strengthen: -2,
+      info: "3 damage to single enemy \n weaken by 2 \n aggro:3"
+    }
+  },
+  {
+    name: "magma strike",
+    properties: {
+      types: ["fire", "earth"],
+      target: 3,
+      aggro: 4,
+      health: -6,
+      info: "6 damage to single enemy \n aggro:4"
+    }
+  },
+  {
+    name: "flame shield",
+    properties: {
+      types: ["fire", "arcane"],
+      target: 0,
+      aggro: 3,
+      shield: 4,
+      info: "4 shield to self \n aggro:3"
+    }
+  },
+  {
+    name: "frenzied strike",
+    properties: {
+      types: ["physical", "blood"],
+      target: 3,
+      aggro: 3,
+      health: -6,
+      info: "6 damage to single enemy \n aggro:3"
+    }
+  },
+  {
+    name: "savage strike",
+    properties: {
+      types: ["physical", "blood"],
+      target: 3,
+      aggro: 4,
+      health: -8,
+      selfDamage: 3,
+      info: "8 damage to single enemy \n 3 damage to self \n aggro:4"
+    }
+  }
 ];
